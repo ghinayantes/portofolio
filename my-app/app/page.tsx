@@ -56,29 +56,25 @@ export default function Home() {
             <h2 style={{ fontSize: "1.8rem", marginBottom: "1.5rem" }}>Experience</h2>
             <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
               <div className="bento-card">
-                <h3>OSKM ITB 2026 — Event Organizer Staff <span style={{ fontSize: "0.85rem", color: "var(--card-desc)", float: "right" }}>Jul 2026 - Present</span></h3>
+                <h3>Event Organizer Staff OSKM ITB 2026<span style={{ fontSize: "0.85rem", color: "var(--card-desc)", float: "right" }}>Jul 2026 - Present</span></h3>
                 <p>Official orientation program for incoming undergraduate students at Institut Teknologi Bandung.</p>
               </div>
 
               <div className="bento-card">
-                <h3>IMPACT 6.0 — Competition Staff & Math Tutor <span style={{ fontSize: "0.85rem", color: "var(--card-desc)", float: "right" }}>Mar 2026 - Jul 2026</span></h3>
+                <h3>Competition Staff & Math Tutor IMPACT 6.0<span style={{ fontSize: "0.85rem", color: "var(--card-desc)", float: "right" }}>Mar 2026 - Jul 2026</span></h3>
                 <p>Served as Problem Setter and official invigilator for high school Informatics, Math, Physics, and Logics competitions. Gave math lessons to IUP students for SNBT preparation.</p>
               </div>
 
               <div className="bento-card">
-                <h3>COMPILE 2026 — Curriculum QA Staff <span style={{ fontSize: "0.85rem", color: "var(--card-desc)", float: "right" }}>Feb 2026 - Apr 2026</span></h3>
+                <h3>Curriculum QA Staff COMPILE 2026<span style={{ fontSize: "0.85rem", color: "var(--card-desc)", float: "right" }}>Feb 2026 - Apr 2026</span></h3>
                 <p>Reviewed and audited educational modules drafted by the development team to ensure pedagogical quality and technical accuracy.</p>
               </div>
 
               <div className="bento-card">
-                <h3>BPA STEI-K ITB 2025 — Academic Staff <span style={{ fontSize: "0.85rem", color: "var(--card-desc)", float: "right" }}>Oct 2025 - Jul 2026</span></h3>
+                <h3>Academic Staff BPA STEI-K ITB 2025<span style={{ fontSize: "0.85rem", color: "var(--card-desc)", float: "right" }}>Oct 2025 - Jul 2026</span></h3>
                 <p>Designed peer-tutoring networks, curated study materials, and facilitated mentorship for STEI-K 2025 peers.</p>
               </div>
 
-              <div className="bento-card">
-                <h3>SMAN 1 Padang Panjang — Math Division Staff & Tutor <span style={{ fontSize: "0.85rem", color: "var(--card-desc)", float: "right" }}>Jul 2023 - Oct 2024</span></h3>
-                <p>Competition staff for Batik Birru 12th & 13th. Tutored math extracurricular programs and active member of HIPOTESIS Math Olympiad Club.</p>
-              </div>
             </div>
           </section>
 
