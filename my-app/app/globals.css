@@ -727,3 +727,75 @@ main {
   font-size: 0.85rem;
   color: #64748b;
 }
+
+/* ----------------------------------------------------
+   Project Image Cards 
+---------------------------------------------------- */
+.project-card-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.bento-card.project-card {
+  position: relative;
+  min-height: 240px;
+  overflow: hidden;
+  padding: 0;
+  border-radius: 16px;
+  cursor: pointer;
+}
+
+.project-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 0.5s ease, filter 0.5s ease;
+}
+
+/* Overlay Gelap & Detail Teks */
+.project-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(10, 10, 10, 0.95) 10%, rgba(10, 10, 10, 0.2) 70%);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  opacity: 0.9;
+  transition: opacity 0.3s ease, background 0.3s ease;
+}
+
+.project-overlay h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #ffffff !important;
+  margin-bottom: 0.3rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.project-overlay h3 span {
+  font-size: 0.8rem;
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.project-overlay p {
+  font-size: 0.88rem;
+  color: #cbd5e1 !important;
+  line-height: 1.4;
+}
+
+/* Efek Hover ala Athilla.tech */
+.bento-card.project-card:hover .project-img {
+  transform: scale(1.06);
+  filter: brightness(0.85);
+}
+
+.bento-card.project-card:hover .project-overlay {
+  opacity: 1;
+  background: linear-gradient(to top, rgba(10, 10, 10, 0.98) 20%, rgba(10, 10, 10, 0.4) 100%);
+}

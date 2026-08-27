@@ -9,13 +9,13 @@ export default function Navbar() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Daftar item yang bisa dicari
   const searchableItems = [
-    { title: "Profile / Bio", link: "#profile", desc: "Informasi pendidikan dan bio singkat Ghina" },
+    { title: "Profile / Bio", link: "#profile", desc: "Informasi pendidikan dan bio Ghina Emelia Yantes" },
     { title: "Location", link: "#profile", desc: "Bandung, Indonesia (Institut Teknologi Bandung)" },
-    { title: "Tech Stack", link: "#profile", desc: "Next.js, React, TypeScript, Tailwind CSS" },
-    { title: "Experience", link: "#experience", desc: "Pengalaman organisasi dan kepanitiaan" },
-    { title: "Projects", link: "#projects", desc: "Kumpulan project web dan eksperimen code" },
+    { title: "Experience", link: "#experience", desc: "OSKM ITB, IMPACT 6.0, COMPILE 2026, BPA STEI-K ITB" },
+    { title: "Projects", link: "#projects", desc: "alpro C, UNI-UNO Prolog, Personal Portfolio, Consistent Hashing Ring" },
+    { title: "Achievements", link: "#achievements", desc: "Gold Medalist OMI 2024, UTBK ITB 777.56, Ranked 1st SMAN 1 Padang Panjang" },
+    { title: "Tech Stack & Skills", link: "#skills", desc: "Python, C, Prolog, React, TypeScript, Next.js, Tailwind CSS" },
   ];
 
   const filteredResults = searchableItems.filter(
@@ -31,7 +31,6 @@ export default function Navbar() {
       document.documentElement.setAttribute("data-theme", savedTheme);
     }
 
-    // Shortcut Cmd+K / Ctrl+K untuk membuka search
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === "k") {
         e.preventDefault();
@@ -57,21 +56,18 @@ export default function Navbar() {
     <>
       <header className="header-container">
         <nav className="header-nav">
-          {/* Logo */}
           <Link href="/" className="header-logo">
             Ghina<span>’</span>
           </Link>
 
-          {/* Links Navigasi */}
           <div className="header-links">
             <Link href="#profile" className="active">Profile</Link>
             <Link href="#experience">Experience</Link>
             <Link href="#projects">Projects</Link>
+            <Link href="#achievements">Achievements</Link>
           </div>
 
-          {/* Action Icons */}
           <div className="header-actions">
-            {/* Tombol Search */}
             <button
               type="button"
               aria-label="Search"
@@ -81,7 +77,6 @@ export default function Navbar() {
               <Search size={18} />
             </button>
 
-            {/* Toggle Theme */}
             <button
               type="button"
               aria-label="Toggle Theme"
@@ -96,7 +91,6 @@ export default function Navbar() {
         </nav>
       </header>
 
-      {/* Modal Overlay Search */}
       {isSearchOpen && (
         <div className="search-modal-overlay" onClick={() => setIsSearchOpen(false)}>
           <div className="search-modal-content" onClick={(e) => e.stopPropagation()}>
@@ -104,7 +98,7 @@ export default function Navbar() {
               <Search size={18} className="search-icon-inside" />
               <input
                 type="text"
-                placeholder="Cari konten (misal: Tech Stack, Projects)..."
+                placeholder="Cari konten (misal: Projects, Achievements)..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 autoFocus
