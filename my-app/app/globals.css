@@ -4,6 +4,36 @@ html {
   scroll-behavior: smooth;
 }
 
+html.lenis, html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
+}
+
+html, body {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+/* Pastikan Lenis tidak memicu kalkulasi scrollbar yang melompat */
+html.lenis, html.lenis body {
+  height: auto;
+}
+
 /* ----------------------------------------------------
    Design Tokens & Theme Variables
 ---------------------------------------------------- */
@@ -778,8 +808,10 @@ main {
 .hero-section {
   min-height: 85vh;
   display: flex;
-  align-items: center;
-  padding-top: 6rem;
+  flex-direction: column;   /* Memastikan alur dari atas ke bawah */
+  justify-content: flex-start; /* Mengunci posisi awal di bagian atas */
+  align-items: flex-start;     /* Mencegah penyesuaian posisi tengah saat teks memanjang */
+  padding-top: 20rem;         /* Atur jarak dari Navbar*/
   position: relative;
   z-index: 2;
 }
