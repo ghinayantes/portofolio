@@ -8,18 +8,20 @@ export default function Home() {
   return (
     <RevealCountProvider>
       <HeroBackground />
-      <CloudsBackground />
       <RevealCounter />
 
       <main id="profile">
         {/* Hero Section */}
         <section className="hero-section">
           <p className="bio">
-            Hi! Im <Reveal trigger="Ghina"> Ghina Emelia Yantes </Reveal>, studying Informatics Engineering at{" "}
+            Hi! Im <Reveal trigger="Ghina"> Emelia Yantes </Reveal>, studying Informatics Engineering at{" "}
             <Reveal trigger="STEI-K ITB">Institut Teknologi Bandung. I’m naturally curious{" "}
             <Reveal trigger="about">software, design, and everything in between. Between managing coursework and chasing my curiosity, I spend{" "}
             <Reveal trigger="my time">turning abstract concepts into functional tools and building my way through the web</Reveal></Reveal></Reveal>.
           </p>
+
+          {/* Wave/Clouds dimasukkan tepat di dasar Hero Section */}
+          <CloudsBackground />
         </section>
 
         {/* Bento Grid */}
