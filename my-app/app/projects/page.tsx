@@ -87,7 +87,7 @@ export default function ProjectsPage() {
   const [selectedProject, setSelectedProject] = useState<Project>(projectsData[0]);
   const cardRefs = useRef<{ [key: string]: HTMLElement | null }>({});
 
-  // Auto-update kolom kanan saat kartu masuk area tengah layar (scroll-sync)
+ {/* // Auto-update kolom kanan saat kartu masuk area tengah layar (scroll-sync)
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -112,7 +112,7 @@ export default function ProjectsPage() {
     });
 
     return () => observer.disconnect();
-  }, []);
+  }, []); */}
 
   return (
     <div className="projects-page-wrapper">

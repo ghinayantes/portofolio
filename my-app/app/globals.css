@@ -811,7 +811,7 @@ main {
   flex-direction: column;   /* Memastikan alur dari atas ke bawah */
   justify-content: flex-start; /* Mengunci posisi awal di bagian atas */
   align-items: flex-start;     /* Mencegah penyesuaian posisi tengah saat teks memanjang */
-  padding-top: 20rem;         /* Atur jarak dari Navbar*/
+  padding-top: 16rem;         /* Atur jarak dari Navbar*/
   position: relative;
   z-index: 2;
 }
