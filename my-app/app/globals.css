@@ -1185,15 +1185,90 @@ main {
   );
 }
 
+/* Container Utama Layout 2 Kolom */
+/* Layout Dua Kolom */
 .projects-layout {
   position: relative;
   z-index: 10;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 3.5rem;
-  max-width: 1100px; /* Lebar presisi agar sejajar dengan Navbar & Hero */
+  max-width: 1200px;
   margin: 0 auto;
-  align-items: start; /* Mengunci baseline grid agar sticky berfungsi */
+}
+
+/* Kolom Kiri: Tempat Kartu Proyek Scroll */
+.projects-list-column {
+  width: 100%;
+}
+
+/* Kolom Kanan: Dikunci Paksa di Layar Menggunakan FIXED */
+.projects-preview-column {
+  position: fixed !important;
+  
+  /* Geser ke kanan persis sejajar dengan grid kolom kanan */
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  
+  /* Menyelaraskan posisi horizontal agar tidak menumpuk ke kiri */
+  left: calc(50% + 1.75rem); /* Setengah layar + separuh gap */
+  width: calc(600px - 1.75rem); /* Mengikuti setengah max-width container */
+  max-width: 45vw;
+  
+  z-index: 50;
+  pointer-events: none; /* Agar tidak menghalangi scroll/klik */
+}
+
+/* Re-enable pointer events untuk elemen interaktif di dalam preview jika ada */
+.preview-sticky-box {
+  pointer-events: auto;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Styling Box Gambar Kanan agar persis seperti contoh */
+.preview-image-wrapper {
+  width: 100%;
+  max-width: 520px;
+  height: 320px;
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--card-border);
+  background: #000;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+  margin-bottom: 1.5rem;
+}
+
+.preview-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* Text Detail di Bawah Gambar Kanan */
+.preview-info h2 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-title);
+  margin-bottom: 0.5rem;
+}
+
+.preview-info .preview-tags {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.preview-info .preview-tech {
+  font-style: italic;
+  font-family: var(--font-italic), monospace;
+  color: var(--accent-text);
+  font-size: 0.95rem;
 }
 
 .projects-header {

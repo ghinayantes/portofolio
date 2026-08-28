@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { CloudsBackground } from "../components/CloudsBackground";
@@ -85,16 +85,43 @@ const projectsData: Project[] = [
 
 export default function ProjectsPage() {
   const [selectedProject, setSelectedProject] = useState<Project>(projectsData[0]);
+  const cardRefs = useRef<{ [key: string]: HTMLElement | null }>({});
+
+  // Auto-update kolom kanan saat kartu masuk area tengah layar (scroll-sync)
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const id = entry.target.getAttribute("data-id");
+            const found = projectsData.find((p) => p.id === id);
+            if (found) {
+              setSelectedProject(found);
+            }
+          }
+        });
+      },
+      {
+        rootMargin: "-30% 0px -40% 0px", // Memastikan deteksi fokus tepat di tengah layar
+        threshold: 0.2,
+      }
+    );
+
+    Object.values(cardRefs.current).forEach((el) => {
+      if (el) observer.observe(el);
+    });
+
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <div className="projects-page-wrapper">
-      {/* Background Awan Kunci Fixed di Belakang */}
       <div className="clouds-wrapper">
         <CloudsBackground />
       </div>
 
       <div className="projects-layout">
-        {/* KOLOM KIRI: Daftar List Kartu Proyek */}
+        {/* KOLOM KIRI */}
         <div className="projects-list-column">
           <header className="projects-header">
             <h1>Projects</h1>
@@ -108,9 +135,14 @@ export default function ProjectsPage() {
               return (
                 <motion.article
                   key={project.id}
+                  data-id={project.id}
+                  ref={(el) => {
+                    cardRefs.current[project.id] = el as HTMLElement | null;
+                  }}
                   whileHover={{ scale: 1.01 }}
                   whileTap={{ scale: 0.99 }}
                   className={`project-card ${isSelected ? "selected" : ""}`}
+                  onMouseEnter={() => setSelectedProject(project)}
                   onClick={() => setSelectedProject(project)}
                 >
                   <span className="project-date">{project.date}</span>
@@ -139,16 +171,16 @@ export default function ProjectsPage() {
           </div>
         </div>
 
-        {/* KOLOM KANAN: Preview Sticky Box */}
+        {/* KOLOM KANAN */}
         <div className="projects-preview-column">
           <div className="preview-sticky-box">
             <AnimatePresence mode="wait">
               <motion.div
                 key={selectedProject.id}
-                initial={{ opacity: 0, y: 15, scale: 0.98 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: -15, scale: 0.98 }}
-                transition={{ duration: 0.3, ease: "easeOut" }}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -12 }}
+                transition={{ duration: 0.25, ease: "easeOut" }}
                 className="preview-content-card"
               >
                 <div className="preview-image-wrapper">
