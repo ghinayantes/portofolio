@@ -1,4 +1,6 @@
 import "./globals.css";
+import SmoothScroll from "./components/SmoothScroll";
+import PageTransition from "./components/PageTransition";
 import { Plus_Jakarta_Sans, Instrument_Serif } from "next/font/google";
 import Navbar from "./components/Navbar";
 
@@ -28,7 +30,11 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${plusJakartaSans.variable} ${instrumentSerif.variable}`}>
         <Navbar />
-        {children}
+        <SmoothScroll>
+          <PageTransition>
+            {children}
+          </PageTransition>
+        </SmoothScroll>
       </body>
     </html>
   );
