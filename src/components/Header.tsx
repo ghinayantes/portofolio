@@ -23,7 +23,7 @@ export default function Header() {
 
   return (
     <header ref={ref} className="sticky top-0 z-30 border-b border-line bg-bg/55 backdrop-blur-md">
-      <div className="mx-auto flex h-17 max-w-7xl items-center justify-between gap-3 px-5 sm:px-8 lg:px-20">
+      <div className="mx-auto flex h-17 max-w-[1440px] items-center justify-between gap-3 px-5 sm:px-8 lg:px-20">
         <Link to="/" className="font-display text-2xl font-extrabold">G<span className="text-brand">.</span></Link>
         <nav aria-label="Main" className={`${menu ? 'flex' : 'hidden'} absolute inset-x-0 top-full max-h-[calc(100vh-4.25rem)] flex-col overflow-auto border-b border-line bg-bg px-5 pb-5 lg:static lg:flex lg:max-h-none lg:flex-row lg:items-center lg:gap-1 lg:overflow-visible lg:border-0 lg:bg-transparent lg:p-0`}>
           <NavLink to="/" end className={link}>{lang === 'id' ? 'Beranda' : 'Home'}</NavLink>

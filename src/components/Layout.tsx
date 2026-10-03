@@ -24,7 +24,7 @@ export default function Layout() {
       <Background />
       <div className="relative z-10 flex min-h-screen flex-col">
         <Header />
-        <main className="mx-auto w-full max-w-7xl flex-1 px-5 pb-28 pt-10 sm:px-8 lg:px-20"><Outlet /></main>
+        <main className="mx-auto w-full max-w-[1440px] flex-1 px-5 pb-28 pt-10 sm:px-8 lg:px-20"><Outlet /></main>
         <Footer />
       </div>
     </>

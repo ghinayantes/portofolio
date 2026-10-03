@@ -24,7 +24,7 @@ export default function Home() {
             <i className="dot" />{id ? 'Terbuka untuk peluang' : 'Open to opportunities'}
           </span>
           <p className="mt-6 text-[clamp(1rem,2vw,1.3rem)] font-semibold text-fg2">{t(SITE.greeting)}</p>
-          <h1 className="shine pb-1 font-display text-[clamp(3rem,9vw,6.75rem)] font-extrabold leading-[1.05] tracking-[-.045em]">{SITE.name}</h1>
+          <h1 className="shine pb-1 font-display text-[clamp(2.5rem,7vw,5rem)] font-extrabold leading-[1.05] tracking-[-.045em]">{SITE.name}</h1>
           <i className="gl gl-left" />
           <p className="font-display text-[clamp(1.4rem,3.2vw,2.2rem)] font-bold">
             <span aria-hidden>{id ? 'Aku seorang ' : 'I am a '}<span className="shine-brand">{typed}</span><i className="caret" /></span>
