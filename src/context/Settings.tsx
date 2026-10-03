@@ -1,30 +1,42 @@
 'use client'
 
-import { createContext, useContext, useMemo, type ReactNode } from 'react'
-import { usePathname, useRouter } from 'next/navigation'
-import { useTheme } from 'next-themes'
+import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
+import { usePathname } from 'next/navigation'
 import type { Pair } from '../data/nav'
 import type { Lang } from '../lib/i18n'
 
-type Ctx = { theme: 'dark' | 'light'; lang: Lang; t: (p: Pair) => string; toggleTheme: () => void; toggleLang: () => void }
+type Theme = 'dark' | 'light'
+type Ctx = { theme: Theme; lang: Lang; t: (p: Pair) => string; toggleTheme: () => void; toggleLang: () => void }
 const SettingsCtx = createContext<Ctx | null>(null)
 
-/** Language comes from the URL (/en, /id); theme is handled by next-themes. */
+/** Language comes from the URL (/en, /id). Theme is a data-theme attribute set before paint by the script in layout.tsx. */
 export function SettingsProvider({ lang, children }: { lang: Lang; children: ReactNode }) {
-  const { resolvedTheme, setTheme } = useTheme()
+  const [theme, setThemeState] = useState<Theme>('dark')
   const pathname = usePathname()
-  const router = useRouter()
+
+  // sync React state with whatever the init script applied
+  useEffect(() => {
+    setThemeState(document.documentElement.dataset.theme === 'light' ? 'light' : 'dark')
+  }, [])
+
   const value = useMemo<Ctx>(() => ({
-    theme: resolvedTheme === 'light' ? 'light' : 'dark',
+    theme,
     lang,
     t: (p) => p[lang],
-    toggleTheme: () => setTheme(resolvedTheme === 'light' ? 'dark' : 'light'),
+    toggleTheme: () => {
+      const next: Theme = theme === 'dark' ? 'light' : 'dark'
+      document.documentElement.dataset.theme = next
+      try { localStorage.setItem('theme', next) } catch { /* ignore */ }
+      setThemeState(next)
+    },
     toggleLang: () => {
       const next: Lang = lang === 'en' ? 'id' : 'en'
       document.cookie = `lang=${next}; path=/; max-age=31536000; samesite=lax`
-      router.push(pathname.replace(/^\/(en|id)/, '/' + next))
+      // full navigation: the root <html lang> changes, so let the browser reload instead of re-rendering <head> on the client
+      window.location.assign(pathname.replace(/^\/(en|id)/, '/' + next))
     },
-  }), [lang, resolvedTheme, setTheme, pathname, router])
+  }), [lang, theme, pathname])
+
   return <SettingsCtx.Provider value={value}>{children}</SettingsCtx.Provider>
 }
 
