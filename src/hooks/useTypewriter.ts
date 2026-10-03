@@ -5,7 +5,8 @@ export function useTypewriter(words: string[], { type = 85, del = 45, hold = 150
   const [i, setI] = useState(0)
   const [n, setN] = useState(0)
   const [deleting, setDeleting] = useState(false)
-  const reduce = typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches
+  const [reduce, setReduce] = useState(false)
+  useEffect(() => { setReduce(matchMedia('(prefers-reduced-motion: reduce)').matches) }, [])
 
   useEffect(() => {
     if (reduce) return

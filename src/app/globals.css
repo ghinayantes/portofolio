@@ -1,6 +1,15 @@
 @import 'tailwindcss';
 
+/* Tailwind CSS v4 directive; ignored by generic CSS at-rule linters. */
+/* stylelint-disable at-rule-no-unknown */
+
 /* Design tokens -> Tailwind utilities (bg-bg, text-fg, border-line, text-brand ...) */
+@theme {
+  --container-page: 90rem; /* max page width (1440px) */
+  --text-name: clamp(2.5rem, 7vw, 5rem); /* hero name size */
+  --text-name--line-height: 1.05;
+}
+
 @theme inline {
   --color-bg: var(--bg);
   --color-surface: var(--surface);

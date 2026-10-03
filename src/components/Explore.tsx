@@ -1,4 +1,6 @@
-import { Link } from 'react-router-dom'
+'use client'
+
+import { LocLink as Link } from './LocLink'
 import { NAV } from '../data/nav'
 import { useSettings } from '../context/Settings'
 

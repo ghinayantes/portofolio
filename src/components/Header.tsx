@@ -1,5 +1,8 @@
+'use client'
+
 import { useEffect, useRef, useState } from 'react'
-import { Link, NavLink, useLocation } from 'react-router-dom'
+import { usePathname } from 'next/navigation'
+import { LocLink as Link, NavLink } from './LocLink'
 import { NAV } from '../data/nav'
 import { useSettings } from '../context/Settings'
 
@@ -10,7 +13,7 @@ export default function Header() {
   const [open, setOpen] = useState<number | null>(null)
   const [menu, setMenu] = useState(false)
   const ref = useRef<HTMLElement>(null)
-  const { pathname } = useLocation()
+  const pathname = usePathname()
 
   useEffect(() => { setOpen(null); setMenu(false) }, [pathname])
   useEffect(() => {
@@ -23,7 +26,7 @@ export default function Header() {
 
   return (
     <header ref={ref} className="sticky top-0 z-30 border-b border-line bg-bg/55 backdrop-blur-md">
-      <div className="mx-auto flex h-17 max-w-[1440px] items-center justify-between gap-3 px-5 sm:px-8 lg:px-20">
+      <div className="mx-auto flex h-17 max-w-page items-center justify-between gap-3 px-5 sm:px-8 lg:px-20">
         <Link to="/" className="font-display text-2xl font-extrabold">G<span className="text-brand">.</span></Link>
         <nav aria-label="Main" className={`${menu ? 'flex' : 'hidden'} absolute inset-x-0 top-full max-h-[calc(100vh-4.25rem)] flex-col overflow-auto border-b border-line bg-bg px-5 pb-5 lg:static lg:flex lg:max-h-none lg:flex-row lg:items-center lg:gap-1 lg:overflow-visible lg:border-0 lg:bg-transparent lg:p-0`}>
           <NavLink to="/" end className={link}>{lang === 'id' ? 'Beranda' : 'Home'}</NavLink>

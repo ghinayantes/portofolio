@@ -1,5 +1,10 @@
 node_modules/
 .next/
 .DS_Store
-old-ver
-my-app
+out/
+.vite/
+.env*
+!.env.example
+.DS_Store
+*.tsbuildinfo
+next-env.d.ts

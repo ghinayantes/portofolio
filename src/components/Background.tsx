@@ -1,3 +1,5 @@
+'use client'
+
 import { useEffect, useRef } from 'react'
 
 type Dot = { x: number; y: number; r: number; s: number; p: number }

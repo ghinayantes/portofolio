@@ -1,5 +1,7 @@
+'use client'
+
 import type { ReactNode } from 'react'
-import { Link } from 'react-router-dom'
+import { LocLink as Link } from './LocLink'
 import { NAV, type NavItem } from '../data/nav'
 import { useSettings } from '../context/Settings'
 

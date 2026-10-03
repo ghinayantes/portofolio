@@ -1,65 +1,65 @@
-# Ghina — Portfolio
+# Ghina Emelia Yantes — Portfolio (Next.js)
 
-Multi-page portfolio built with **React 19 + TypeScript + Vite + Tailwind CSS v4 + React Router**.
-Dark/light theme, EN/ID toggle, animated hero (shining name + typing roles), canvas background.
+**Next.js 16 (App Router) + React 19 + TypeScript + Tailwind CSS v4 + next-themes.**
+Static-generated pages for `/en` and `/id`, per-page metadata, hreflang, sitemap, JSON-LD.
 
-## Getting started
+## Run
 ```bash
 npm install
-npm run dev        # http://localhost:5173
-npm run build      # typecheck + production build -> dist/
-npm run preview    # serve dist/ locally
+cp .env.example .env.local   # set NEXT_PUBLIC_SITE_URL
+npm run dev                  # http://localhost:3000  (redirects to /en or /id)
+npm run build && npm start
 ```
-Requires Node.js 20+ (Vite 8 needs a current LTS).
+Node.js 20.9+ required.
+
+## Page width and hero name size
+Both live in `src/app/globals.css`:
+```css
+@theme {
+  --container-page: 80rem;                       /* max page width -> class max-w-page */
+  --text-name: clamp(2.75rem, 5.2vw, 5.5rem);    /* hero name size -> class text-name  */
+}
+```
+`max-w-page` is used in `app/[lang]/layout.tsx`, `components/Header.tsx`, `components/Footer.tsx`.
+`text-name` is used on the `<h1>` in `views/Home.tsx`. Side padding: `px-5 sm:px-8 lg:px-20`.
 
 ## Structure
 ```
-├─ index.html                 # entry + theme-flash guard
-├─ vite.config.ts             # react + @tailwindcss/vite
-├─ vercel.json, public/_redirects   # SPA rewrites (Vercel / Netlify)
-├─ public/favicon.svg         # put photo.jpg, cv.pdf here too
+├─ next.config.ts · postcss.config.mjs · tsconfig.json · .env.example
+├─ public/                         # favicon, photo.jpg, cv.pdf
 └─ src/
-   ├─ main.tsx · App.tsx      # providers + routes (generated from data/nav.ts)
-   ├─ index.css               # Tailwind import, design tokens (light/dark), custom components
-   ├─ context/Settings.tsx    # theme + language state (persisted in localStorage)
-   ├─ hooks/useTypewriter.ts  # typing / deleting role animation
-   ├─ data/
-   │  ├─ nav.ts               # menu groups, page titles/descriptions (EN/ID)
-   │  ├─ site.ts              # name, roles for typing, hero copy, socials, photo
-   │  └─ content.ts           # projects, organizations, awards, certificates, news, skills...
-   ├─ components/
-   │  ├─ Layout.tsx · Header.tsx · Footer.tsx · Background.tsx
-   │  ├─ Explore.tsx          # home bento
-   │  ├─ cards.tsx            # ProjectCard, Medal, Ticket, FeedItem, Timeline
-   │  └─ ui.tsx               # Section, PageShell (breadcrumb + title)
-   └─ pages/
-      ├─ Home.tsx · Hire.tsx
-      └─ index.tsx            # PAGES map: route key -> page component
+   ├─ proxy.ts                     # / -> /en or /id (cookie > Accept-Language > default)
+   ├─ app/
+   │  ├─ globals.css               # Tailwind, tokens (light/dark), custom components
+   │  ├─ sitemap.ts · robots.ts
+   │  └─ [lang]/
+   │     ├─ layout.tsx             # <html lang>, providers, header/footer, base metadata
+   │     ├─ page.tsx               # Home (+ JSON-LD Person)
+   │     ├─ [slug]/page.tsx        # all content pages, generateStaticParams + metadata
+   │     └─ not-found.tsx
+   ├─ views/                       # page bodies (client): Home, Hire, index (PAGES + PageBody)
+   ├─ components/                  # Header, Footer, Background, Explore, cards, ui, LocLink, Spotlight
+   ├─ context/Settings.tsx         # lang (from URL) + theme (next-themes)
+   ├─ hooks/useTypewriter.ts
+   ├─ lib/i18n.ts · lib/seo.ts     # locales, default locale, site URL
+   └─ data/nav.ts · site.ts · content.ts   # menu, identity, content
 ```
+> `src/pages` was renamed to `src/views` on purpose: Next treats `src/pages` as the legacy Pages Router.
 
-## Edit your content
-| What | Where |
+## Common tasks
+| Task | Where |
 |---|---|
-| Name, typing roles, hero text, socials, photo | `src/data/site.ts` |
-| Projects, awards, certificates, news, timeline, skills | `src/data/content.ts` |
-| Add / rename menu pages | `src/data/nav.ts` + register component in `src/pages/index.tsx` |
-| Colors, fonts | tokens at top of `src/index.css` |
-| Hero shine speed | `.shine` / `.shine-brand` in `src/index.css` |
-
-## Design tokens
-| Token | Dark | Light |
-|---|---|---|
-| bg | `#05060F` | `#FAFAF8` |
-| surface | `#0B0D22` | `#FFFFFF` |
-| muted | `#12152E` | `#F1F0EC` |
-| border | `#262B4A` | `#E4E2DB` |
-| brand | `#818CF8` | `#4F46E5` |
+| Name, typing roles, hero copy, socials, photo | `src/data/site.ts` |
+| Projects, awards, certificates, news, skills | `src/data/content.ts` |
+| Add a page | entry in `src/data/nav.ts` + component in `src/views/index.tsx` (PAGES) |
+| Default language / add a locale | `src/lib/i18n.ts` (+ labels in `data/nav.ts`) |
+| Colors and fonts | tokens at the top of `src/app/globals.css` |
 
 ## Deploy
-Vercel / Netlify: import the repo, build command `npm run build`, output `dist`. SPA rewrites are already configured.
+Vercel: import the repo and set `NEXT_PUBLIC_SITE_URL`. No other config needed.
 
 ## TODO
-- Connect the contact form (`src/pages/Hire.tsx`) to Formspree or your API
-- Replace placeholder content and add `public/photo.jpg`
-- Link "Download CV" to a PDF in `public/`
-- Project detail page (`/project/:slug`)
+- Connect the contact form (`src/views/Hire.tsx`) to Formspree or a Route Handler
+- Replace placeholder content; add `public/photo.jpg` and a CV PDF
+- Project detail pages (`/[lang]/project/[slug]`)
+- Open Graph image (`app/opengraph-image.tsx`)

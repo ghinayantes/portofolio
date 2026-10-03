@@ -1,5 +1,7 @@
+'use client'
+
 import type { ReactElement, ReactNode } from 'react'
-import { Link } from 'react-router-dom'
+import { LocLink as Link } from '../components/LocLink'
 import * as C from '../data/content'
 import { NAV } from '../data/nav'
 import { useSettings } from '../context/Settings'
@@ -97,4 +99,9 @@ export const PAGES: Record<string, () => ReactElement> = {
   education: () => <Timeline items={C.education} />,
   timeline: () => <Timeline items={C.milestones} />,
   sitemap: Sitemap,
+}
+
+export function PageBody({ k }: { k: string }) {
+  const Page = PAGES[k]
+  return Page ? <Page /> : null
 }
