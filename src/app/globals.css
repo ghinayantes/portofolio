@@ -122,31 +122,31 @@ body {
 .dial { --s: 52px; --r: 64px; --start: -20deg; --step: 34deg; width: var(--s); height: var(--s); left: var(--rim-x); top: var(--rim-y); transform: translate(-50%, -50%); }
 @media (min-width: 768px) { .dial { --s: 60px; --r: 74px; } }
 @media (min-width: 768px) and (max-width: 1023px) { .dial { --start: 40deg; --step: 30deg; } }
-.dial-btn { transition: transform 0.2s, border-color 0.2s; }
-.dial-btn:hover { transform: scale(1.06); }
+.dial-btn { border-color: color-mix(in srgb, var(--text) 24%, transparent); background: color-mix(in srgb, var(--surface) 48%, transparent); box-shadow: 0 5px 18px color-mix(in srgb, #000 20%, transparent), inset 0 1px 0 color-mix(in srgb, #fff 24%, transparent); backdrop-filter: blur(8px); transition: transform .24s ease, border-color .24s ease, background-color .24s ease, box-shadow .24s ease; }
+.dial-btn:hover, .dial-btn:focus-visible, .dial[data-open='true'] .dial-btn { transform: scale(1.07); border-color: color-mix(in srgb, var(--brand) 68%, transparent); background: color-mix(in srgb, var(--surface) 66%, transparent); box-shadow: 0 6px 22px color-mix(in srgb, var(--brand) 24%, transparent), inset 0 1px 0 color-mix(in srgb, #fff 30%, transparent); }
+.dial-btn:focus-visible { outline: 2px solid var(--brand); outline-offset: 3px; }
 
-/* 7s loop: R^2 plane (0-24%) -> collapses onto the number line R^1 (44-66%) -> expands back (86-100%); an echo ring is emitted while it collapses */
-@keyframes gridCollapse { 0%, 24% { transform: scale(1, 1); } 44%, 66% { transform: scale(1, 0.02); } 86%, 100% { transform: scale(1, 1); } }
-@keyframes pointProject { 0%, 24% { transform: translateY(0); } 44%, 66% { transform: translateY(calc(var(--y) * -1px)); } 86%, 100% { transform: translateY(0); } }
-@keyframes lineShow { 0%, 30% { opacity: 0; } 44%, 66% { opacity: 1; } 80%, 100% { opacity: 0; } }
+/* The plane compresses onto its x-axis. Hover, keyboard focus, and open state bring the transformation forward. */
+@keyframes gridCollapse { 0%, 22% { transform: scale(1, 1); } 44%, 60% { transform: scale(1, .035); } 82%, 100% { transform: scale(1, 1); } }
+@keyframes pointProject { 0%, 22% { transform: translateY(0); } 44%, 60% { transform: translateY(calc(var(--y) * -1px)); } 82%, 100% { transform: translateY(0); } }
+@keyframes lineShow { 0%, 28% { opacity: 0; } 44%, 60% { opacity: .85; } 78%, 100% { opacity: 0; } }
 @keyframes labelPlane { 0%, 28% { opacity: 0.9; } 38%, 72% { opacity: 0; } 82%, 100% { opacity: 0.9; } }
 @keyframes labelLine { 0%, 30% { opacity: 0; } 40%, 70% { opacity: 0.95; } 80%, 100% { opacity: 0; } }
-@keyframes echo { 0%, 29% { opacity: 0; transform: scale(1); } 31% { opacity: 0.6; transform: scale(1); } 62%, 100% { opacity: 0; transform: scale(2.1); } }
-.la-grid { transform-box: view-box; transform-origin: 0 0; animation: gridCollapse 7s ease-in-out infinite; }
-.la-pt { animation: pointProject 7s ease-in-out infinite; animation-delay: calc(var(--k) * 60ms); }
-.la-line { opacity: 0; animation: lineShow 7s ease-in-out infinite; }
+.la-grid { transform-box: fill-box; transform-origin: 50% 50%; animation: gridCollapse 8s cubic-bezier(.45, 0, .25, 1) infinite; transition: stroke-opacity .25s ease; }
+.la-pt { animation: pointProject 8s cubic-bezier(.45, 0, .25, 1) infinite; animation-delay: calc(var(--k) * 55ms); transition: filter .25s ease; }
+.la-line { opacity: 0; animation: lineShow 8s cubic-bezier(.45, 0, .25, 1) infinite; }
+.dial-btn:hover .la-grid, .dial-btn:focus-visible .la-grid, .dial[data-open='true'] .la-grid { stroke-opacity: .24; animation-duration: 3.8s; }
+.dial-btn:hover .la-pt, .dial-btn:focus-visible .la-pt, .dial[data-open='true'] .la-pt { animation-duration: 3.8s; filter: drop-shadow(0 0 2px var(--accent)); }
+.dial-btn:hover .la-line, .dial-btn:focus-visible .la-line, .dial[data-open='true'] .la-line { animation-duration: 3.8s; }
 .la-label text { paint-order: stroke; stroke: var(--surface); stroke-width: 2.4px; stroke-linejoin: round; }
 .la-t2 { animation: labelPlane 7s ease-in-out infinite; }
 .la-t1 { opacity: 0; animation: labelLine 7s ease-in-out infinite; }
-.dial-echo { position: absolute; inset: 0; border-radius: 1rem; border: 1px solid var(--brand); opacity: 0; pointer-events: none; animation: echo 7s ease-out infinite; }
-.dial-echo + .dial-echo { animation-delay: 0.5s; }
-.dial[data-open='true'] .dial-echo { animation: none; opacity: 0; }
 
 .dial-list { position: absolute; inset: 0; margin: 0; padding: 0; list-style: none; pointer-events: none; }
 .dial-item { position: absolute; left: 50%; top: 50%; width: 40px; height: 40px; margin: -20px 0 0 -20px; opacity: 0; visibility: hidden; transform: translate(0, 0) scale(0.4); transition: transform 0.25s ease calc(var(--i) * 20ms), opacity 0.2s linear, visibility 0s linear 0.3s; }
 .dial[data-open='true'] .dial-item { --a: calc(var(--start) + var(--i) * var(--step)); opacity: 1; visibility: visible; pointer-events: auto; transform: translate(calc(cos(var(--a)) * var(--r)), calc(sin(var(--a)) * var(--r))) scale(1); transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) calc(var(--i) * 40ms), opacity 0.2s linear calc(var(--i) * 40ms), visibility 0s; }
 
-.bubble { opacity: 0; visibility: hidden; transform: translateY(6px) scale(0.94); transform-origin: 100% 100%; transition: opacity 0.3s, transform 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.15), visibility 0s linear 0.35s; }
+.bubble { right: 0; top: calc(100% + 8px); bottom: auto; opacity: 0; visibility: hidden; transform: translateY(-5px) scale(.96); transform-origin: 100% 0; transition: opacity .24s ease, transform .28s cubic-bezier(.2, .8, .2, 1), visibility 0s linear .28s; }
 .bubble[data-show='true'] { opacity: 1; visibility: visible; transform: none; transition-delay: 0s; }
-.bubble::after { content: ''; position: absolute; right: calc(var(--s) / 2 - 5px); bottom: -5px; width: 10px; height: 10px; background: inherit; border: inherit; border-top: 0; border-left: 0; transform: rotate(45deg); }
-@media (prefers-reduced-motion: reduce) { .flip-anim, .la-grid, .la-pt, .la-line, .la-t1, .la-t2, .dial-echo { animation: none; } .dial-item, .bubble { transition: none; } .dial-echo { display: none; } }
+.bubble::after { content: ''; position: absolute; right: calc(var(--s) / 2 - 5px); top: -5px; width: 10px; height: 10px; background: inherit; border: inherit; border-right: 0; border-bottom: 0; transform: rotate(45deg); }
+@media (prefers-reduced-motion: reduce) { .flip-anim, .la-grid, .la-pt, .la-line, .la-t1, .la-t2 { animation: none; } .dial-item, .bubble { transition: none; } }
