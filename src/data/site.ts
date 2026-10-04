@@ -4,7 +4,7 @@ import { pair } from './nav'
 export const SITE = {
   name: 'Ghina Emelia Yantes',
   email: 'nama@email.com',
-  photo: '',
+  photo: '/photo.jpg',
   cv: '#',
   greeting: pair('Hello, my name is', 'Halo, namaku'),
   role: pair('Informatics student at ITB', 'Mahasiswa Informatika ITB'),
@@ -16,5 +16,5 @@ export const SITE = {
     'I build web apps and design the interfaces people actually use, from first sketch to shipped code.',
     'Aku membuat aplikasi web dan mendesain antarmuka yang benar-benar dipakai, dari sketsa awal sampai jadi kode.',
   ),
-  socials: [['Email', 'mailto:nama@email.com'], ['LinkedIn', '#'], ['GitHub', '#'], ['Instagram', '#']] as [string, string][],
+  socials: [['Email', 'mailto:ghinayantes2006@gmail.com'], ['LinkedIn', '#'], ['GitHub', '#'], ['Instagram', '#']] as [string, string][],
 }
