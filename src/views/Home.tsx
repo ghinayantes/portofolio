@@ -8,6 +8,7 @@ import { useTypewriter } from '../hooks/useTypewriter'
 import Explore from '../components/Explore'
 import { ProjectCard } from '../components/cards'
 import { Section } from '../components/ui'
+import HeroPhoto from '../components/HeroPhoto'
 
 export default function Home() {
   const { t, lang } = useSettings()
@@ -41,11 +42,7 @@ export default function Home() {
             {stats.map(([n, label]) => <div key={label}><b className="block font-display text-3xl font-extrabold">{n}</b><span className="text-sm text-fg2">{label}</span></div>)}
           </div>
         </div>
-        <div className="photo relative order-first mx-auto aspect-square w-full max-w-60 sm:max-w-72 md:order-none md:max-w-110">
-          <div className="blob absolute inset-0 z-10 grid place-items-center">
-            {SITE.photo ? <img src={SITE.photo} alt={SITE.name} className="h-full w-full object-cover" /> : <span className="font-display text-[8rem] font-extrabold text-line">G</span>}
-          </div>
-        </div>
+        <HeroPhoto />
       </div>
 
       <Section title={id ? 'Jelajahi' : 'Explore'}><Explore /></Section>
