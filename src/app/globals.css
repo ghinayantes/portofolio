@@ -26,12 +26,12 @@
 :root {
   --bg: #fafaf8; --surface: #fff; --muted: #f1f0ec; --text: #14161c; --text2: #5b6070;
   --border: #e4e2db; --brand: #4f46e5; --ink: #fff; --accent: #f59e0b; --ok: #16a34a;
-  --glow: rgba(79, 70, 229, 0.22); --spark: 79, 70, 229; --shine-2: #5b4bdb;
+  --glow: rgba(79, 70, 229, 0.22); --spark: 79, 70, 229; --shine-2: #5b4bdb; --shine-dim: #6a63d8; --shine-hi: #17143d;
 }
 [data-theme='dark'] {
   --bg: #05060f; --surface: #0b0d22; --muted: #12152e; --text: #f2f3f5; --text2: #a3a9b8;
   --border: #262b4a; --brand: #818cf8; --ink: #0d0f14; --accent: #fbbf24; --ok: #4ade80;
-  --glow: rgba(129, 140, 248, 0.34); --spark: 200, 210, 255; --shine-2: #b7a6f5;
+  --glow: rgba(129, 140, 248, 0.34); --spark: 200, 210, 255; --shine-2: #b7a6f5; --shine-dim: #8a85c4; --shine-hi: #ffffff;
 }
 
 html { scroll-behavior: smooth; scroll-padding-top: 5rem; }
@@ -54,7 +54,7 @@ body {
   .icon-btn { min-width: 44px; min-height: 44px; border-radius: 9999px; border: 1px solid var(--border); background: var(--surface); font-size: 13px; font-weight: 600; }
 
   /* Hero text: moving shine on the name + role word */
-  .shine { background-image: linear-gradient(100deg, var(--text) 0%, var(--shine-2) 30%, var(--text) 50%, var(--shine-2) 70%, var(--text) 100%); background-size: 200% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: shine 7s linear infinite; }
+  .shine { background-image: linear-gradient(100deg, var(--shine-dim) 0%, var(--shine-dim) 18%, color-mix(in srgb, var(--shine-dim) 45%, var(--shine-hi)) 36%, var(--shine-hi) 50%, color-mix(in srgb, var(--shine-dim) 45%, var(--shine-hi)) 64%, var(--shine-dim) 82%, var(--shine-dim) 100%); background-size: 200% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; filter: drop-shadow(0 0 22px color-mix(in srgb, var(--brand) 28%, transparent)); animation: shine 9s linear infinite; }
   .shine-brand { background-image: linear-gradient(90deg, var(--brand), var(--shine-2), var(--brand)); background-size: 200% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: shine 4s linear infinite; }
   .caret { display: inline-block; width: 3px; height: 1em; margin-left: 4px; vertical-align: -0.12em; background: var(--brand); animation: blink 1s steps(1) infinite; }
   .grad-text { background-image: linear-gradient(180deg, var(--text) 35%, color-mix(in srgb, var(--text) 50%, var(--brand))); -webkit-background-clip: text; background-clip: text; color: transparent; }
@@ -62,7 +62,7 @@ body {
   .gl-left { margin: 8px 0 18px; width: min(100%, 380px); }
   .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--ok); animation: pulse 2s infinite; }
 
-  .blob { border-radius: 24px 220px 24px 220px; border: 1px solid var(--border); box-shadow: 0 0 70px var(--glow); background: linear-gradient(145deg, var(--muted), var(--surface)); overflow: hidden; }
+  .blob { border-radius: 24px 50% 24px 50%; border: 1px solid var(--border); box-shadow: 0 0 70px var(--glow); background: linear-gradient(145deg, var(--muted), var(--surface)); overflow: hidden; }
   .photo::before { content: ''; position: absolute; inset: -6%; border-radius: 50%; background: var(--brand); opacity: 0.35; filter: blur(32px); }
   .photo::after { content: ''; position: absolute; width: 26%; aspect-ratio: 1; right: -2%; bottom: 8%; border-radius: 50%; background: var(--accent); }
 
@@ -104,5 +104,6 @@ body {
 @keyframes pulse { 50% { opacity: 0.4; } }
 @media (prefers-reduced-motion: reduce) {
   .shine, .shine-brand, .caret, .dot { animation: none; }
+  .shine { background-position: 100% 0; }
   html { scroll-behavior: auto; } .card, .ln, .btn-primary, .btn-ghost { transition: none; }
 }

@@ -26,9 +26,9 @@ export default function Header() {
 
   return (
     <header ref={ref} className="sticky top-0 z-30 border-b border-line bg-bg/55 backdrop-blur-md">
-      <div className="mx-auto grid h-17 max-w-page grid-cols-[1fr_auto_1fr] items-center gap-3 px-5 sm:px-8 lg:px-20">
-        <Link to="/" className="font-display text-2xl font-extrabold">G<span className="text-brand">.</span></Link>
-        <nav aria-label="Main" className={`${menu ? 'flex' : 'hidden'} absolute inset-x-0 top-full max-h-[calc(100vh-4.25rem)] flex-col overflow-auto border-b border-line bg-bg px-5 pb-5 lg:static lg:flex lg:max-h-none lg:flex-row lg:items-center lg:justify-center lg:gap-1 lg:overflow-visible lg:border-0 lg:bg-transparent lg:p-0`}>
+        <div className="mx-auto grid h-17 max-w-page grid-cols-2 items-center gap-3 lg:grid-cols-[1fr_auto_1fr] px-5 sm:px-8 lg:px-20">
+          <Link to="/" className="justify-self-start font-display text-2xl font-extrabold">G<span className="text-brand">.</span></Link>
+        <nav aria-label="Main" className={`${menu ? 'flex' : 'hidden'} absolute inset-x-0 top-full max-h-[calc(100vh-4.25rem)] flex-col overflow-auto border-b border-line bg-bg px-5 pb-5 lg:static lg:col-start-2 lg:flex lg:max-h-none lg:flex-row lg:items-center lg:justify-center lg:gap-1 lg:overflow-visible lg:border-0 lg:bg-transparent lg:p-0`}>
           <NavLink to="/" end className={link}>{lang === 'id' ? 'Beranda' : 'Home'}</NavLink>
           {NAV.map((g, i) => (
             <div key={i} className="relative">
@@ -49,7 +49,7 @@ export default function Header() {
             </div>
           ))}
         </nav>
-        <div className="flex items-center justify-self-end gap-2">
+          <div className="col-start-2 flex items-center justify-self-end gap-2 lg:col-start-3">
           <button className="icon-btn" onClick={toggleLang} aria-label="Switch language">{lang.toUpperCase()}</button>
           <button className="icon-btn" onClick={toggleTheme} aria-label="Toggle theme">{theme === 'dark' ? '☀️' : '🌙'}</button>
           <Link to="/hire" className="btn-primary hidden sm:inline-flex">{lang === 'id' ? 'Hubungi aku' : 'Hire me'}</Link>
