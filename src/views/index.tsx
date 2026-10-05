@@ -39,8 +39,8 @@ function Skills() {
     <Grid3>
       <div className="card term p-6">
         <div className="win mb-3.5"><span /><span /><span /></div>
-        <p className="mb-3.5 font-mono text-[13px] text-[#8E8AD6]">~ skills --code</p>
-        <div className="flex flex-wrap gap-2">{code.items.map((k) => <span key={k} className="rounded-lg border border-violet-400/30 bg-violet-400/10 px-3 py-1 font-mono text-[13px] text-[#E3DEFF]">{k}</span>)}</div>
+        <p className="mb-3.5 font-mono text-[13px] text-brand">~ skills --code</p>
+        <div className="flex flex-wrap gap-2">{code.items.map((k) => <span key={k} className="skill-chip rounded-lg border px-3 py-1 font-mono text-[13px]">{k}</span>)}</div>
       </div>
       <div className="card p-6">
         <h3 className={h3}>{tools.title}</h3>
