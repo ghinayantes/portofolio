@@ -14,7 +14,9 @@ const Grid3 = ({ children }: { children: ReactNode }) => <div className="grid ga
 const h3 = 'mb-3.5 font-display text-[17px] font-semibold'
 
 const Cards = ({ list, feature }: { list: C.Project[]; feature?: boolean }) => (
-  <Grid2>{list.map((p, i) => <ProjectCard key={i} p={p} i={i} featured={feature && i === 0} />)}</Grid2>
+  <div className={`grid ${feature ? 'project-cards-grid project-cards-grid--interactive gap-x-4 gap-y-8 md:grid-cols-2' : 'gap-6 md:grid-cols-2'}`}>
+    {list.map((p, i) => <ProjectCard key={i} p={p} i={i} featured={feature && i === 0} interactive={feature} />)}
+  </div>
 )
 const Awards = () => <Grid3>{C.awards.map((n, i) => <Medal key={i} n={n} i={i} />)}</Grid3>
 const Work = () => <Empty text={pair('No work history yet. Add your first internship or freelance project here, with your role and one result.', 'Belum ada pengalaman kerja. Tambahkan pengalaman magang atau proyek lepas pertamamu, beserta peran dan hasilnya.')} />
