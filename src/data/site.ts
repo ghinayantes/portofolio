@@ -43,5 +43,5 @@ export const SITE = {
   ),
   contacts,
   hello,
-  socials: contacts.map((c) => [c.label.en, c.href] as [string, string]),
+  socials: contacts.map((c) => [c.label, c.href] as [Pair, string]),
 }

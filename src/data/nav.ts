@@ -1,4 +1,6 @@
 export type Pair = { en: string; id: string }
+export type Localized = string | Pair
+export const localized = (value: Localized, lang: 'en' | 'id') => typeof value === 'string' ? value : value[lang]
 export const pair = (en: string, id = en): Pair => ({ en, id })
 export type NavItem = { key: string; title: Pair; desc: Pair }
 export type NavGroup = { title: Pair; items: NavItem[] }
@@ -8,7 +10,7 @@ export const NAV: NavGroup[] = [
   { title: pair('Profile', 'Profil'), items: [
     it('about', 'About', 'Tentang', 'Who I am', 'Siapa aku'),
     it('portfolio', 'Portfolio', 'Portofolio', 'Everything on one page', 'Semua dalam satu halaman'),
-    it('skills', 'Skills', 'Skill', 'Languages, tools, soft skills', 'Bahasa, tools, soft skill'),
+    it('skills', 'Skills', 'Keahlian', 'Languages, tools, soft skills', 'Bahasa pemrograman, tools, dan soft skill'),
     it('certificate', 'Certificates', 'Sertifikat', 'Courses and credentials', 'Kursus dan kredensial'),
     it('news', 'News', 'Kabar', 'Updates and notes', 'Pembaruan dan catatan'),
   ] },
