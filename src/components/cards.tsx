@@ -7,15 +7,21 @@ export function ProjectCard({ p, i, featured }: { p: Project; i: number; feature
   return (
     <article className={`card flex flex-col ${featured ? 'md:col-span-2 md:flex-row' : ''}`}>
       <div className={`thumb t${i % 3} ${featured ? 'min-h-48 md:min-h-[280px] md:flex-[1.2]' : 'aspect-[16/10]'}`}>
-        <div className="win"><span /><span /><span /></div>
-        <div className="ln"><i /><i /><i /></div>
+        {p.image ? (
+          <img src={p.image} alt={`${localized(p.title, lang)} project preview`} className="absolute inset-0 h-full w-full object-cover" />
+        ) : (
+          <>
+            <div className="win"><span /><span /><span /></div>
+            <div className="ln"><i /><i /><i /></div>
+          </>
+        )}
       </div>
       <div className={`flex flex-1 flex-col gap-2.5 p-5 ${featured ? 'md:justify-center md:p-9' : ''}`}>
         {p.status && <span className="text-[13px] font-medium" style={{ color: p.wip ? 'var(--accent)' : 'var(--ok)' }}>{localized(p.status, lang)}</span>}
         <h3 className="font-display text-xl font-semibold">{localized(p.title, lang)}</h3>
         <p className="text-[15px] text-fg2">{localized(p.desc, lang)}</p>
         <div className="flex flex-wrap gap-1.5">{p.tags.map((g) => <span key={localized(g, lang)} className="rounded-md border border-line bg-muted px-3 py-1 text-[13px]">{localized(g, lang)}</span>)}</div>
-        {p.links.length > 0 && <div className="mt-auto flex gap-4 pt-1.5">{p.links.map((l) => <a key={localized(l, lang)} href="#" className="text-sm font-semibold text-brand">{localized(l, lang)}</a>)}</div>}
+        {p.links.length > 0 && <div className="mt-auto flex gap-4 pt-1.5">{p.links.map((link, index) => <a key={localized(link, lang)} href={p.linkHrefs?.[index] || '#'} className="text-sm font-semibold text-brand">{localized(link, lang)}</a>)}</div>}
       </div>
     </article>
   )
