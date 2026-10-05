@@ -212,7 +212,7 @@ export default function HeroPhoto() {
         </div>
       )}
 
-      <div className="dial absolute z-30" data-open={open}>
+      <div className="dial absolute z-20" data-open={open}>
         <span aria-hidden className="dial-echo" />
         <span aria-hidden className="dial-echo" />
         <button
