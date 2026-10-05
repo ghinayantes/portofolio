@@ -3,6 +3,7 @@ import type { ReactNode } from 'react'
 import { notFound } from 'next/navigation'
 import '@fontsource-variable/inter'
 import '@fontsource-variable/plus-jakarta-sans'
+import 'lenis/dist/lenis.css'
 import '../globals.css'
 import { SettingsProvider } from '../../context/Settings'
 import Background from '../../components/Background'
@@ -10,6 +11,7 @@ import Constellations from '../../components/Constellations'
 import Spotlight from '../../components/Spotlight'
 import Header from '../../components/Header'
 import Footer from '../../components/Footer'
+import SmoothScroll from '../../components/SmoothScroll'
 import { SITE } from '../../data/site'
 import { LANGS, isLang } from '../../lib/i18n'
 import { SITE_URL } from '../../lib/seo'
@@ -36,14 +38,16 @@ export default async function RootLayout({ children, params }: { children: React
        </head>
       <body>
           <SettingsProvider lang={lang}>
-            <Background />
-            <Constellations />
-            <Spotlight />
-            <div className="relative z-10 flex min-h-screen flex-col">
-              <Header />
-              <main className="mx-auto w-full max-w-page flex-1 px-5 pb-28 pt-10 sm:px-8 lg:px-20">{children}</main>
-              <Footer />
-            </div>
+            <SmoothScroll>
+              <Background />
+              <Constellations />
+              <Spotlight />
+              <div className="relative z-10 flex min-h-screen flex-col">
+                <Header />
+                <main className="mx-auto w-full max-w-page flex-1 px-5 pb-28 pt-10 sm:px-8 lg:px-20">{children}</main>
+                <Footer />
+              </div>
+            </SmoothScroll>
           </SettingsProvider>
       </body>
     </html>
