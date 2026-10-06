@@ -21,6 +21,39 @@ const SMALL_SCREEN = 700 // below this width only shapes with `mobile: true` are
 
 type V2 = [number, number]
 type Edge = [number, number]
+function drawCloud(ctx: CanvasRenderingContext2D, x: number, y: number, radius: number, fade: number) {
+  const w = radius * 2.8
+  const h = radius * 1.55
+  const left = x - w / 2
+  const top = y - h * 0.62
+  const fill = ctx.createLinearGradient(0, top, 0, top + h)
+  fill.addColorStop(0, `rgba(255,255,255,${0.94 * fade})`)
+  fill.addColorStop(0.46, `rgba(231,244,255,${0.82 * fade})`)
+  fill.addColorStop(1, `rgba(157,193,222,${0.46 * fade})`)
+  ctx.beginPath()
+  ctx.moveTo(left + radius * 0.25, top + h * 0.8)
+  ctx.bezierCurveTo(left + radius * 0.05, top + h * 0.65, left + radius * 0.1, top + h * 0.36, left + radius * 0.42, top + h * 0.34)
+  ctx.bezierCurveTo(left + radius * 0.52, top + h * 0.02, left + radius * 1.02, top - h * 0.08, left + radius * 1.18, top + h * 0.28)
+  ctx.bezierCurveTo(left + radius * 1.42, top - h * 0.02, left + radius * 1.98, top + h * 0.1, left + radius * 2.02, top + h * 0.44)
+  ctx.bezierCurveTo(left + radius * 2.52, top + h * 0.34, left + radius * 2.9, top + h * 0.58, left + radius * 2.65, top + h * 0.82)
+  ctx.closePath()
+  ctx.fillStyle = fill
+  ctx.shadowColor = `rgba(107,151,188,${0.3 * fade})`
+  ctx.shadowBlur = radius * 0.42
+  ctx.shadowOffsetY = radius * 0.18
+  ctx.fill()
+  ctx.shadowBlur = 0
+  ctx.shadowOffsetY = 0
+  ctx.strokeStyle = `rgba(255,255,255,${0.58 * fade})`
+  ctx.lineWidth = Math.max(1, radius * 0.08)
+  ctx.stroke()
+  ctx.beginPath()
+  ctx.moveTo(left + radius * 0.55, top + h * 0.38)
+  ctx.quadraticCurveTo(left + radius * 1.05, top + h * 0.04, left + radius * 1.35, top + h * 0.3)
+  ctx.strokeStyle = `rgba(255,255,255,${0.42 * fade})`
+  ctx.lineWidth = Math.max(1, radius * 0.12)
+  ctx.stroke()
+}
 type Shape = {
   id: string
   pts: V2[] // unit coordinates, roughly inside [-1, 1]; y points down
@@ -70,10 +103,27 @@ export default function Constellations() {
     const root = document.documentElement
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches
     let W = 0, V = 0, raf = 0, t0 = 0
+    let windOffset = 0
+    let returningToDark = false
 
     const draw = (t: number, fade: number) => {
       const rgb = getComputedStyle(root).getPropertyValue('--spark').trim() || '200,210,255'
       const a = root.dataset.theme === 'light' ? ALPHA.light : ALPHA.dark
+      const isLight = root.dataset.theme === 'light'
+      const dt = t0 ? Math.min((t - t0) / 16.67, 2) : 1
+      const windCycle = Math.max(320, W)
+      if (isLight) {
+        windOffset = (windOffset + 0.18 * dt) % windCycle
+        returningToDark = false
+      } else if (returningToDark) {
+        const step = Math.max(0.8, windOffset * 0.012) * dt
+        windOffset = Math.max(0, windOffset - step)
+        if (windOffset === 0) {
+          windOffset = 0
+          returningToDark = false
+        }
+      }
+      const cloudMode = isLight
       const small = W < SMALL_SCREEN
       ctx.clearRect(0, 0, W, V)
       ctx.lineWidth = 1
@@ -83,24 +133,37 @@ export default function Constellations() {
         const base = s.id === 'cube' ? cubePoints(reduce ? 0 : t) : s.pts
         const ang = s.tilt + (reduce ? 0 : Math.sin(t / 9000 + s.x * 9) * 0.05)
         const c = Math.cos(ang), sn = Math.sin(ang)
-        const P = base.map(([x, y]) => [s.x * W + (x * c - y * sn) * R, s.y * V + (x * sn + y * c) * R] as V2)
-
-        ctx.strokeStyle = `rgba(${rgb},${a.line * fade})`
-        s.edges.forEach(([i, j], k) => {
-          ctx.setLineDash(s.dashed?.includes(k) ? [4, 5] : [])
-          ctx.beginPath()
-          ctx.moveTo(P[i][0], P[i][1])
-          ctx.lineTo(P[j][0], P[j][1])
-          ctx.stroke()
-        })
-        ctx.setLineDash([])
-        P.forEach(([x, y], i) => {
-          const twinkle = reduce ? 1 : 0.6 + 0.4 * Math.sin(t / 1400 + i * 1.7 + s.y * 7)
-          ctx.fillStyle = `rgba(${rgb},${a.node * twinkle * fade})`
-          ctx.beginPath()
-          ctx.arc(x, y, i % 3 === 0 ? 2.4 : 1.8, 0, Math.PI * 2)
-          ctx.fill()
-        })
+        const anchorX = s.x * W + windOffset
+        const wrappedAnchors = windOffset > 0 ? [anchorX - W, anchorX, anchorX + W] : [anchorX]
+        for (const wrappedAnchor of wrappedAnchors) {
+          const P = base.map(([x, y]) => [wrappedAnchor + (x * c - y * sn) * R, s.y * V + (x * sn + y * c) * R] as V2)
+          ctx.strokeStyle = `rgba(${rgb},${a.line * fade * (cloudMode ? 0.35 : 1)})`
+          ctx.shadowBlur = cloudMode ? 5 : 0
+          ctx.shadowColor = `rgba(255,255,255,${cloudMode ? 0.28 : 0})`
+          s.edges.forEach(([i, j], k) => {
+            ctx.setLineDash(s.dashed?.includes(k) ? [4, 5] : [])
+            ctx.beginPath()
+            ctx.moveTo(P[i][0], P[i][1])
+            ctx.lineTo(P[j][0], P[j][1])
+            ctx.stroke()
+          })
+          ctx.setLineDash([])
+          ctx.shadowBlur = 0
+          P.forEach(([x, y], i) => {
+            const twinkle = reduce ? 1 : 0.6 + 0.4 * Math.sin(t / 1400 + i * 1.7 + s.y * 7)
+            if (!cloudMode) {
+              ctx.fillStyle = `rgba(${rgb},${a.node * twinkle * fade})`
+            }
+            if (cloudMode) {
+              drawCloud(ctx, x, y, i % 3 === 0 ? 8 : 6, fade)
+            } else {
+              ctx.beginPath()
+              ctx.arc(x, y, i % 3 === 0 ? 2.4 : 1.8, 0, Math.PI * 2)
+              ctx.fill()
+            }
+            ctx.shadowBlur = 0
+          })
+        }
       }
     }
 
@@ -119,7 +182,10 @@ export default function Constellations() {
 
     size()
     addEventListener('resize', size)
-    const mo = new MutationObserver(() => draw(0, 1)) // repaint when the theme changes (also covers reduced motion)
+    const mo = new MutationObserver(() => {
+      if (root.dataset.theme === 'dark' && windOffset > 0) returningToDark = true
+      draw(performance.now(), 1)
+    })
     mo.observe(root, { attributes: true, attributeFilter: ['data-theme'] })
     if (!reduce) raf = requestAnimationFrame(loop)
     return () => { cancelAnimationFrame(raf); removeEventListener('resize', size); mo.disconnect() }

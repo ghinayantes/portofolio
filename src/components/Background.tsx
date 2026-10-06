@@ -107,5 +107,8 @@ export default function Background() {
     if (!reduce) raf = requestAnimationFrame(loop)
     return () => { cancelAnimationFrame(raf); removeEventListener('resize', size); mo.disconnect() }
   }, [])
-  return <canvas ref={ref} aria-hidden className="pointer-events-none fixed inset-0 z-0 h-full w-full" />
+  return <>
+    <div aria-hidden className="day-sun pointer-events-none fixed z-0" />
+    <canvas ref={ref} aria-hidden className="pointer-events-none fixed inset-0 z-0 h-full w-full" />
+  </>
 }
