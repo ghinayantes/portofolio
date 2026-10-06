@@ -21,6 +21,19 @@ export function SettingsProvider({ lang, children }: { lang: Lang; children: Rea
     setThemeState(document.documentElement.dataset.theme === 'light' ? 'light' : 'dark')
   }, [])
 
+  // keep the mobile browser chrome in sync with the actual theme (not the OS scheme)
+  useEffect(() => {
+    const color = theme === 'light' ? '#e8f5ff' : '#05060F'
+    let meta = document.querySelector('meta[name="theme-color"]')
+    if (!meta) {
+      meta = document.createElement('meta')
+      meta.setAttribute('name', 'theme-color')
+      document.head.appendChild(meta)
+    }
+    meta.setAttribute('content', color)
+    meta.removeAttribute('media')
+  }, [theme])
+
   const value = useMemo<Ctx>(() => ({
     theme,
     lang,

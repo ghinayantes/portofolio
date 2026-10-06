@@ -5,6 +5,7 @@ import '@fontsource-variable/inter'
 import '@fontsource-variable/plus-jakarta-sans'
 import 'lenis/dist/lenis.css'
 import '../globals.css'
+import { Analytics } from '@vercel/analytics/react'
 import { SettingsProvider } from '../../context/Settings'
 import Background from '../../components/Background'
 import Constellations from '../../components/Constellations'
@@ -24,9 +25,16 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: { default: `${SITE.name} — Portfolio`, template: `%s — ${SITE.name}` },
   description: SITE.lead.en,
+  icons: { icon: '/favicon.svg' },
   openGraph: { type: 'website', siteName: SITE.name },
 }
-export const viewport: Viewport = { viewportFit: 'cover', themeColor: '#05060F' }
+export const viewport: Viewport = {
+  viewportFit: 'cover',
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#e8f5ff' },
+    { media: '(prefers-color-scheme: dark)', color: '#05060F' },
+  ],
+}
 
 export default async function RootLayout({ children, params }: { children: ReactNode; params: Promise<{ lang: string }> }) {
   const { lang } = await params
@@ -48,6 +56,7 @@ export default async function RootLayout({ children, params }: { children: React
                 <Footer />
               </div>
             </SmoothScroll>
+            <Analytics />
           </SettingsProvider>
       </body>
     </html>
