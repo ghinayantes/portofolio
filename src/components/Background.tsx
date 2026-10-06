@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from 'react'
 
-type Dot = { x: number; y: number; r: number; s: number; p: number }
+type Dot = { x: number; y: number; r: number; s: number; p: number; ox: number; oy: number }
 type ShootingStar = { x: number; y: number; vx: number; vy: number; tail: number; age: number; duration: number }
 
 /** Fixed canvas: faint wave lines + twinkling particles (particles off in light theme). */
@@ -23,14 +23,15 @@ export default function Background() {
     let blendTo = blend
     let blendStart = 0
     const BLEND_MS = 850
+    const brush = { x: -9999, y: -9999, tx: -9999, ty: -9999 }
     const DARK_RGB = [200, 210, 255] as const
     const LIGHT_RGB = [79, 70, 229] as const
 
-    const createShootingStar = (): ShootingStar => {
+    const createShootingStar = (atX?: number, atY?: number): ShootingStar => {
       const direction = Math.random() < 0.5 ? -1 : 1
       return {
-        x: W * (0.08 + Math.random() * 0.84),
-        y: V * (0.06 + Math.random() * 0.78),
+        x: atX ?? W * (0.08 + Math.random() * 0.84),
+        y: atY ?? V * (0.06 + Math.random() * 0.78),
         vx: direction * (7 + Math.random() * 5),
         vy: 3 + Math.random() * 5,
         tail: 15 + Math.random() * 16,
@@ -60,7 +61,7 @@ export default function Background() {
       const g = Math.round(DARK_RGB[1] + (LIGHT_RGB[1] - DARK_RGB[1]) * blend)
       const b = Math.round(DARK_RGB[2] + (LIGHT_RGB[2] - DARK_RGB[2]) * blend)
       const k = `${r},${g},${b}`
-      const waveDim = 1 - blend * 0.55
+      const waveDim = 1 - blend * 0.7
       const dotMix = 1 - blend
       x.clearRect(0, 0, W, V)
       x.lineWidth = 1
@@ -74,11 +75,20 @@ export default function Background() {
         x.strokeStyle = `rgba(${k},${(0.03 + i * 0.0016) * waveDim})`
         x.stroke()
       }
+      const bk = 1 - Math.exp(-frameScale / 36)
+      brush.x += (brush.tx - brush.x) * bk
+      brush.y += (brush.ty - brush.y) * bk
       if (dotMix > 0.01) {
         for (const p of dots) {
           const a = (0.25 + 0.75 * Math.abs(Math.sin(t / 1300 + p.p))) * dotMix
+          const dxn = p.x - brush.x
+          const dyn = p.y - brush.y
+          const dn = Math.hypot(dxn, dyn)
+          const f = dn < 100 && dn > 0.01 ? 1 - dn / 100 : 0
+          p.ox += ((dxn / (dn || 1)) * f * 5 - p.ox) * bk
+          p.oy += ((dyn / (dn || 1)) * f * 5 - p.oy) * bk
           x.fillStyle = `rgba(${k},${a * 0.75})`
-          x.beginPath(); x.arc(p.x, p.y, p.r, 0, 6.283); x.fill()
+          x.beginPath(); x.arc(p.x + p.ox, p.y + p.oy, p.r, 0, 6.283); x.fill()
           if (!reduce) { p.y -= p.s * frameScale; if (p.y < -4) { p.y = V + 4; p.x = Math.random() * W } }
         }
       }
@@ -122,7 +132,7 @@ export default function Background() {
       W = innerWidth; V = innerHeight
       c.width = W * d; c.height = V * d
       x.setTransform(d, 0, 0, d, 0, 0)
-      dots = Array.from({ length: Math.min(110, Math.floor(W / 10)) }, () => ({ x: Math.random() * W, y: Math.random() * V, r: Math.random() * 1.3 + 0.3, s: Math.random() * 0.2 + 0.04, p: Math.random() * 6.28 }))
+      dots = Array.from({ length: Math.min(110, Math.floor(W / 10)) }, () => ({ x: Math.random() * W, y: Math.random() * V, r: Math.random() * 1.3 + 0.3, s: Math.random() * 0.2 + 0.04, p: Math.random() * 6.28, ox: 0, oy: 0 }))
       draw(performance.now())
     }
     let lastPaint = 0
@@ -132,12 +142,35 @@ export default function Background() {
       lastPaint = t
       draw(t)
     }
+    const onMove = (e: PointerEvent) => {
+      brush.tx = e.clientX
+      brush.ty = e.clientY
+    }
+    const onLeave = () => {
+      brush.tx = -9999
+      brush.ty = -9999
+    }
+    const onDown = (e: PointerEvent) => {
+      if (e.pointerType !== 'mouse' || root.dataset.theme === 'light' || reduce) return
+      shootingStars.push(createShootingStar(e.clientX, e.clientY))
+      if (shootingStars.length > 6) shootingStars.shift()
+    }
     size()
     addEventListener('resize', size)
+    addEventListener('pointermove', onMove)
+    addEventListener('pointerdown', onDown)
+    document.documentElement.addEventListener('pointerleave', onLeave)
     const mo = new MutationObserver(() => draw(performance.now()))
     mo.observe(root, { attributes: true, attributeFilter: ['data-theme'] })
     if (!reduce) raf = requestAnimationFrame(loop)
-    return () => { cancelAnimationFrame(raf); removeEventListener('resize', size); mo.disconnect() }
+    return () => {
+      cancelAnimationFrame(raf)
+      removeEventListener('resize', size)
+      removeEventListener('pointermove', onMove)
+      removeEventListener('pointerdown', onDown)
+      document.documentElement.removeEventListener('pointerleave', onLeave)
+      mo.disconnect()
+    }
   }, [])
   return <>
     <div aria-hidden className="day-sun pointer-events-none fixed z-0" />
