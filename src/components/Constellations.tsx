@@ -143,7 +143,7 @@ export default function Constellations() {
       const g = Math.round(DARK_RGB[1] + (LIGHT_RGB[1] - DARK_RGB[1]) * blend)
       const b = Math.round(DARK_RGB[2] + (LIGHT_RGB[2] - DARK_RGB[2]) * blend)
       const rgb = `${r},${g},${b}`
-      const lineAlpha = ((1 - blend) * ALPHA.dark.line + blend * ALPHA.light.line * 0.35) * fade
+      const lineAlpha = ((1 - blend) * ALPHA.dark.line + blend * ALPHA.light.line * 0.55) * fade
       const windCycle = Math.max(320, W)
       let shiftX = 0
       let returnP = 0
@@ -243,7 +243,11 @@ export default function Constellations() {
     })
     mo.observe(root, { attributes: true, attributeFilter: ['data-theme'] })
     if (!reduce) raf = requestAnimationFrame(loop)
-    return () => { cancelAnimationFrame(raf); removeEventListener('resize', size); mo.disconnect() }
+    return () => {
+      cancelAnimationFrame(raf)
+      removeEventListener('resize', size)
+      mo.disconnect()
+    }
   }, [])
 
   return <canvas ref={ref} aria-hidden className="pointer-events-none fixed inset-0 z-0 h-full w-full" />
