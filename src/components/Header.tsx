@@ -51,7 +51,7 @@ export default function Header() {
         </nav>
           <div className="col-start-2 flex items-center justify-self-end gap-2 lg:col-start-3">
           <button className="icon-btn" onClick={toggleLang} aria-label={lang === 'id' ? 'Ganti ke bahasa Inggris' : 'Switch to Indonesian'}>{lang === 'id' ? 'EN' : 'ID'}</button>
-          <button className="icon-btn" onClick={toggleTheme} aria-label={lang === 'id' ? 'Ganti tema' : 'Toggle theme'}>{theme === 'dark' ? '☀️' : '🌙'}</button>
+          <button className="icon-btn" onClick={(e) => toggleTheme(e.clientX, e.clientY)} aria-label={lang === 'id' ? 'Ganti tema' : 'Toggle theme'}>{theme === 'dark' ? '☀️' : '🌙'}</button>
           <Link to="/hire" className="btn-primary hidden sm:inline-flex">{lang === 'id' ? 'Hubungi aku' : 'Hire me'}</Link>
           <button className="icon-btn lg:hidden" aria-label={lang === 'id' ? 'Buka menu' : 'Open menu'} aria-expanded={menu} onClick={() => setMenu(!menu)}>☰</button>
         </div>

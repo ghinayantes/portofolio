@@ -6,7 +6,9 @@ import type { Pair } from '../data/nav'
 import type { Lang } from '../lib/i18n'
 
 type Theme = 'dark' | 'light'
-type Ctx = { theme: Theme; lang: Lang; t: (p: Pair) => string; toggleTheme: () => void; toggleLang: () => void }
+type ViewTransition = { ready: Promise<void>; finished: Promise<void>; updateCallbackDone: Promise<void> }
+type DocumentWithViewTransition = Document & { startViewTransition?: (callback: () => void) => ViewTransition }
+type Ctx = { theme: Theme; lang: Lang; t: (p: Pair) => string; toggleTheme: (x?: number, y?: number) => void; toggleLang: () => void }
 const SettingsCtx = createContext<Ctx | null>(null)
 
 /** Language comes from the URL (/en, /id). Theme is a data-theme attribute set before paint by the script in layout.tsx. */
@@ -23,11 +25,24 @@ export function SettingsProvider({ lang, children }: { lang: Lang; children: Rea
     theme,
     lang,
     t: (p) => p[lang],
-    toggleTheme: () => {
+    toggleTheme: (x?: number, y?: number) => {
       const next: Theme = theme === 'dark' ? 'light' : 'dark'
-      document.documentElement.dataset.theme = next
-      try { localStorage.setItem('theme', next) } catch { /* ignore */ }
-      setThemeState(next)
+      const apply = (): void => {
+        document.documentElement.dataset.theme = next
+        try { localStorage.setItem('theme', next) } catch { /* ignore */ }
+        setThemeState(next)
+      }
+      try {
+        const doc = document as DocumentWithViewTransition
+        const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+        if (!doc.startViewTransition || reduce || x === undefined || y === undefined) { apply(); return }
+        const r = Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y))
+        const root = document.documentElement
+        root.style.setProperty('--wipe-x', `${x}px`)
+        root.style.setProperty('--wipe-y', `${y}px`)
+        root.style.setProperty('--wipe-max', `${r}px`)
+        doc.startViewTransition(() => { apply() })
+      } catch { apply() }
     },
     toggleLang: () => {
       const next: Lang = lang === 'en' ? 'id' : 'en'

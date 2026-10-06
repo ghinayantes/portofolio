@@ -38,12 +38,7 @@ function drawCloud(ctx: CanvasRenderingContext2D, x: number, y: number, radius: 
   ctx.bezierCurveTo(left + radius * 2.52, top + h * 0.34, left + radius * 2.9, top + h * 0.58, left + radius * 2.65, top + h * 0.82)
   ctx.closePath()
   ctx.fillStyle = fill
-  ctx.shadowColor = `rgba(107,151,188,${0.3 * fade})`
-  ctx.shadowBlur = radius * 0.42
-  ctx.shadowOffsetY = radius * 0.18
   ctx.fill()
-  ctx.shadowBlur = 0
-  ctx.shadowOffsetY = 0
   ctx.strokeStyle = `rgba(255,255,255,${0.58 * fade})`
   ctx.lineWidth = Math.max(1, radius * 0.08)
   ctx.stroke()
@@ -103,27 +98,58 @@ export default function Constellations() {
     const root = document.documentElement
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches
     let W = 0, V = 0, raf = 0, t0 = 0
-    let windOffset = 0
-    let returningToDark = false
+    let drift = 0
+    let returnActive = false
+    let returnFrom = 0
+    let returnStart = 0
+    const RETURN_MS = 1100
+    let blend = root.dataset.theme === 'light' ? 1 : 0
+
+    const easeOutExpo = (p: number): number => (p >= 1 ? 1 : 1 - Math.pow(2, -10 * p))
+    const shortest = (v: number, m: number): number => {
+      const h = ((v % m) + m) % m
+      return h > m / 2 ? h - m : h
+    }
+    const arcAmp = (id: string): number => {
+      let hsh = 0
+      for (const ch of id) hsh = (hsh * 31 + ch.charCodeAt(0)) | 0
+      return (((hsh % 28) + 28) % 28) - 14
+    }
+
+    const DARK_RGB = [200, 210, 255] as const
+    const LIGHT_RGB = [79, 70, 229] as const
 
     const draw = (t: number, fade: number) => {
-      const rgb = getComputedStyle(root).getPropertyValue('--spark').trim() || '200,210,255'
-      const a = root.dataset.theme === 'light' ? ALPHA.light : ALPHA.dark
-      const isLight = root.dataset.theme === 'light'
+      const target = root.dataset.theme === 'light' ? 1 : 0
       const dt = t0 ? Math.min((t - t0) / 16.67, 2) : 1
+      if (reduce) {
+        blend = target
+      } else {
+        blend += (target - blend) * (1 - Math.exp(-dt / 51))
+        if (Math.abs(target - blend) < 0.001) blend = target
+      }
+      const r = Math.round(DARK_RGB[0] + (LIGHT_RGB[0] - DARK_RGB[0]) * blend)
+      const g = Math.round(DARK_RGB[1] + (LIGHT_RGB[1] - DARK_RGB[1]) * blend)
+      const b = Math.round(DARK_RGB[2] + (LIGHT_RGB[2] - DARK_RGB[2]) * blend)
+      const rgb = `${r},${g},${b}`
+      const lineAlpha = ((1 - blend) * ALPHA.dark.line + blend * ALPHA.light.line * 0.35) * fade
       const windCycle = Math.max(320, W)
-      if (isLight) {
-        windOffset = (windOffset + 0.18 * dt) % windCycle
-        returningToDark = false
-      } else if (returningToDark) {
-        const step = Math.max(0.8, windOffset * 0.012) * dt
-        windOffset = Math.max(0, windOffset - step)
-        if (windOffset === 0) {
-          windOffset = 0
-          returningToDark = false
+      let shiftX = 0
+      let returnP = 0
+      if (target === 1) {
+        drift = (drift + 0.18 * dt * (0.3 + 0.7 * blend)) % windCycle
+        returnActive = false
+        shiftX = drift
+      } else if (returnActive) {
+        returnP = Math.min(1, Math.max(0, (t - returnStart) / RETURN_MS))
+        shiftX = returnFrom * (1 - easeOutExpo(returnP))
+        if (returnP >= 1) {
+          drift = 0
+          returnActive = false
+          returnP = 0
+          shiftX = 0
         }
       }
-      const cloudMode = isLight
       const small = W < SMALL_SCREEN
       ctx.clearRect(0, 0, W, V)
       ctx.lineWidth = 1
@@ -133,33 +159,35 @@ export default function Constellations() {
         const base = s.id === 'cube' ? cubePoints(reduce ? 0 : t) : s.pts
         const ang = s.tilt + (reduce ? 0 : Math.sin(t / 9000 + s.x * 9) * 0.05)
         const c = Math.cos(ang), sn = Math.sin(ang)
-        const anchorX = s.x * W + windOffset
-        const wrappedAnchors = windOffset > 0 ? [anchorX - W, anchorX, anchorX + W] : [anchorX]
+        const anchorX = s.x * W + shiftX
+        const drifting = target === 1 && shiftX > 0
+        const wrappedAnchors = drifting ? [anchorX - W, anchorX, anchorX + W] : [anchorX]
+        const lift = returnActive ? Math.sin(Math.PI * returnP) * arcAmp(s.id) : 0
         for (const wrappedAnchor of wrappedAnchors) {
-          const P = base.map(([x, y]) => [wrappedAnchor + (x * c - y * sn) * R, s.y * V + (x * sn + y * c) * R] as V2)
-          ctx.strokeStyle = `rgba(${rgb},${a.line * fade * (cloudMode ? 0.35 : 1)})`
-          ctx.shadowBlur = cloudMode ? 5 : 0
-          ctx.shadowColor = `rgba(255,255,255,${cloudMode ? 0.28 : 0})`
-          s.edges.forEach(([i, j], k) => {
-            ctx.setLineDash(s.dashed?.includes(k) ? [4, 5] : [])
-            ctx.beginPath()
-            ctx.moveTo(P[i][0], P[i][1])
-            ctx.lineTo(P[j][0], P[j][1])
-            ctx.stroke()
-          })
-          ctx.setLineDash([])
-          ctx.shadowBlur = 0
+          const P = base.map(([x, y]) => [wrappedAnchor + (x * c - y * sn) * R, s.y * V + (x * sn + y * c) * R + lift] as V2)
+          if (lineAlpha > 0.004) {
+            ctx.strokeStyle = `rgba(${rgb},${lineAlpha})`
+            s.edges.forEach(([i, j], k) => {
+              ctx.setLineDash(s.dashed?.includes(k) ? [4, 5] : [])
+              ctx.beginPath()
+              ctx.moveTo(P[i][0], P[i][1])
+              ctx.lineTo(P[j][0], P[j][1])
+              ctx.stroke()
+            })
+            ctx.setLineDash([])
+          }
           P.forEach(([x, y], i) => {
             const twinkle = reduce ? 1 : 0.6 + 0.4 * Math.sin(t / 1400 + i * 1.7 + s.y * 7)
-            if (!cloudMode) {
-              ctx.fillStyle = `rgba(${rgb},${a.node * twinkle * fade})`
-            }
-            if (cloudMode) {
-              drawCloud(ctx, x, y, i % 3 === 0 ? 8 : 6, fade)
-            } else {
+            const starAlpha = ALPHA.dark.node * twinkle * fade * (1 - blend)
+            const cloudFade = fade * blend
+            if (starAlpha > 0.01) {
+              ctx.fillStyle = `rgba(${rgb},${starAlpha})`
               ctx.beginPath()
               ctx.arc(x, y, i % 3 === 0 ? 2.4 : 1.8, 0, Math.PI * 2)
               ctx.fill()
+            }
+            if (cloudFade > 0.01) {
+              drawCloud(ctx, x, y, i % 3 === 0 ? 8 : 6, cloudFade)
             }
             ctx.shadowBlur = 0
           })
@@ -168,22 +196,36 @@ export default function Constellations() {
     }
 
     const size = () => {
-      const d = devicePixelRatio || 1
+      const d = Math.min(devicePixelRatio || 1, 1.5)
       W = innerWidth; V = innerHeight
       canvas.width = W * d; canvas.height = V * d
       ctx.setTransform(d, 0, 0, d, 0, 0)
       draw(0, 1)
     }
+    let lastPaint = 0
     const loop = (ts: number) => {
-      if (!t0) t0 = ts
-      draw(ts, Math.min(1, (ts - t0) / 1600)) // fade in on load
       raf = requestAnimationFrame(loop)
+      if (!t0) t0 = ts
+      if (ts - lastPaint < 33) return
+      lastPaint = ts
+      draw(ts, Math.min(1, (ts - t0) / 1600)) // fade in on load
     }
 
     size()
     addEventListener('resize', size)
     const mo = new MutationObserver(() => {
-      if (root.dataset.theme === 'dark' && windOffset > 0) returningToDark = true
+      if (root.dataset.theme === 'dark') {
+        if (reduce) {
+          drift = 0
+          returnActive = false
+        } else if (drift !== 0) {
+          returnFrom = shortest(drift, Math.max(320, W))
+          returnStart = performance.now()
+          returnActive = true
+        }
+      } else {
+        returnActive = false
+      }
       draw(performance.now(), 1)
     })
     mo.observe(root, { attributes: true, attributeFilter: ['data-theme'] })

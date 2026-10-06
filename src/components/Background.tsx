@@ -18,6 +18,9 @@ export default function Background() {
     let shootingStars: ShootingStar[] = []
     let nextShootingStarAt = 7000 + Math.random() * 5000
     let lastFrameAt = 0
+    let blend = root.dataset.theme === 'light' ? 1 : 0
+    const DARK_RGB = [200, 210, 255] as const
+    const LIGHT_RGB = [79, 70, 229] as const
 
     const createShootingStar = (): ShootingStar => {
       const direction = Math.random() < 0.5 ? -1 : 1
@@ -33,9 +36,21 @@ export default function Background() {
     }
 
     const draw = (t: number) => {
-      const k = getComputedStyle(root).getPropertyValue('--spark').trim() || '200,210,255'
+      const target = root.dataset.theme === 'light' ? 1 : 0
       const frameScale = lastFrameAt ? Math.min((t - lastFrameAt) / 16.67, 2) : 1
       lastFrameAt = t
+      if (reduce) {
+        blend = target
+      } else {
+        blend += (target - blend) * (1 - Math.exp(-frameScale / 51))
+        if (Math.abs(target - blend) < 0.001) blend = target
+      }
+      const r = Math.round(DARK_RGB[0] + (LIGHT_RGB[0] - DARK_RGB[0]) * blend)
+      const g = Math.round(DARK_RGB[1] + (LIGHT_RGB[1] - DARK_RGB[1]) * blend)
+      const b = Math.round(DARK_RGB[2] + (LIGHT_RGB[2] - DARK_RGB[2]) * blend)
+      const k = `${r},${g},${b}`
+      const waveDim = 1 - blend * 0.55
+      const dotMix = 1 - blend
       x.clearRect(0, 0, W, V)
       x.lineWidth = 1
       for (let i = 0; i < 34; i++) {
@@ -45,26 +60,25 @@ export default function Background() {
           const y = V * 0.8 + i * 2.4 - Math.sin(u * 3.1 + i * 0.05 + t / 7000) * 70 * (0.4 + u) - Math.sin(u * 7 + t / 9000) * 14
           if (px) x.lineTo(px, y); else x.moveTo(px, y)
         }
-        x.strokeStyle = `rgba(${k},${0.03 + i * 0.0016})`
+        x.strokeStyle = `rgba(${k},${(0.03 + i * 0.0016) * waveDim})`
         x.stroke()
       }
-      if (root.dataset.theme !== 'dark') {
-        shootingStars = []
-        nextShootingStarAt = t + 7000 + Math.random() * 5000
-        return
-      }
-      for (const p of dots) {
-        const a = 0.25 + 0.75 * Math.abs(Math.sin(t / 1300 + p.p))
-        x.fillStyle = `rgba(${k},${a * 0.75})`
-        x.beginPath(); x.arc(p.x, p.y, p.r, 0, 6.283); x.fill()
-        if (!reduce) { p.y -= p.s; if (p.y < -4) { p.y = V + 4; p.x = Math.random() * W } }
+      if (dotMix > 0.01) {
+        for (const p of dots) {
+          const a = (0.25 + 0.75 * Math.abs(Math.sin(t / 1300 + p.p))) * dotMix
+          x.fillStyle = `rgba(${k},${a * 0.75})`
+          x.beginPath(); x.arc(p.x, p.y, p.r, 0, 6.283); x.fill()
+          if (!reduce) { p.y -= p.s * frameScale; if (p.y < -4) { p.y = V + 4; p.x = Math.random() * W } }
+        }
       }
       if (reduce) return
 
-      if (t >= nextShootingStarAt) {
+      if (target === 0 && blend < 0.5 && t >= nextShootingStarAt) {
         shootingStars.push(createShootingStar())
         if (Math.random() < 0.28) shootingStars.push(createShootingStar())
         nextShootingStarAt = t + 5500 + Math.random() * 6500
+      } else if (target === 1) {
+        nextShootingStarAt = t + 7000 + Math.random() * 5000
       }
 
       shootingStars = shootingStars.filter((star) => {
@@ -72,7 +86,8 @@ export default function Background() {
         star.y += star.vy * frameScale
         star.age += frameScale
         const progress = star.age / star.duration
-        const alpha = Math.sin(Math.PI * progress) * 0.78
+        const alpha = Math.sin(Math.PI * progress) * 0.78 * dotMix
+        if (alpha <= 0.01) return progress < 1
         const tailX = star.x - star.vx * star.tail
         const tailY = star.y - star.vy * star.tail
         const trail = x.createLinearGradient(tailX, tailY, star.x, star.y)
@@ -92,14 +107,20 @@ export default function Background() {
       })
     }
     const size = () => {
-      const d = devicePixelRatio || 1
+      const d = Math.min(devicePixelRatio || 1, 1.5)
       W = innerWidth; V = innerHeight
       c.width = W * d; c.height = V * d
       x.setTransform(d, 0, 0, d, 0, 0)
       dots = Array.from({ length: Math.min(110, Math.floor(W / 10)) }, () => ({ x: Math.random() * W, y: Math.random() * V, r: Math.random() * 1.3 + 0.3, s: Math.random() * 0.2 + 0.04, p: Math.random() * 6.28 }))
       draw(performance.now())
     }
-    const loop = (t: number) => { draw(t); raf = requestAnimationFrame(loop) }
+    let lastPaint = 0
+    const loop = (t: number) => {
+      raf = requestAnimationFrame(loop)
+      if (t - lastPaint < 33) return
+      lastPaint = t
+      draw(t)
+    }
     size()
     addEventListener('resize', size)
     const mo = new MutationObserver(() => draw(performance.now()))
