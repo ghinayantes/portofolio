@@ -19,6 +19,10 @@ export default function Background() {
     let nextShootingStarAt = 7000 + Math.random() * 5000
     let lastFrameAt = 0
     let blend = root.dataset.theme === 'light' ? 1 : 0
+    let blendFrom = blend
+    let blendTo = blend
+    let blendStart = 0
+    const BLEND_MS = 850
     const DARK_RGB = [200, 210, 255] as const
     const LIGHT_RGB = [79, 70, 229] as const
 
@@ -41,9 +45,16 @@ export default function Background() {
       lastFrameAt = t
       if (reduce) {
         blend = target
+        blendFrom = target
+        blendTo = target
       } else {
-        blend += (target - blend) * (1 - Math.exp(-frameScale / 51))
-        if (Math.abs(target - blend) < 0.001) blend = target
+        if (target !== blendTo) {
+          blendTo = target
+          blendFrom = blend
+          blendStart = t
+        }
+        const bp = Math.min(1, Math.max(0, (t - blendStart) / BLEND_MS))
+        blend = blendFrom + (blendTo - blendFrom) * (1 - Math.pow(1 - bp, 3))
       }
       const r = Math.round(DARK_RGB[0] + (LIGHT_RGB[0] - DARK_RGB[0]) * blend)
       const g = Math.round(DARK_RGB[1] + (LIGHT_RGB[1] - DARK_RGB[1]) * blend)

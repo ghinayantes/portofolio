@@ -103,7 +103,11 @@ export default function Constellations() {
     let returnFrom = 0
     let returnStart = 0
     const RETURN_MS = 1100
+    const BLEND_MS = 850
     let blend = root.dataset.theme === 'light' ? 1 : 0
+    let blendFrom = blend
+    let blendTo = blend
+    let blendStart = 0
 
     const easeOutExpo = (p: number): number => (p >= 1 ? 1 : 1 - Math.pow(2, -10 * p))
     const shortest = (v: number, m: number): number => {
@@ -124,9 +128,16 @@ export default function Constellations() {
       const dt = t0 ? Math.min((t - t0) / 16.67, 2) : 1
       if (reduce) {
         blend = target
+        blendFrom = target
+        blendTo = target
       } else {
-        blend += (target - blend) * (1 - Math.exp(-dt / 51))
-        if (Math.abs(target - blend) < 0.001) blend = target
+        if (target !== blendTo) {
+          blendTo = target
+          blendFrom = blend
+          blendStart = t
+        }
+        const bp = Math.min(1, Math.max(0, (t - blendStart) / BLEND_MS))
+        blend = blendFrom + (blendTo - blendFrom) * (1 - Math.pow(1 - bp, 3))
       }
       const r = Math.round(DARK_RGB[0] + (LIGHT_RGB[0] - DARK_RGB[0]) * blend)
       const g = Math.round(DARK_RGB[1] + (LIGHT_RGB[1] - DARK_RGB[1]) * blend)
@@ -161,7 +172,9 @@ export default function Constellations() {
         const c = Math.cos(ang), sn = Math.sin(ang)
         const anchorX = s.x * W + shiftX
         const drifting = target === 1 && shiftX > 0
-        const wrappedAnchors = drifting ? [anchorX - W, anchorX, anchorX + W] : [anchorX]
+        const wrappedAnchors = drifting
+          ? [anchorX - W, anchorX, anchorX + W].filter((a) => a + R * 1.3 > 0 && a - R * 1.3 < W)
+          : [anchorX]
         const lift = returnActive ? Math.sin(Math.PI * returnP) * arcAmp(s.id) : 0
         for (const wrappedAnchor of wrappedAnchors) {
           const P = base.map(([x, y]) => [wrappedAnchor + (x * c - y * sn) * R, s.y * V + (x * sn + y * c) * R + lift] as V2)
