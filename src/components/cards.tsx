@@ -1,5 +1,6 @@
-import type { Entry, Note, Project } from '../data/content'
+import { projectSlug, type Entry, type Note, type Project } from '../data/content'
 import { useEffect, useRef, useState, type PointerEvent } from 'react'
+import { LocLink } from './LocLink'
 import { localized, type Localized } from '../data/nav'
 import { useSettings } from '../context/Settings'
 import { getProjectCardAction, getProjectCardLeanForPointer } from '../lib/project-card-motion'
@@ -55,7 +56,7 @@ export function ProjectCard({ p, i, featured, interactive = false, tilt = true, 
       </div>
       <div className={`flex flex-1 flex-col ${interactive ? 'gap-2 p-4' : 'gap-2.5 p-5'} ${featured ? (interactive ? 'md:justify-center md:p-7' : 'md:justify-center md:p-9') : ''}`}>
         {p.status && <span className="text-[13px] font-medium" style={{ color: p.wip ? 'var(--accent)' : 'var(--ok)' }}>{localized(p.status, lang)}</span>}
-        <h3 className={`font-display ${interactive ? 'text-lg' : 'text-xl'} font-semibold`}>{localized(p.title, lang)}</h3>
+        <h3 className={`font-display ${interactive ? 'text-lg' : 'text-xl'} font-semibold`}><LocLink to={`/project/${projectSlug(p)}`} className="hover:text-brand">{localized(p.title, lang)}</LocLink></h3>
         <p className={interactive ? 'text-sm text-fg2' : 'text-[15px] text-fg2'}>{localized(p.desc, lang)}</p>
         <div className="flex flex-wrap gap-1.5">{p.tags.map((g) => <span key={localized(g, lang)} className={`rounded-md border border-line bg-muted ${interactive ? 'px-2.5 py-1 text-xs' : 'px-3 py-1 text-[13px]'}`}>{localized(g, lang)}</span>)}</div>
         {p.links.length > 0 && <div className="mt-auto flex gap-4 pt-1.5">{p.links.map((link, index) => <a key={localized(link, lang)} href={p.linkHrefs?.[index] || '#'} className="text-sm font-semibold text-brand">{localized(link, lang)}</a>)}</div>}
@@ -126,10 +127,10 @@ export function Ticket({ n }: { n: Note }) {
 
 export const FeedItem = ({ n }: { n: Note }) => {
   const { lang } = useSettings()
-  return <a href="#" className="group grid gap-1.5 border-t border-line py-6 last:border-b sm:grid-cols-[120px_1fr] sm:gap-6">
+  return <article className="grid gap-1.5 border-t border-line py-6 last:border-b sm:grid-cols-[120px_1fr] sm:gap-6">
     <span className="pt-1 text-sm text-fg2">{localized(n.meta, lang)}</span>
-    <div><h3 className="font-display text-lg font-semibold group-hover:text-brand">{localized(n.title, lang)}</h3><p className="mt-1.5 text-fg2">{localized(n.desc, lang)}</p></div>
-  </a>
+    <div><h3 className="font-display text-lg font-semibold">{localized(n.title, lang)}</h3><p className="mt-1.5 text-fg2">{localized(n.desc, lang)}</p></div>
+  </article>
 }
 
 export const Timeline = ({ items }: { items: Entry[] }) => {

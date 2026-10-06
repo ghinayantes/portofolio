@@ -1,9 +1,18 @@
-import { pair, type Localized, type Pair } from './nav'
+import { localized, pair, type Localized, type Pair } from './nav'
 
 export type Project = { title: Localized; desc: Pair; tags: Localized[]; links: Localized[]; linkHrefs?: string[]; image?: string; status?: Pair; wip?: boolean }
 export type Entry = { title: Localized; when: Pair; desc: Pair; current?: boolean }
 export type Note = { meta: Pair; title: Localized; desc: Pair }
 export type SkillGroup = { title: Pair; items: Localized[] }
+
+/** URL slug derived from the English title, e.g. 'Food Waste Stop' -> 'food-waste-stop'. */
+export const projectSlug = (p: Project): string =>
+  localized(p.title, 'en')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
 
 export const projects: Project[] = [
   { title: pair('Portfolio Website', 'Situs Portofolio'), status: pair('In progress', 'Sedang dikerjakan'), wip: true, desc: pair('This site: designed in Figma, then built with Next.js and Tailwind.', 'Situs ini dirancang di Figma, lalu dibuat menggunakan Next.js dan Tailwind.'), tags: ['Figma', 'Next.js', 'Tailwind', 'TypeScript'], links: [pair('Live site', 'Situs langsung'), 'GitHub'], linkHrefs: ['', 'https://github.com/ghinayantes/portofolio'] },
