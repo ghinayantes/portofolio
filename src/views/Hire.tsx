@@ -6,13 +6,22 @@ import { useSettings } from '../context/Settings'
 
 const field = 'w-full rounded-lg border bg-surface px-3.5 py-3 text-base text-fg outline-none focus:border-brand focus:ring-2 focus:ring-brand/40'
 
+/**
+ * Paste your Formspree endpoint here after registering at https://formspree.io
+ * (create a form, verify your email, then copy the endpoint, e.g. 'https://formspree.io/f/abcdwxyz').
+ * While empty, the form only validates locally and shows a notice.
+ */
+const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xljgdpgw'
+
+type Status = 'idle' | 'sending' | 'sent' | 'error' | 'unconfigured'
+
 export default function Hire() {
   const { t, lang } = useSettings()
   const id = lang === 'id'
   const [err, setErr] = useState<Record<string, string>>({})
-  const [sent, setSent] = useState(false)
+  const [status, setStatus] = useState<Status>('idle')
 
-  function submit(e: FormEvent<HTMLFormElement>) {
+  async function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
     const form = e.currentTarget
     const f = new FormData(form)
@@ -25,9 +34,23 @@ export default function Hire() {
     if (!message) er.message = id ? 'Tulis pesan singkat.' : 'Write a short message.'
     setErr(er)
     if (Object.keys(er).length) return
-    // TODO: send to Formspree / Web3Forms / your API here.
-    setSent(true)
-    form.reset()
+    if (!FORMSPREE_ENDPOINT) {
+      setStatus('unconfigured')
+      return
+    }
+    setStatus('sending')
+    try {
+      const res = await fetch(FORMSPREE_ENDPOINT, {
+        method: 'POST',
+        headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, message }),
+      })
+      if (!res.ok) throw new Error(`Formspree responded ${res.status}`)
+      setStatus('sent')
+      form.reset()
+    } catch {
+      setStatus('error')
+    }
   }
 
   return (
@@ -48,8 +71,12 @@ export default function Hire() {
             {err[k] && <span className="text-[13px] text-red-500">{err[k]}</span>}
           </label>
         ))}
-        <button type="submit" className="btn-primary justify-self-start">{id ? 'Kirim pesan' : 'Send message'}</button>
-        {sent && <p role="status" className="text-sm text-fg2">{id ? 'Pesan terkirim (demo). Hubungkan backend formulir di Hire.tsx.' : 'Message sent (demo). Connect a form backend in Hire.tsx.'}</p>}
+        <button type="submit" disabled={status === 'sending'} className="btn-primary justify-self-start disabled:opacity-60">
+          {status === 'sending' ? (id ? 'Mengirim…' : 'Sending…') : (id ? 'Kirim pesan' : 'Send message')}
+        </button>
+        {status === 'sent' && <p role="status" className="text-sm text-fg2">{id ? 'Pesan terkirim. Terima kasih, akan kubalas dalam dua hari.' : 'Message sent. Thank you, I’ll reply within two days.'}</p>}
+        {status === 'error' && <p role="alert" className="text-sm text-red-500">{id ? 'Gagal mengirim. Coba lagi atau hubungi lewat kontak di samping.' : 'Failed to send. Try again or reach me via the contacts on the side.'}</p>}
+        {status === 'unconfigured' && <p role="status" className="text-sm text-fg2">{id ? 'Formulir belum terhubung (isi FORMSPREE_ENDPOINT di Hire.tsx).' : 'Form is not connected yet (set FORMSPREE_ENDPOINT in Hire.tsx).'}</p>}
       </form>
     </div>
   )
