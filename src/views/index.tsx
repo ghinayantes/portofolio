@@ -1,9 +1,10 @@
 'use client'
 
-import type { ReactElement, ReactNode } from 'react'
+import { useMemo, useState, type ReactElement, type ReactNode } from 'react'
 import { LocLink as Link } from '../components/LocLink'
 import * as C from '../data/content'
 import { NAV, localized, pair } from '../data/nav'
+import type { Lang } from '../lib/i18n'
 import { useSettings } from '../context/Settings'
 import { Empty, FeedItem, Medal, ProjectCard, Ticket, Timeline } from '../components/cards'
 import { Section } from '../components/ui'
@@ -18,6 +19,59 @@ const Cards = ({ list, feature }: { list: C.Project[]; feature?: boolean }) => (
     {list.map((p, i) => <ProjectCard key={i} p={p} i={i} featured={feature && i === 0} interactive={feature} />)}
   </div>
 )
+
+const KNOWN_LANGS = ['Python', 'JavaScript', 'TypeScript', 'Java', 'SQL', 'C', 'Assembly', 'Prolog']
+
+const projectLangs = (p: C.Project, lang: Lang): string[] => {
+  const names: string[] = []
+  for (const t of p.tags) {
+    const name = localized(t, lang)
+    if (KNOWN_LANGS.includes(name) && !names.includes(name)) names.push(name)
+  }
+  return names
+}
+
+/** Project grid with status + language filter chips (used on the project page and portfolio section). */
+function ProjectsExplorer({ list }: { list: C.Project[] }) {
+  const { lang } = useSettings()
+  const id = lang === 'id'
+  const [status, setStatus] = useState<'all' | 'done' | 'wip'>('all')
+  const [stack, setStack] = useState<string>('all')
+  const stacks = useMemo(() => {
+    const seen: string[] = []
+    for (const p of list) for (const name of projectLangs(p, lang)) if (!seen.includes(name)) seen.push(name)
+    return seen
+  }, [list, lang])
+  const filtered = list.filter((p) => {
+    const okStatus = status === 'all' || (status === 'wip' ? p.wip : !p.wip)
+    const okStack = stack === 'all' || projectLangs(p, lang).includes(stack)
+    return okStatus && okStack
+  })
+  const chip = (active: boolean) =>
+    `rounded-full border px-4 py-2 text-sm font-medium ${active ? 'border-brand bg-brand text-ink' : 'border-line text-fg2 hover:text-fg'}`
+  return (
+    <div>
+      <div className="mb-3 flex flex-wrap gap-2" role="group" aria-label={id ? 'Filter status' : 'Status filter'}>
+        <button type="button" aria-pressed={status === 'all'} onClick={() => setStatus('all')} className={chip(status === 'all')}>{id ? 'Semua' : 'All'}</button>
+        <button type="button" aria-pressed={status === 'done'} onClick={() => setStatus('done')} className={chip(status === 'done')}>{id ? 'Selesai' : 'Completed'}</button>
+        <button type="button" aria-pressed={status === 'wip'} onClick={() => setStatus('wip')} className={chip(status === 'wip')}>{id ? 'Dikerjakan' : 'In progress'}</button>
+      </div>
+      <div className="mb-8 flex flex-wrap gap-2" role="group" aria-label={id ? 'Filter bahasa' : 'Language filter'}>
+        <button type="button" aria-pressed={stack === 'all'} onClick={() => setStack('all')} className={chip(stack === 'all')}>{id ? 'Semua bahasa' : 'All languages'}</button>
+        {stacks.map((s) => (
+          <button key={s} type="button" aria-pressed={stack === s} onClick={() => setStack(s)} className={chip(stack === s)}>{s}</button>
+        ))}
+      </div>
+      {filtered.length === 0 ? (
+        <Empty text={pair('No projects match this filter.', 'Tidak ada proyek yang cocok dengan filter ini.')} />
+      ) : (
+        <div className="project-cards-grid project-cards-grid--interactive grid gap-x-4 gap-y-8 md:grid-cols-2">
+          {filtered.map((p, i) => <ProjectCard key={localized(p.title, lang)} p={p} i={i} featured={i === 0} interactive />)}
+        </div>
+      )}
+    </div>
+  )
+}
 const Awards = () => <Grid3>{C.awards.map((n, i) => <Medal key={i} n={n} i={i} />)}</Grid3>
 const Work = () => <Empty text={pair('No work history yet. Add your first internship or freelance project here, with your role and one result.', 'Belum ada pengalaman kerja. Tambahkan pengalaman magang atau proyek lepas pertamamu, beserta peran dan hasilnya.')} />
 
@@ -66,7 +120,7 @@ function Portfolio() {
       <Section title={lang === 'id' ? 'Tentang' : 'About'}><About /></Section>
       <Section title={lang === 'id' ? 'Pendidikan' : 'Education'}><Timeline items={C.education} /></Section>
       <Section title={lang === 'id' ? 'Pengalaman kerja' : 'Work'}><Work /></Section>
-      <Section title={lang === 'id' ? 'Proyek' : 'Projects'}><Cards list={C.projects} feature /></Section>
+      <Section title={lang === 'id' ? 'Proyek' : 'Projects'}><ProjectsExplorer list={C.projects} /></Section>
       <Section title={lang === 'id' ? 'Organisasi' : 'Organizations'}><Timeline items={C.organizations} /></Section>
       <Section title={lang === 'id' ? 'Penghargaan' : 'Awards'}><Awards /></Section>
       <Section title={lang === 'id' ? 'Keahlian' : 'Skills'}><Skills /></Section>
@@ -96,7 +150,7 @@ export const PAGES: Record<string, () => ReactElement> = {
   certificate: () => <Grid2>{C.certificates.map((n, i) => <Ticket key={i} n={n} />)}</Grid2>,
   news: () => <div className="max-w-3xl">{C.news.map((n, i) => <FeedItem key={i} n={n} />)}</div>,
   work: Work,
-  project: () => <Cards list={C.projects} feature />,
+  project: () => <ProjectsExplorer list={C.projects} />,
   organization: () => <Timeline items={C.organizations} />,
   award: Awards,
   hire: Hire,
