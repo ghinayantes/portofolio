@@ -104,12 +104,15 @@ export function ProjectCard({ p, i, featured, interactive = false, tilt = true, 
   )
 }
 
+const RANKS = ['gold', 'silver', 'bronze'] as const
+
 export const Medal = ({ n, i }: { n: Note; i: number }) => {
   const { lang } = useSettings()
-  return <div className="card p-6">
-    <div className={`mdl m${i % 3}`} />
-    <small className="text-[13px] text-fg2">{localized(n.meta, lang)}</small>
-    <b className="my-1 block font-display text-lg font-semibold">{localized(n.title, lang)}</b>
+  const rank = RANKS[i % RANKS.length]
+  return <div className="card medal-card">
+    <span className="medal-year">{localized(n.meta, lang)}</span>
+    <div className={`mdl rank-${rank}`} />
+    <b className="my-1 block font-display text-xl font-semibold">{localized(n.title, lang)}</b>
     <p className="text-[15px] text-fg2">{localized(n.desc, lang)}</p>
   </div>
 }
@@ -127,8 +130,9 @@ export function Ticket({ n }: { n: Note }) {
 
 export const FeedItem = ({ n }: { n: Note }) => {
   const { lang } = useSettings()
-  return <article className="grid gap-1.5 border-t border-line py-6 last:border-b sm:grid-cols-[120px_1fr] sm:gap-6">
-    <span className="pt-1 text-sm text-fg2">{localized(n.meta, lang)}</span>
+  const [mon, ...rest] = localized(n.meta, lang).split(' ')
+  return <article className="news-card">
+    <div className="news-date"><b>{rest.join(' ')}</b><span>{mon}</span></div>
     <div><h3 className="font-display text-lg font-semibold">{localized(n.title, lang)}</h3><p className="mt-1.5 text-fg2">{localized(n.desc, lang)}</p></div>
   </article>
 }
@@ -138,9 +142,11 @@ export const Timeline = ({ items }: { items: Entry[] }) => {
   return <ul className="tl">
     {items.map((e) => (
       <li key={localized(e.title, lang) + localized(e.when, lang)} className={e.current ? 'cur' : ''}>
-        <h3 className="font-display text-lg font-semibold">{localized(e.title, lang)}</h3>
-        <span className="text-sm text-fg2">{localized(e.when, lang)}</span>
-        <p className="mt-1 text-fg2">{localized(e.desc, lang)}</p>
+        <div className="tl-card">
+          <span className="tl-year">{localized(e.when, lang)}</span>
+          <h3 className="font-display text-lg font-semibold">{localized(e.title, lang)}</h3>
+          <p className="mt-1 text-fg2">{localized(e.desc, lang)}</p>
+        </div>
       </li>
     ))}
   </ul>

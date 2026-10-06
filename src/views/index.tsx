@@ -3,6 +3,7 @@
 import { useMemo, useState, type ReactElement, type ReactNode } from 'react'
 import { LocLink as Link } from '../components/LocLink'
 import * as C from '../data/content'
+import { SITE } from '../data/site'
 import { NAV, localized, pair } from '../data/nav'
 import type { Lang } from '../lib/i18n'
 import { useSettings } from '../context/Settings'
@@ -78,15 +79,27 @@ const Work = () => <Empty text={pair('No work history yet. Add your first intern
 function About() {
   const { lang } = useSettings()
   const id = lang === 'id'
+  const photo = SITE.photos[0]
+  const statusEntry = C.about.find(([k]) => k.en === 'Status')
+  const rest = C.about.filter(([k]) => k.en !== 'Status')
   return (
     <div className="grid gap-12 md:grid-cols-2">
       <div className="max-w-[62ch] space-y-4 text-[17px] text-fg2">
         <p>{id ? 'Aku mahasiswa Teknik Informatika di Institut Teknologi Bandung. Aku senang mengubah masalah yang masih samar menjadi produk yang sederhana dan jelas.' : "I'm an Informatics Engineering student at Institut Teknologi Bandung. I like turning vague problems into small, clear products."}</p>
         <p>{id ? 'Di luar kelas, aku aktif di kepanitiaan dan tim. Pengalaman itu mengajariku bekerja sesuai tenggat dan mendengarkan sebelum mulai membangun.' : 'Outside class I join committees and teams, which taught me to ship on a deadline and listen before building.'}</p>
       </div>
-      <dl className="card self-start">
-        {C.about.map(([k, v]) => <div key={localized(k, lang)} className="grid grid-cols-[120px_1fr] gap-3 border-b border-line px-5 py-3.5 last:border-0"><dt className="text-fg2">{localized(k, lang)}</dt><dd className="font-medium">{localized(v, lang)}</dd></div>)}
-      </dl>
+      <div className="card self-start">
+        <div className="flex items-center gap-4 border-b border-line p-5">
+          {photo && <img src={photo.src} alt={localized(photo.alt, lang)} className="size-16 rounded-full border border-line object-cover" />}
+          <div>
+            <b className="block font-display text-lg font-semibold">{SITE.name}</b>
+            {statusEntry && <span className="mt-1 inline-flex items-center gap-1.5 rounded-full border border-line bg-muted px-3 py-1 text-xs font-semibold"><i className="dot" />{localized(statusEntry[1], lang)}</span>}
+          </div>
+        </div>
+        <dl>
+          {rest.map(([k, v]) => <div key={localized(k, lang)} className="grid grid-cols-[120px_1fr] gap-3 border-b border-line px-5 py-3.5 last:border-0"><dt className="text-fg2">{localized(k, lang)}</dt><dd className="font-medium">{localized(v, lang)}</dd></div>)}
+        </dl>
+      </div>
     </div>
   )
 }
@@ -101,8 +114,9 @@ function Skills() {
         <p className="mb-3.5 font-mono text-[13px] text-brand">{lang === 'id' ? '~ keahlian --kode' : '~ skills --code'}</p>
         <div className="flex flex-wrap gap-2">{code.items.map((k) => <span key={localized(k, lang)} className="skill-chip rounded-lg border px-3 py-1 font-mono text-[13px]">{localized(k, lang)}</span>)}</div>
       </div>
-      <div className="card p-6">
-        <h3 className={h3}>{localized(tools.title, lang)}</h3>
+      <div className="card term p-6">
+        <div className="win mb-3.5"><span /><span /><span /></div>
+        <p className="mb-3.5 font-mono text-[13px] text-brand">{lang === 'id' ? '~ keahlian --tools' : '~ skills --tools'}</p>
         <div className="grid grid-cols-[repeat(auto-fill,minmax(88px,1fr))] gap-2.5">{tools.items.map((k) => <span key={localized(k, lang)} className="grid aspect-square place-items-center rounded-2xl border border-line bg-fg/5 p-1.5 text-center text-[13px] font-semibold">{localized(k, lang)}</span>)}</div>
       </div>
       <div className="card p-6">
@@ -148,7 +162,7 @@ export const PAGES: Record<string, () => ReactElement> = {
   portfolio: Portfolio,
   skills: Skills,
   certificate: () => <Grid2>{C.certificates.map((n, i) => <Ticket key={i} n={n} />)}</Grid2>,
-  news: () => <div className="max-w-3xl">{C.news.map((n, i) => <FeedItem key={i} n={n} />)}</div>,
+  news: () => <div className="grid max-w-3xl gap-4">{C.news.map((n, i) => <FeedItem key={i} n={n} />)}</div>,
   work: Work,
   project: () => <ProjectsExplorer list={C.projects} />,
   organization: () => <Timeline items={C.organizations} />,
