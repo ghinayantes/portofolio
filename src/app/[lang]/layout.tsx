@@ -7,6 +7,7 @@ import 'lenis/dist/lenis.css'
 import '../globals.css'
 import { Analytics } from '@vercel/analytics/react'
 import { SettingsProvider } from '../../context/Settings'
+import CloudShader from '../../components/CloudShader'
 import Background from '../../components/Background'
 import Constellations from '../../components/Constellations'
 import Spotlight from '../../components/Spotlight'
@@ -47,6 +48,7 @@ export default async function RootLayout({ children, params }: { children: React
       <body>
           <SettingsProvider lang={lang}>
             <SmoothScroll>
+              <CloudShader />
               <Background />
               <Constellations />
               <Spotlight />
