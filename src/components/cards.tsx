@@ -1,14 +1,33 @@
 import type { Entry, Note, Project } from '../data/content'
-import type { PointerEvent } from 'react'
+import { useEffect, useRef, useState, type PointerEvent } from 'react'
 import { localized, type Localized } from '../data/nav'
 import { useSettings } from '../context/Settings'
 import { getProjectCardAction, getProjectCardLeanForPointer } from '../lib/project-card-motion'
 
-export function ProjectCard({ p, i, featured, interactive = false, tilt = true }: { p: Project; i: number; featured?: boolean; interactive?: boolean; tilt?: boolean }) {
+export function ProjectCard({ p, i, featured, interactive = false, tilt = true, reveal = true }: { p: Project; i: number; featured?: boolean; interactive?: boolean; tilt?: boolean; reveal?: boolean }) {
   const { lang } = useSettings()
+  const revealRef = useRef<HTMLDivElement>(null)
+  const [isRevealed, setIsRevealed] = useState(!reveal)
   const action = interactive
     ? getProjectCardAction(p.links.map((link) => localized(link, lang)), p.linkHrefs)
     : null
+
+  useEffect(() => {
+    if (!interactive || !reveal) return
+    const element = revealRef.current
+    if (!element) return
+    if (!('IntersectionObserver' in window)) {
+      setIsRevealed(true)
+      return
+    }
+
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry) setIsRevealed(entry.isIntersecting)
+    }, { rootMargin: '0px 0px -48px 0px', threshold: 0.08 })
+
+    observer.observe(element)
+    return () => observer.disconnect()
+  }, [interactive, reveal])
 
   const handlePointerEnter = (event: PointerEvent<HTMLDivElement>) => {
     if (!tilt) return
@@ -48,7 +67,8 @@ export function ProjectCard({ p, i, featured, interactive = false, tilt = true }
 
   return (
     <div
-      className={`project-card-hitbox ${featured ? 'project-card-hitbox--featured md:col-span-2' : ''} ${tilt ? '' : 'project-card-hitbox--no-tilt'}`}
+      ref={revealRef}
+      className={`project-card-hitbox ${reveal ? `project-card-reveal ${isRevealed ? 'project-card-reveal--visible' : ''}` : ''} ${featured ? 'project-card-hitbox--featured md:col-span-2' : ''} ${tilt ? '' : 'project-card-hitbox--no-tilt'}`}
       onPointerEnter={handlePointerEnter}
       onPointerLeave={resetPointerTilt}
     >

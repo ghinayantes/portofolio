@@ -47,7 +47,7 @@ export default function Home() {
 
       <Section title={id ? 'Jelajahi' : 'Explore'}><Explore /></Section>
       <Section title={id ? 'Proyek unggulan' : 'Featured project'}>
-        <div className="home-featured-project grid gap-6 md:grid-cols-2"><ProjectCard p={projects[0]} i={0} featured interactive tilt={false} /></div>
+        <div className="home-featured-project grid gap-6 md:grid-cols-2"><ProjectCard p={projects[0]} i={0} featured interactive tilt={false} reveal={false} /></div>
       </Section>
       <div className="mt-16 rounded-3xl p-8 text-white md:p-14" style={{ background: 'linear-gradient(135deg,#1B1A5E,#4338CA 70%,#7C3AED)' }}>
         <h2 className="font-display text-[clamp(1.5rem,4vw,2.25rem)] font-extrabold">{id ? 'Ayo kerja bareng' : "Let's work together"}</h2>
