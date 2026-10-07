@@ -99,7 +99,7 @@ header, footer { transition: background-color var(--theme-duration) var(--theme-
   .photo::before { content: ''; position: absolute; inset: -6%; border-radius: 50%; background: var(--brand); opacity: 0.18; filter: blur(32px); }
   /* Cards + cursor spotlight */
   .card { position: relative; isolation: isolate; overflow: hidden; border-radius: 20px; border: 1px solid color-mix(in srgb, var(--text) 9%, transparent); background: linear-gradient(180deg, color-mix(in srgb, var(--text) 4%, var(--surface)), var(--surface)); box-shadow: var(--shadow-soft), inset 0 1px 0 color-mix(in srgb, var(--text) 7%, transparent); transition: transform 0.2s, background-color var(--theme-duration) var(--theme-ease), border-color var(--theme-duration) var(--theme-ease), box-shadow var(--theme-duration) var(--theme-ease); }
-  .card::after { content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none; opacity: 0; transition: opacity 0.35s; background: radial-gradient(520px circle at var(--mx, 50%) var(--my, 50%), color-mix(in srgb, var(--brand) 22%, transparent), transparent 65%); }
+  .card::after { content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none; opacity: 0; transition: opacity 0.35s; background: radial-gradient(280px circle at var(--mx, 50%) var(--my, 50%), color-mix(in srgb, var(--brand) 8%, transparent), transparent 70%); }
   .card:hover::after { opacity: 1; }
   /* Decorative gap glows behind project grids (static, like reference circle art) */
   .project-cards-grid { position: relative; isolation: isolate; }
