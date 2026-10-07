@@ -6,7 +6,7 @@
 /* Design tokens -> Tailwind utilities (bg-bg, text-fg, border-line, text-brand ...) */
 @theme {
   --container-page: 90rem; /* max page width (1440px) */
-  --text-name: clamp(2.5rem, 7vw, 5rem); /* hero name size */
+  --text-name: clamp(2rem, 5vw, 3.75rem); /* hero name size */
   --text-name--line-height: 1.05;
 }
 
@@ -19,8 +19,8 @@
   --color-line: var(--border);
   --color-brand: var(--brand);
   --color-ink: var(--ink);
-  --font-display: 'Plus Jakarta Sans Variable', system-ui, sans-serif;
-  --font-sans: 'Inter Variable', system-ui, sans-serif;
+  --font-display: 'Poppins', system-ui, sans-serif;
+  --font-sans: 'Poppins', system-ui, sans-serif;
 }
 
 :root {
@@ -83,8 +83,12 @@ header, footer { transition: background-color var(--theme-duration) var(--theme-
   .icon-btn { min-width: 44px; min-height: 44px; border-radius: 9999px; border: 1px solid var(--border); background: var(--surface); font-size: 13px; font-weight: 600; transition: background-color var(--theme-duration) var(--theme-ease), border-color var(--theme-duration) var(--theme-ease), color var(--theme-duration) var(--theme-ease), transform 0.2s; }
 
   /* Hero text: moving shine on the name + role word */
-  .shine { background-image: linear-gradient(100deg, var(--shine-dim) 0%, var(--shine-dim) 18%, color-mix(in srgb, var(--shine-dim) 45%, var(--shine-hi)) 36%, var(--shine-hi) 50%, color-mix(in srgb, var(--shine-dim) 45%, var(--shine-hi)) 64%, var(--shine-dim) 82%, var(--shine-dim) 100%); background-size: 200% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; filter: drop-shadow(0 0 22px color-mix(in srgb, var(--brand) 28%, transparent)); animation: shine 9s linear infinite; }
-  .shine-brand { background-image: linear-gradient(90deg, var(--brand), var(--shine-2), var(--brand)); background-size: 200% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: shine 4s linear infinite; }
+  .shine { background-image: linear-gradient(100deg, var(--shine-dim) 0%, var(--shine-dim) 18%, color-mix(in srgb, var(--shine-dim) 45%, var(--shine-hi)) 36%, var(--shine-hi) 50%, color-mix(in srgb, var(--shine-dim) 45%, var(--shine-hi)) 64%, var(--shine-dim) 82%, var(--shine-dim) 100%); background-size: 200% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; filter: drop-shadow(0 1px 8px color-mix(in srgb, var(--brand) 22%, transparent)); animation: shine 9s linear infinite; }
+  .shine-brand { background-image: linear-gradient(90deg, var(--brand), #c084fc, #f472b6, #c084fc, var(--brand)); background-size: 220% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; filter: drop-shadow(0 1px 6px color-mix(in srgb, var(--brand) 18%, transparent)); animation: shine 6s linear infinite; }
+  .halo { text-shadow: 0 0 8px color-mix(in srgb, var(--bg) 60%, transparent), 0 1px 2px rgb(0 0 0 / 0.12); }
+  [data-theme='dark'] .halo { text-shadow: 0 0 12px color-mix(in srgb, var(--brand) 22%, transparent), 0 1px 6px rgb(0 0 0 / 0.3); }
+  [data-theme='dark'] .shine { animation-duration: 6s; filter: drop-shadow(0 0 16px color-mix(in srgb, var(--brand) 38%, transparent)); }
+  [data-theme='dark'] .shine-brand { filter: drop-shadow(0 0 12px color-mix(in srgb, var(--brand) 30%, transparent)); }
   .caret { display: inline-block; width: 3px; height: 1em; margin-left: 4px; vertical-align: -0.12em; background: var(--brand); animation: blink 1s steps(1) infinite; }
   .grad-text { background-image: linear-gradient(180deg, var(--text) 35%, color-mix(in srgb, var(--text) 50%, var(--brand))); -webkit-background-clip: text; background-clip: text; color: transparent; }
   .gl { display: block; height: 2px; width: min(60%, 520px); margin: 24px auto 0; border-radius: 2px; background: linear-gradient(90deg, transparent, var(--brand), transparent); box-shadow: 0 0 18px 1px var(--glow); opacity: 0.8; }
