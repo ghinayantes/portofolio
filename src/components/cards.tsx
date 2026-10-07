@@ -58,7 +58,7 @@ export function ProjectCard({ p, i, featured, interactive = false, tilt = true, 
         {p.status && <span className="text-[13px] font-medium" style={{ color: p.wip ? 'var(--accent)' : 'var(--ok)' }}>{localized(p.status, lang)}</span>}
         <h3 className={`font-display ${interactive ? 'text-lg' : 'text-xl'} font-semibold`}><LocLink to={`/project/${projectSlug(p)}`} className="hover:text-brand">{localized(p.title, lang)}</LocLink></h3>
         <p className={interactive ? 'text-sm text-fg2' : 'text-[15px] text-fg2'}>{localized(p.desc, lang)}</p>
-        <div className="flex flex-wrap gap-1.5">{p.tags.map((g) => <span key={localized(g, lang)} className={`rounded-md border border-line bg-muted ${interactive ? 'px-2.5 py-1 text-xs' : 'px-3 py-1 text-[13px]'}`}>{localized(g, lang)}</span>)}</div>
+        <div className="flex flex-wrap gap-1.5">{p.tags.map((g) => <span key={localized(g, lang)} className={`rounded-md border border-brand/25 bg-brand/10 ${interactive ? 'px-2.5 py-1 text-xs' : 'px-3 py-1 text-[13px]'}`}>{localized(g, lang)}</span>)}</div>
         {p.links.length > 0 && <div className="mt-auto flex gap-4 pt-1.5">{p.links.map((link, index) => <a key={localized(link, lang)} href={p.linkHrefs?.[index] || '#'} className="text-sm font-semibold text-brand">{localized(link, lang)}</a>)}</div>}
       </div>
     </article>

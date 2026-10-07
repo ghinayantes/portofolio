@@ -39,7 +39,7 @@ export default function Home() {
             <Link to="/hire" className="btn-ghost">{id ? 'Hubungi aku' : 'Hire me'}</Link>
           </div>
           <div className="mt-10 flex gap-10">
-            {stats.map(([n, label]) => <div key={label}><b className="block font-display text-3xl font-extrabold">{n}</b><span className="text-sm text-fg2">{label}</span></div>)}
+            {stats.map(([n, label]) => <div key={label}><b className="shine block font-display text-3xl font-extrabold">{n}</b><span className="text-sm text-fg2">{label}</span></div>)}
           </div>
         </div>
         <HeroPhoto />
@@ -49,7 +49,7 @@ export default function Home() {
       <Section title={id ? 'Proyek unggulan' : 'Featured project'}>
         <div className="home-featured-project grid gap-6 md:grid-cols-2"><ProjectCard p={projects[0]} i={0} featured interactive tilt={false} reveal={false} /></div>
       </Section>
-      <div className="mt-16 rounded-3xl p-8 text-white md:p-14" style={{ background: 'linear-gradient(135deg,#1B1A5E,#4338CA 70%,#7C3AED)' }}>
+      <div className="mt-16 rounded-3xl border border-white/15 p-8 text-white shadow-[0_24px_80px_-24px_rgba(109,40,217,0.55)] md:p-14" style={{ background: 'linear-gradient(135deg,#150833 0%,#3b1d8f 45%,#6d28d9 75%,#9333ea 100%)' }}>
         <h2 className="font-display text-[clamp(1.5rem,4vw,2.25rem)] font-extrabold">{id ? 'Ayo kerja bareng' : "Let's work together"}</h2>
         <p className="mt-2 opacity-90">{id ? 'Punya proyek, magang, atau pertanyaan?' : 'Have a project, internship, or question?'}</p>
         <Link to="/hire" className="mt-5 inline-flex min-h-11 items-center rounded-full bg-white px-6 font-semibold text-[#1B1A5E]">{id ? 'Kirim pesan' : 'Send a message'}</Link>
