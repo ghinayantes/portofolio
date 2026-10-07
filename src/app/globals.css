@@ -46,7 +46,7 @@ html { scroll-behavior: smooth; scroll-padding-top: 5rem; }
 html.theme-animating, html.theme-animating *, html.theme-animating *::before, html.theme-animating *::after { transition-duration: var(--theme-duration); }
 /* Explore text swaps instantly during a theme flip (single step) instead of fading in
    unsynchronized stages, which read as blinking. Hover motion is untouched outside the flip. */
-html.theme-animating .explore, html.theme-animating .explore *, html.theme-animating .award-preview-swap, html.theme-animating .award-preview-swap *, html.theme-animating .sitemap-graph, html.theme-animating .sitemap-graph *, html.theme-animating header nav, html.theme-animating header nav * { transition: none !important; animation: none !important; }
+html.theme-animating .explore, html.theme-animating .explore *, html.theme-animating .award-preview-swap, html.theme-animating .award-preview-swap *, html.theme-animating .sitemap-graph, html.theme-animating .sitemap-graph *, html.theme-animating header nav, html.theme-animating header nav *, html.theme-animating form.card input, html.theme-animating form.card textarea { transition: none !important; animation: none !important; }
 body {
   background-color: var(--bg);
   background-image: radial-gradient(70% 45% at 50% -5%, var(--glow), transparent 70%);

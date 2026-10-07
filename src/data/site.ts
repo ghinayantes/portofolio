@@ -43,5 +43,4 @@ export const SITE = {
   ),
   contacts,
   hello,
-  socials: contacts.map((c) => [c.label, c.href] as [Pair, string]),
 }
