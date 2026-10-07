@@ -58,7 +58,7 @@ export default async function Page({ params }: Props) {
         )}
         <div className="mt-6 flex flex-wrap gap-1.5">
           {project.tags.map((g) => (
-            <span key={localized(g, lang)} className="rounded-md border border-line bg-muted px-3 py-1 text-[13px]">
+            <span key={localized(g, lang)} className="rounded-md border border-brand/25 bg-brand/10 px-3 py-1 text-[13px]">
               {localized(g, lang)}
             </span>
           ))}
