@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
+import { createContext, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { usePathname } from 'next/navigation'
 import type { Pair } from '../data/nav'
 import type { Lang } from '../lib/i18n'
@@ -15,6 +15,9 @@ const SettingsCtx = createContext<Ctx | null>(null)
 export function SettingsProvider({ lang, children }: { lang: Lang; children: ReactNode }) {
   const [theme, setThemeState] = useState<Theme>('dark')
   const pathname = usePathname()
+  // timer for the theme-animating window (see toggleTheme below)
+  const animTimer = useRef<number | undefined>(undefined)
+  useEffect(() => () => window.clearTimeout(animTimer.current), [])
 
   // sync React state with whatever the init script applied
   useEffect(() => {
@@ -42,6 +45,13 @@ export function SettingsProvider({ lang, children }: { lang: Lang; children: Rea
       const next: Theme = theme === 'dark' ? 'light' : 'dark'
       const apply = (): void => {
         document.documentElement.dataset.theme = next
+        // Sync every element's transition to the page crossfade while the theme flips,
+        // so fast hover transitions (e.g. Explore rows: 0.2s) don't snap ahead of the
+        // 650ms theme blend and flash. Matches the html.theme-animating rule in globals.css.
+        const root = document.documentElement
+        root.classList.add('theme-animating')
+        window.clearTimeout(animTimer.current)
+        animTimer.current = window.setTimeout(() => root.classList.remove('theme-animating'), 700)
         try { localStorage.setItem('theme', next) } catch { /* ignore */ }
         setThemeState(next)
       }
