@@ -49,7 +49,7 @@ function ProjectsExplorer({ list }: { list: C.Project[] }) {
     return okStatus && okStack
   })
   const chip = (active: boolean) =>
-    `rounded-full border px-4 py-2 text-sm font-medium ${active ? 'border-brand bg-brand text-ink' : 'border-line text-fg2 hover:text-fg'}`
+    `rounded-full border px-4 py-2 text-sm font-medium ${active ? 'border-brand bg-brand text-ink' : 'border-brand/25 text-fg2 hover:border-brand/50 hover:text-brand'}`
   return (
     <div>
       <div className="mb-3 flex flex-wrap gap-2" role="group" aria-label={id ? 'Filter status' : 'Status filter'}>
@@ -128,10 +128,10 @@ function About() {
       </div>
       <div className="card self-start">
         <div className="flex items-center gap-4 border-b border-line p-5">
-          {photo && <img src={photo.src} alt={localized(photo.alt, lang)} className="size-16 rounded-full border border-line object-cover" />}
+          {photo && <img src={photo.src} alt={localized(photo.alt, lang)} className="size-16 rounded-full border border-brand/30 object-cover" />}
           <div>
             <b className="block font-display text-lg font-semibold">{SITE.name}</b>
-            {statusEntry && <span className="mt-1 inline-flex items-center gap-1.5 rounded-full border border-line bg-muted px-3 py-1 text-xs font-semibold"><i className="dot" />{localized(statusEntry[1], lang)}</span>}
+            {statusEntry && <span className="mt-1 inline-flex items-center gap-1.5 rounded-full border border-brand/25 bg-brand/10 px-3 py-1 text-xs font-semibold"><i className="dot" />{localized(statusEntry[1], lang)}</span>}
           </div>
         </div>
         <dl>
@@ -155,11 +155,11 @@ function Skills() {
       <div className="card term p-6">
         <div className="win mb-3.5"><span /><span /><span /></div>
         <p className="mb-3.5 font-mono text-[13px] text-brand">{lang === 'id' ? '~ keahlian --tools' : '~ skills --tools'}</p>
-        <div className="grid grid-cols-[repeat(auto-fill,minmax(88px,1fr))] gap-2.5">{tools.items.map((k) => <span key={localized(k, lang)} className="grid aspect-square place-items-center rounded-2xl border border-line bg-fg/5 p-1.5 text-center text-[13px] font-semibold">{localized(k, lang)}</span>)}</div>
+        <div className="grid grid-cols-[repeat(auto-fill,minmax(88px,1fr))] gap-2.5">{tools.items.map((k) => <span key={localized(k, lang)} className="grid aspect-square place-items-center rounded-2xl border border-brand/25 bg-brand/10 p-1.5 text-center text-[13px] font-semibold">{localized(k, lang)}</span>)}</div>
       </div>
       <div className="card p-6">
         <h3 className={h3}>{localized(people.title, lang)}</h3>
-        <div className="grid gap-2.5">{people.items.map((k) => <span key={localized(k, lang)} className="flex items-center justify-between rounded-full border border-line px-4 py-2.5 text-sm font-medium">{localized(k, lang)}<i className="size-2 rounded-full bg-brand/70" /></span>)}</div>
+        <div className="grid gap-2.5">{people.items.map((k) => <span key={localized(k, lang)} className="flex items-center justify-between rounded-full border border-brand/25 px-4 py-2.5 text-sm font-medium">{localized(k, lang)}<i className="size-2 rounded-full bg-brand/70" /></span>)}</div>
       </div>
     </Grid3>
   )
@@ -216,8 +216,8 @@ export const PAGES: Record<string, () => ReactElement> = {
   about: About,
   portfolio: Portfolio,
   skills: Skills,
-  certificate: () => <Grid2>{C.certificates.map((n, i) => <Ticket key={i} n={n} />)}</Grid2>,
-  news: () => <div className="grid max-w-3xl gap-4">{C.news.map((n, i) => <FeedItem key={i} n={n} />)}</div>,
+  certificate: () => <Grid3>{C.certificates.map((n, i) => <Ticket key={i} n={n} i={i} />)}</Grid3>,
+  news: () => <div className="grid max-w-3xl gap-5">{C.news.map((n, i) => <FeedItem key={i} n={n} i={i} />)}</div>,
   work: Work,
   project: () => <ProjectsExplorer list={C.projects} />,
   organization: () => <Timeline items={C.organizations} />,
