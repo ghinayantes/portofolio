@@ -26,14 +26,14 @@ export default function Home() {
           <span className="inline-flex items-center gap-2 rounded-full border border-line bg-surface px-3.5 py-1.5 text-sm text-fg2">
             <i className="dot" />{id ? 'Terbuka untuk peluang' : 'Open to opportunities'}
           </span>
-          <p className="mt-6 text-[clamp(1rem,2vw,1.3rem)] font-semibold text-fg2">{t(SITE.greeting)}</p>
+          <p className="halo mt-6 text-[clamp(1rem,2vw,1.3rem)] font-semibold text-fg2">{t(SITE.greeting)}</p>
           <h1 className="shine pb-1 font-display text-name font-extrabold leading-[1.05] tracking-[-.045em]">{SITE.name}</h1>
           <i className="gl gl-left" />
-          <p className="font-display text-[clamp(1.4rem,3.2vw,2.2rem)] font-bold">
+          <p className="halo font-display text-[clamp(1.4rem,3.2vw,2.2rem)] font-bold">
             <span aria-hidden>{id ? 'Aku seorang ' : 'I am a '}<span className="shine-brand">{typed}</span><i className="caret" /></span>
             <span className="sr-only">{t(SITE.role)}</span>
           </p>
-          <p className="mb-7 mt-4 max-w-[58ch] text-lg text-fg2">{t(SITE.lead)}</p>
+          <p className="halo mb-7 mt-4 max-w-[58ch] text-lg text-fg2">{t(SITE.lead)}</p>
           <div className="flex flex-wrap gap-3">
             <Link to="/project" className="btn-primary">{id ? 'Lihat proyek' : 'View projects'}</Link>
             <Link to="/hire" className="btn-ghost">{id ? 'Hubungi aku' : 'Hire me'}</Link>
