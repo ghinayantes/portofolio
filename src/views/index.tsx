@@ -7,7 +7,7 @@ import { SITE } from '../data/site'
 import { NAV, localized, pair } from '../data/nav'
 import type { Lang } from '../lib/i18n'
 import { useSettings } from '../context/Settings'
-import { Empty, FeedItem, Medal, ProjectCard, Ticket, Timeline } from '../components/cards'
+import { AwardPreview, AwardRow, Empty, FeedItem, ProjectCard, Ticket, Timeline } from '../components/cards'
 import { Section } from '../components/ui'
 import Hire from './Hire'
 
@@ -73,7 +73,44 @@ function ProjectsExplorer({ list }: { list: C.Project[] }) {
     </div>
   )
 }
-const Awards = () => <Grid3>{C.awards.map((n, i) => <Medal key={i} n={n} i={i} />)}</Grid3>
+/** Awards grouped by year with a sticky hover preview (desktop); inline bullets on mobile. */
+function Awards() {
+  const { lang } = useSettings()
+  const id = lang === 'id'
+  const [sel, setSel] = useState(0)
+  const groups = useMemo(() => {
+    const years: string[] = []
+    const byYear = new Map<string, { award: C.Award; index: number }[]>()
+    C.awards.forEach((award, index) => {
+      const year = localized(award.meta, 'en')
+      if (!byYear.has(year)) { byYear.set(year, []); years.push(year) }
+      byYear.get(year)?.push({ award, index })
+    })
+    return years.map((year) => ({ year, items: byYear.get(year) ?? [] }))
+  }, [])
+  if (C.awards.length === 0) return <Empty text={pair('No awards yet.', 'Belum ada penghargaan.')} />
+  const current = C.awards[Math.min(sel, C.awards.length - 1)] ?? null
+  return (
+    <div className="grid gap-10 lg:grid-cols-[1.5fr_1fr]">
+      <div>
+        {groups.map((g) => (
+          <section key={g.year} aria-label={g.year} className="mb-10 last:mb-0">
+            <h2 className="mb-2 font-display text-[clamp(1.4rem,3vw,1.75rem)] font-extrabold tracking-tight">{g.year}</h2>
+            {g.items.map(({ award, index }) => (
+              <AwardRow key={index} a={award} selected={index === sel} onSelect={() => setSel(index)} />
+            ))}
+          </section>
+        ))}
+      </div>
+      <aside className="hidden lg:block" aria-hidden="true">
+        <div className="sticky top-24">
+          <p className="mb-3 text-sm font-semibold text-fg2">{id ? 'Pratinjau' : 'Preview'}</p>
+          <AwardPreview a={current} />
+        </div>
+      </aside>
+    </div>
+  )
+}
 const Work = () => <Empty text={pair('No work history yet. Add your first internship or freelance project here, with your role and one result.', 'Belum ada pengalaman kerja. Tambahkan pengalaman magang atau proyek lepas pertamamu, beserta peran dan hasilnya.')} />
 
 function About() {

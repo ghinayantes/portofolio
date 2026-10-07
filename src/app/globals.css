@@ -46,7 +46,7 @@ html { scroll-behavior: smooth; scroll-padding-top: 5rem; }
 html.theme-animating, html.theme-animating *, html.theme-animating *::before, html.theme-animating *::after { transition-duration: var(--theme-duration); }
 /* Explore text swaps instantly during a theme flip (single step) instead of fading in
    unsynchronized stages, which read as blinking. Hover motion is untouched outside the flip. */
-html.theme-animating .explore, html.theme-animating .explore * { transition: none !important; animation: none !important; }
+html.theme-animating .explore, html.theme-animating .explore *, html.theme-animating .award-preview-swap, html.theme-animating .award-preview-swap * { transition: none !important; animation: none !important; }
 body {
   background-color: var(--bg);
   background-image: radial-gradient(70% 45% at 50% -5%, var(--glow), transparent 70%);
@@ -112,8 +112,11 @@ header, footer { transition: background-color var(--theme-duration) var(--theme-
   .explore[data-done='true'] .explore-item { animation: none; opacity: 1; transform: none; }
   /* Explore text: desc/initial/badge have no hover color change, so give them the same
      theme-synced crossfade — otherwise they snap instantly while the title fades, and the row blinks in parts. */
-  .explore-static, .explore-item small { transition: color var(--theme-duration) var(--theme-ease), background-color var(--theme-duration) var(--theme-ease), border-color var(--theme-duration) var(--theme-ease); }
+  .explore-static, .explore-item small, .award-preview-swap li { transition: color var(--theme-duration) var(--theme-ease), background-color var(--theme-duration) var(--theme-ease), border-color var(--theme-duration) var(--theme-ease); }
   @keyframes explore-in { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+  /* Award preview: soft swap when the hovered award changes. */
+  .award-preview-swap { animation: award-preview-in 0.35s ease both; }
+  @keyframes award-preview-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
   /* Decorative gap glows behind project grids (static, like reference circle art) */
   .project-cards-grid { position: relative; isolation: isolate; }
   .project-cards-grid::before, .project-cards-grid::after { content: ''; position: absolute; z-index: 0; width: 22rem; height: 22rem; border-radius: 50%; pointer-events: none; filter: blur(70px); opacity: 0.5; }
@@ -214,7 +217,7 @@ header, footer { transition: background-color var(--theme-duration) var(--theme-
 }
 @media (prefers-reduced-motion: reduce) {
   ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
-  .shine, .shine-brand, .caret, .dot, .day-sun, [data-theme='light'] .day-sun::after { animation: none; }
+  .shine, .shine-brand, .caret, .dot, .day-sun, [data-theme='light'] .day-sun::after, .award-preview-swap { animation: none; }
   .shine { background-position: 100% 0; }
   html { scroll-behavior: auto; } .card, .ln, .btn-primary, .btn-ghost, .day-sun { transition: none; }
   .card.project-card, .project-card-stage, .project-card-hitbox:hover .project-card-stage > .card.project-card { transform: none; transition: none; }

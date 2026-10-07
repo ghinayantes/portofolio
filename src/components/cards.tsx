@@ -1,4 +1,4 @@
-import { projectSlug, type Entry, type Note, type Project } from '../data/content'
+import { projectSlug, type Award, type Entry, type Note, type Project } from '../data/content'
 import { useEffect, useRef, useState, type PointerEvent } from 'react'
 import { LocLink } from './LocLink'
 import { localized, type Localized } from '../data/nav'
@@ -115,6 +115,53 @@ export const Medal = ({ n, i }: { n: Note; i: number }) => {
     <b className="my-1 block font-display text-xl font-semibold">{localized(n.title, lang)}</b>
     <p className="text-[15px] text-fg2">{localized(n.desc, lang)}</p>
   </div>
+}
+
+/** Award list row (reference-style): date, title, category + organizer. Bullets show inline on mobile; on md+ they live in the sticky preview. */
+export function AwardRow({ a, selected, onSelect }: { a: Award; selected: boolean; onSelect: () => void }) {
+  const { lang } = useSettings()
+  const bullets = a.bullets && a.bullets.length > 0 ? a.bullets : [a.desc]
+  return (
+    <article
+      tabIndex={0}
+      data-active={selected}
+      onMouseEnter={onSelect}
+      onFocus={onSelect}
+      className="group cursor-default border-t border-line px-1 py-5 transition-colors last:border-b data-[active=true]:bg-fg/5"
+    >
+      <p className="text-[13px] font-semibold text-fg2">{a.date ? localized(a.date, lang) : localized(a.meta, lang)}</p>
+      <h3 className="mt-1 font-display text-xl font-semibold transition-colors group-data-[active=true]:text-brand">{localized(a.title, lang)}</h3>
+      <p className="mt-1.5 flex flex-wrap items-center gap-2">
+        {a.category && <span className="rounded-full border border-line bg-muted px-3 py-0.5 text-xs font-semibold text-fg2">{localized(a.category, lang)}</span>}
+        {a.org && <span className="text-sm text-fg2">{localized(a.org, lang)}</span>}
+      </p>
+      <ul className="mt-3 space-y-1.5 md:hidden">
+        {bullets.map((b) => <li key={localized(b, lang)} className="flex gap-2 text-[15px] text-fg2"><span aria-hidden="true" className="text-brand">•</span>{localized(b, lang)}</li>)}
+      </ul>
+    </article>
+  )
+}
+
+/** Sticky hover preview for the award list (desktop). Shows full detail of the selected award. */
+export function AwardPreview({ a }: { a: Award | null }) {
+  const { lang } = useSettings()
+  if (!a) {
+    return <div className="card p-6 text-[15px] text-fg2">{lang === 'id' ? 'Arahkan kursor ke penghargaan untuk melihat detail.' : 'Hover an award to see details.'}</div>
+  }
+  const bullets = a.bullets && a.bullets.length > 0 ? a.bullets : [a.desc]
+  return (
+    <div key={localized(a.title, 'en')} className="award-preview-swap card p-6">
+      <p className="text-[13px] font-semibold text-fg2">{a.date ? localized(a.date, lang) : localized(a.meta, lang)}</p>
+      <h3 className="mt-1 font-display text-2xl font-bold tracking-tight">{localized(a.title, lang)}</h3>
+      <p className="mt-2 flex flex-wrap items-center gap-2">
+        {a.category && <span className="rounded-full border border-line bg-muted px-3 py-0.5 text-xs font-semibold text-fg2">{localized(a.category, lang)}</span>}
+        {a.org && <span className="text-sm font-semibold text-brand">{localized(a.org, lang)}</span>}
+      </p>
+      <ul className="mt-4 space-y-2 border-t border-line pt-4">
+        {bullets.map((b) => <li key={localized(b, lang)} className="flex gap-2 text-[15px] text-fg2"><span aria-hidden="true" className="text-brand">•</span>{localized(b, lang)}</li>)}
+      </ul>
+    </div>
+  )
 }
 
 export function Ticket({ n }: { n: Note }) {

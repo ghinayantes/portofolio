@@ -3,6 +3,8 @@ import { localized, pair, type Localized, type Pair } from './nav'
 export type Project = { title: Localized; desc: Pair; tags: Localized[]; links: Localized[]; linkHrefs?: string[]; image?: string; status?: Pair; wip?: boolean }
 export type Entry = { title: Localized; when: Pair; desc: Pair; current?: boolean }
 export type Note = { meta: Pair; title: Localized; desc: Pair }
+/** Award with reference-style detail fields. All detail fields are optional and fall back to desc. */
+export type Award = Note & { org?: Pair; category?: Localized; date?: Pair; bullets?: Pair[] }
 export type SkillGroup = { title: Pair; items: Localized[] }
 
 /** URL slug derived from the English title, e.g. 'Food Waste Stop' -> 'food-waste-stop'. */
@@ -52,9 +54,9 @@ export const milestones: Entry[] = [
   { title: pair('Finished high school', 'Lulus SMA'), when: pair('2025', '2025'), desc: pair('Completed high school.', 'Menyelesaikan pendidikan sekolah menengah atas.') },
 ]
 
-export const awards: Note[] = [
-  { meta: pair('2026', '2026'), title: pair('Award name', 'Nama penghargaan'), desc: pair('Organizer and one line on why it mattered.', 'Penyelenggara dan penjelasan singkat tentang arti penghargaan ini.') },
-  { meta: pair('2025', '2025'), title: pair('Scholarship grantee', 'Penerima beasiswa'), desc: pair('Selected for a scholarship and mentorship program.', 'Terpilih untuk mengikuti program beasiswa dan pendampingan.') },
+export const awards: Award[] = [
+  { meta: pair('2026', '2026'), date: pair('June 2026', 'Juni 2026'), title: pair('Award name', 'Nama penghargaan'), category: pair('Competition', 'Kompetisi'), org: pair('Organizer name', 'Nama penyelenggara'), desc: pair('Organizer and one line on why it mattered.', 'Penyelenggara dan penjelasan singkat tentang arti penghargaan ini.'), bullets: [pair('What you achieved and why it mattered.', 'Apa yang dicapai dan mengapa itu penting.')] },
+  { meta: pair('2025', '2025'), date: pair('November 2025 – Present', 'November 2025 – Sekarang'), title: pair('Scholarship grantee', 'Penerima beasiswa'), category: pair('Scholarship', 'Beasiswa'), org: pair('Program provider', 'Penyelenggara program'), desc: pair('Selected for a scholarship and mentorship program.', 'Terpilih untuk mengikuti program beasiswa dan pendampingan.'), bullets: [pair('Selected for a scholarship and mentorship program.', 'Terpilih untuk mengikuti program beasiswa dan pendampingan.')] },
 ]
 
 export const certificates: Note[] = [
