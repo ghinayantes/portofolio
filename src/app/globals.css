@@ -46,7 +46,7 @@ html { scroll-behavior: smooth; scroll-padding-top: 5rem; }
 html.theme-animating, html.theme-animating *, html.theme-animating *::before, html.theme-animating *::after { transition-duration: var(--theme-duration); }
 /* Explore text swaps instantly during a theme flip (single step) instead of fading in
    unsynchronized stages, which read as blinking. Hover motion is untouched outside the flip. */
-html.theme-animating .explore, html.theme-animating .explore *, html.theme-animating .award-preview-swap, html.theme-animating .award-preview-swap * { transition: none !important; animation: none !important; }
+html.theme-animating .explore, html.theme-animating .explore *, html.theme-animating .award-preview-swap, html.theme-animating .award-preview-swap *, html.theme-animating .sitemap-graph, html.theme-animating .sitemap-graph *, html.theme-animating header nav, html.theme-animating header nav * { transition: none !important; animation: none !important; }
 body {
   background-color: var(--bg);
   background-image: radial-gradient(70% 45% at 50% -5%, var(--glow), transparent 70%);
@@ -137,6 +137,40 @@ footer { backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
   /* Award preview: soft swap when the hovered award changes. */
   .award-preview-swap { animation: award-preview-in 0.35s ease both; }
   @keyframes award-preview-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  /* Phase 5: sitemap graph — vertices (pills) joined by edges (rails + node dots). */
+  .sitemap-graph { position: relative; }
+  .sitemap-graph > div:first-child::after { content: ''; display: block; width: 2px; height: 28px; margin: 20px auto 22px; border-radius: 2px; background: linear-gradient(180deg, var(--brand), color-mix(in srgb, var(--brand) 30%, transparent)); }
+  @media (min-width: 768px) {
+    .sitemap-cols > div:last-child { text-align: right; }
+    .sitemap-cols > div:last-child .sitemap-group h3 { flex-direction: row-reverse; }
+    .sitemap-cols > div:last-child .sitemap-group li { padding: 5px 28px 5px 0; }
+    .sitemap-cols > div:last-child .sitemap-group li::before { left: auto; right: 9px; }
+    .sitemap-cols > div:last-child .sitemap-group li::after { left: auto; right: 4px; }
+  }
+  .sitemap-graph > div:last-child { position: relative; }
+  .sitemap-cols { position: relative; display: flex; flex-direction: column; gap: 2rem; }
+  .sitemap-cols > div { display: flex; flex-direction: column; gap: 2rem; }
+  @media (min-width: 768px) {
+    .sitemap-cols { flex-direction: row; justify-content: space-between; align-items: flex-start; }
+    .sitemap-cols > div { width: calc(50% - 28px); }
+    .sitemap-cols::before { content: ''; position: absolute; top: 4px; bottom: 4px; left: 50%; width: 2px; transform: translateX(-50%); background: linear-gradient(180deg, var(--brand), color-mix(in srgb, var(--brand) 15%, transparent)); }
+  }
+  .sitemap-root { display: inline-flex; align-items: center; border-radius: 999px; padding: 10px 30px; font-size: 18px; line-height: 1.5; color: #fff; background: linear-gradient(135deg, var(--brand), #9333ea); box-shadow: 0 12px 32px -12px color-mix(in srgb, var(--brand) 55%, transparent); transition: transform 0.2s, box-shadow 0.2s; }
+  .sitemap-root:hover { transform: translateY(-2px); color: #fff; box-shadow: 0 18px 44px -12px color-mix(in srgb, var(--brand) 65%, transparent); }
+  .sitemap-group h3 { display: flex; align-items: center; gap: 10px; font-family: var(--font-display); font-size: 17px; font-weight: 700; }
+  .sitemap-group h3 span { border-radius: 999px; border: 1px solid color-mix(in srgb, var(--brand) 35%, var(--border)); background: color-mix(in srgb, var(--brand) 10%, var(--surface)); padding: 6px 18px; }
+  .sitemap-group h3 i { font-style: normal; font-size: 12px; font-weight: 700; color: var(--text2); }
+  .sitemap-group h3::after { content: ''; flex: 1; height: 2px; border-radius: 2px; background: linear-gradient(90deg, color-mix(in srgb, var(--brand) 50%, transparent), transparent); }
+  .sitemap-group ul { list-style: none; margin: 14px 0 0; padding: 0 0 0 6px; }
+  .sitemap-group li { position: relative; padding: 5px 0 5px 28px; }
+  .sitemap-group li::before { content: ''; position: absolute; left: 9px; top: 0; bottom: 0; width: 2px; background: color-mix(in srgb, var(--brand) 30%, transparent); }
+  .sitemap-group li:last-child::before { bottom: auto; height: 26px; }
+  .sitemap-group li::after { content: ''; position: absolute; left: 4px; top: 13px; width: 12px; height: 12px; border-radius: 50%; background: var(--surface); border: 2px solid var(--brand); box-shadow: 0 0 10px color-mix(in srgb, var(--brand) 60%, transparent); }
+  .sitemap-group li a { display: inline-block; border-radius: 999px; border: 1px solid var(--border); padding: 5px 16px; font-size: 14px; font-weight: 600; transition: color var(--theme-duration) var(--theme-ease), border-color var(--theme-duration) var(--theme-ease), box-shadow 0.2s ease; }
+  .sitemap-group li a:hover { color: var(--brand); border-color: color-mix(in srgb, var(--brand) 55%, var(--border)); box-shadow: 0 0 16px color-mix(in srgb, var(--brand) 30%, transparent); }
+  /* Dropdown: panel + desc crossfade with the theme so open menus never blink in parts. */
+  header nav div.relative > div { transition: background-color var(--theme-duration) var(--theme-ease), border-color var(--theme-duration) var(--theme-ease); }
+  header nav small { transition: color var(--theme-duration) var(--theme-ease); }
   /* Decorative gap glows behind project grids (static, like reference circle art) */
   .project-cards-grid { position: relative; isolation: isolate; }
   .project-cards-grid::before, .project-cards-grid::after { content: ''; position: absolute; z-index: 0; width: 22rem; height: 22rem; border-radius: 50%; pointer-events: none; filter: blur(70px); opacity: 0.5; }

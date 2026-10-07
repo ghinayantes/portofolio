@@ -180,17 +180,34 @@ function Portfolio() {
   )
 }
 
+/** Sitemap as a discrete-math graph: left/right vertex columns joined by a center trunk. */
 function Sitemap() {
   const { t, lang } = useSettings()
+  const id = lang === 'id'
+  const half = Math.ceil(NAV.length / 2)
+  const cols = [NAV.slice(0, half), NAV.slice(half)]
   return (
-    <ul className="max-w-xl border-l-2 border-line pl-5">
-      <li className="my-2"><Link to="/" className="font-medium text-brand">{lang === 'id' ? 'Beranda' : 'Home'}</Link></li>
-      {NAV.map((g, i) => (
-        <li key={i} className="my-2"><b>{t(g.title)}</b>
-          <ul className="ml-1 border-l-2 border-line pl-5">{g.items.map((x) => <li key={x.key} className="my-2"><Link to={'/' + x.key} className="font-medium text-brand">{t(x.title)}</Link></li>)}</ul>
-        </li>
-      ))}
-    </ul>
+    <div className="sitemap-graph mx-auto max-w-5xl">
+      <div className="flex flex-col items-center">
+        <Link to="/" className="sitemap-root font-display text-lg font-bold">{id ? 'Beranda' : 'Home'}</Link>
+      </div>
+      <div className="sitemap-cols">
+        {cols.map((col, ci) => (
+          <div key={ci}>
+            {col.map((g, i) => (
+              <section key={i} aria-label={t(g.title)} className="sitemap-group">
+                <h3><span>{t(g.title)}</span><i>{g.items.length}</i></h3>
+                <ul>
+                  {g.items.map((x) => (
+                    <li key={x.key}><Link to={'/' + x.key}>{t(x.title)}</Link></li>
+                  ))}
+                </ul>
+              </section>
+            ))}
+          </div>
+        ))}
+      </div>
+    </div>
   )
 }
 
