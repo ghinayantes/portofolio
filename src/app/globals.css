@@ -66,7 +66,8 @@ header, footer { transition: background-color var(--theme-duration) var(--theme-
   -webkit-mask-image: radial-gradient(circle at var(--wipe-x) var(--wipe-y), #000 0, #000 calc(var(--wipe-r) - var(--wipe-feather)), transparent var(--wipe-r));
 }
 @keyframes theme-wipe-expand { from { --wipe-r: 0px; } to { --wipe-r: var(--wipe-max); } }
-[data-theme='light'] body { background-image: linear-gradient(180deg, #cfeaff 0%, #e2f3ff 46%, #f4faff 100%); }
+[data-theme='dark'] body { background-image: radial-gradient(55% 40% at 12% 0%, color-mix(in srgb, var(--brand) 16%, transparent), transparent 70%), radial-gradient(45% 35% at 88% 12%, color-mix(in srgb, #c084fc 10%, transparent), transparent 70%), radial-gradient(70% 45% at 50% -5%, var(--glow), transparent 70%); }
+[data-theme='light'] body { background-image: radial-gradient(50% 35% at 8% 0%, color-mix(in srgb, var(--brand) 12%, transparent), transparent 70%), radial-gradient(45% 35% at 92% 8%, color-mix(in srgb, #c084fc 12%, transparent), transparent 70%), linear-gradient(180deg, #cfeaff 0%, #e2f3ff 46%, #f4faff 100%); }
 /* background-attachment: fixed repaints badly on iOS while scrolling; scroll is safe on touch/small screens */
 @media (hover: none), (max-width: 767px) { body { background-attachment: scroll; } }
 .day-sun { top: 7rem; right: 10%; width: 9rem; height: 9rem; border-radius: 50%; opacity: 0; scale: 0.88; translate: 0 10px; filter: blur(6px) saturate(0.92); background: radial-gradient(circle at 34% 28%, rgb(255 255 255 / 0.85) 0 6%, rgb(255 255 255 / 0) 24%), radial-gradient(circle at 50% 55%, #fffdf6 0%, #fff6d8 28%, #ffedb0 52%, #ffe08a 76%, #ffcf6e 100%); border: none; box-shadow: inset 0 -14px 28px rgb(255 180 90 / 0.25), inset 0 10px 22px rgb(255 255 255 / 0.55), 0 0 24px 8px rgb(255 214 120 / 0.22), 0 0 90px 34px rgb(255 205 110 / 0.14); transition: opacity 800ms var(--wipe-ease), scale 900ms var(--wipe-ease), translate 1100ms var(--wipe-ease), filter 1000ms var(--wipe-ease); }
@@ -85,13 +86,16 @@ header, footer { transition: background-color var(--theme-duration) var(--theme-
   .btn-ghost { border: 1px solid var(--border); }
   .icon-btn { min-width: 44px; min-height: 44px; border-radius: 9999px; border: 1px solid var(--border); background: var(--surface); font-size: 13px; font-weight: 600; transition: background-color var(--theme-duration) var(--theme-ease), border-color var(--theme-duration) var(--theme-ease), color var(--theme-duration) var(--theme-ease), transform 0.2s; }
 
-  /* Hero text: moving shine on the name + role word */
-  .shine { background-image: linear-gradient(100deg, var(--shine-dim) 0%, var(--shine-dim) 18%, color-mix(in srgb, var(--shine-dim) 45%, var(--shine-hi)) 36%, var(--shine-hi) 50%, color-mix(in srgb, var(--shine-dim) 45%, var(--shine-hi)) 64%, var(--shine-dim) 82%, var(--shine-dim) 100%); background-size: 200% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; filter: drop-shadow(0 1px 8px color-mix(in srgb, var(--brand) 22%, transparent)); animation: shine 9s linear infinite; }
+  /* Hero text: moving shine on the name. Solid, low-glow sweep so glyphs stay crisp. */
+  .shine { background-image: linear-gradient(100deg, var(--shine-dim) 0%, var(--shine-dim) 38%, color-mix(in srgb, var(--shine-dim) 45%, var(--shine-hi)) 46%, var(--shine-hi) 50%, color-mix(in srgb, var(--shine-dim) 45%, var(--shine-hi)) 54%, var(--shine-dim) 62%, var(--shine-dim) 100%); background-size: 200% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: shine 9s linear infinite; }
   .shine-brand { background-image: linear-gradient(90deg, var(--brand), #c084fc, #f472b6, #c084fc, var(--brand)); background-size: 220% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; filter: drop-shadow(0 1px 6px color-mix(in srgb, var(--brand) 18%, transparent)); animation: shine 6s linear infinite; }
+  /* Thin edge around display text for legibility over busy backgrounds. Fill paints over the stroke inner half. */
+  .name-outline { -webkit-text-stroke: 1px color-mix(in srgb, var(--text) 28%, transparent); paint-order: stroke fill; }
   .halo { text-shadow: 0 0 8px color-mix(in srgb, var(--bg) 60%, transparent), 0 1px 2px rgb(0 0 0 / 0.12); }
   [data-theme='dark'] .halo { text-shadow: 0 0 12px color-mix(in srgb, var(--brand) 22%, transparent), 0 1px 6px rgb(0 0 0 / 0.3); }
-  [data-theme='dark'] .shine { animation-duration: 6s; filter: drop-shadow(0 0 16px color-mix(in srgb, var(--brand) 38%, transparent)); }
+  [data-theme='dark'] .shine { animation-duration: 6s; }
   [data-theme='dark'] .shine-brand { filter: drop-shadow(0 0 12px color-mix(in srgb, var(--brand) 30%, transparent)); }
+  [data-theme='light'] .shine-brand { background-image: linear-gradient(90deg, #4338ca, #6d28d9, #be185d, #6d28d9, #4338ca); }
   .caret { display: inline-block; width: 3px; height: 1em; margin-left: 4px; vertical-align: -0.12em; background: var(--brand); animation: blink 1s steps(1) infinite; }
   .grad-text { background-image: linear-gradient(180deg, var(--text) 35%, color-mix(in srgb, var(--text) 50%, var(--brand))); -webkit-background-clip: text; background-clip: text; color: transparent; }
   .gl { display: block; height: 2px; width: min(60%, 520px); margin: 24px auto 0; border-radius: 2px; background: linear-gradient(90deg, transparent, var(--brand), transparent); box-shadow: 0 0 18px 1px var(--glow); opacity: 0.8; }
@@ -104,6 +108,10 @@ header, footer { transition: background-color var(--theme-duration) var(--theme-
   .card { position: relative; isolation: isolate; overflow: hidden; border-radius: 20px; border: 1px solid color-mix(in srgb, var(--text) 9%, transparent); background: linear-gradient(180deg, color-mix(in srgb, var(--text) 4%, var(--surface)), var(--surface)); box-shadow: var(--shadow-soft), inset 0 1px 0 color-mix(in srgb, var(--text) 7%, transparent); transition: transform 0.2s, background-color var(--theme-duration) var(--theme-ease), border-color var(--theme-duration) var(--theme-ease), box-shadow var(--theme-duration) var(--theme-ease); }
   .card::after { content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none; opacity: 0; transition: opacity 0.35s; background: radial-gradient(280px circle at var(--mx, 50%) var(--my, 50%), color-mix(in srgb, var(--brand) 8%, transparent), transparent 70%); }
   .card:hover::after { opacity: 1; }
+  /* Phase 1 theme identity: cards carry the theme instead of plain surfaces. Layout untouched. */
+  [data-theme='dark'] .card { background: linear-gradient(180deg, color-mix(in srgb, var(--brand) 8%, var(--surface)), color-mix(in srgb, var(--brand) 2%, var(--surface))); border-color: color-mix(in srgb, var(--brand) 22%, var(--border)); box-shadow: var(--shadow-lift), inset 0 1px 0 color-mix(in srgb, white 8%, transparent); }
+  [data-theme='light'] .card { background: linear-gradient(180deg, #ffffff, color-mix(in srgb, var(--brand) 5%, #ffffff)); border-color: color-mix(in srgb, var(--brand) 16%, var(--border)); box-shadow: var(--shadow-soft), 0 16px 40px -18px color-mix(in srgb, var(--brand) 25%, transparent); }
+  [data-theme='dark'] a.card:not(.project-card):hover, [data-theme='dark'] article.card:not(.project-card):hover { border-color: color-mix(in srgb, var(--brand) 55%, transparent); box-shadow: var(--shadow-lift), 0 0 28px color-mix(in srgb, var(--brand) 28%, transparent); }
   /* Explore: achievement-row stagger reveal (JS flips .explore[data-in='true'] via IntersectionObserver).
      Entrance uses animation with --d stagger so theme toggles (color/bg/border) stay instant.
      Interactions (padding/color/bg/border/shadow) use fast transitions with zero delay. */

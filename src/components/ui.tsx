@@ -7,7 +7,7 @@ import { useSettings } from '../context/Settings'
 
 export const Section = ({ title, children }: { title: string; children: ReactNode }) => (
   <section className="mt-14">
-    <h2 className="mb-5 font-display text-[clamp(1.4rem,3vw,1.75rem)] font-extrabold tracking-tight">{title}</h2>
+    <h2 className="shine mb-5 font-display text-[clamp(1.4rem,3vw,1.75rem)] font-extrabold tracking-tight">{title}</h2>
     {children}
   </section>
 )
