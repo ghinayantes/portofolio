@@ -3,6 +3,10 @@ import { localized, pair, type Localized, type Pair } from './nav'
 export type Project = { title: Localized; desc: Pair; tags: Localized[]; links: Localized[]; linkHrefs?: string[]; image?: string; status?: Pair; wip?: boolean }
 export type Entry = { title: Localized; when: Pair; desc: Pair; current?: boolean }
 export type Note = { meta: Pair; title: Localized; desc: Pair }
+/** Certificate with optional image (falls back to a gradient + medal). */
+export type Certificate = Note & { image?: string }
+/** News item with optional editorial fields (image, tag chip, org line). */
+export type NewsItem = Note & { image?: string; tag?: Localized; org?: Localized }
 /** Award with reference-style detail fields. All detail fields are optional and fall back to desc. */
 export type Award = Note & { org?: Pair; category?: Localized; date?: Pair; bullets?: Pair[] }
 export type SkillGroup = { title: Pair; items: Localized[] }
@@ -59,13 +63,13 @@ export const awards: Award[] = [
   { meta: pair('2025', '2025'), date: pair('November 2025 – Present', 'November 2025 – Sekarang'), title: pair('Scholarship grantee', 'Penerima beasiswa'), category: pair('Scholarship', 'Beasiswa'), org: pair('Program provider', 'Penyelenggara program'), desc: pair('Selected for a scholarship and mentorship program.', 'Terpilih untuk mengikuti program beasiswa dan pendampingan.'), bullets: [pair('Selected for a scholarship and mentorship program.', 'Terpilih untuk mengikuti program beasiswa dan pendampingan.')] },
 ]
 
-export const certificates: Note[] = [
+export const certificates: Certificate[] = [
   { meta: pair('Issuer, 2026', 'Penerbit, 2026'), title: pair('Certificate name', 'Nama sertifikat'), desc: pair('What you learned and the skills it covers.', 'Hal yang dipelajari dan keterampilan yang tercakup.') },
   { meta: pair('Issuer, 2025', 'Penerbit, 2025'), title: pair('Certificate name', 'Nama sertifikat'), desc: pair('What you learned and the skills it covers.', 'Hal yang dipelajari dan keterampilan yang tercakup.') },
   { meta: pair('Issuer, 2025', 'Penerbit, 2025'), title: pair('Certificate name', 'Nama sertifikat'), desc: pair('What you learned and the skills it covers.', 'Hal yang dipelajari dan keterampilan yang tercakup.') },
 ]
 
-export const news: Note[] = [
+export const news: NewsItem[] = [
   { meta: pair('Oct 2026', 'Okt 2026'), title: pair('Designing my portfolio in Figma', 'Merancang portofolio di Figma'), desc: pair('Notes on the sitemap, design tokens, and what I would change.', 'Catatan tentang peta situs, token desain, dan hal yang ingin kuubah.') },
   { meta: pair('Sep 2026', 'Sep 2026'), title: pair('Wrapping up a team project', 'Menuntaskan proyek tim'), desc: pair('What worked, what slipped, and what I learned.', 'Hal yang berjalan baik, yang tertunda, dan pelajaran yang kudapat.') },
 ]
