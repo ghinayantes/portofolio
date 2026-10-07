@@ -1,135 +1,101 @@
 'use client'
 
-import { useEffect, useRef, useState, type CSSProperties } from 'react'
+import type { CSSProperties } from 'react'
+import type { IconType } from 'react-icons'
+import {
+  FaBriefcase, FaCertificate, FaClockRotateLeft, FaCode, FaDiagramProject, FaEnvelopeOpenText, FaFeatherPointed,
+  FaGraduationCap, FaLayerGroup, FaNewspaper, FaPenRuler, FaPeopleGroup, FaSitemap, FaTrophy, FaUser,
+} from 'react-icons/fa6'
 import { LocLink as Link } from './LocLink'
-import { localized, NAV, type NavGroup, type NavItem } from '../data/nav'
+import { Reveal } from './motion'
+import { NAV, localized } from '../data/nav'
+import { projects } from '../data/content'
 import { useSettings } from '../context/Settings'
 
-/** Observes the whole Explore grid once, then flips data-in so items stagger in. Mirrors the cards.tsx reveal pattern.
-    Once the entrance finishes, flips data-done so the animation is stripped — theme toggles must never replay it. */
-function useExploreReveal(itemCount: number) {
-  const ref = useRef<HTMLDivElement>(null)
-  const [shown, setShown] = useState(false)
-  const [done, setDone] = useState(false)
-  useEffect(() => {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) {
-      setShown(true)
-      setDone(true)
-      return
-    }
-    const el = ref.current
-    if (!el) return
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        if (entry?.isIntersecting) {
-          setShown(true)
-          io.disconnect()
-        }
-      },
-      { threshold: 0.08, rootMargin: '0px 0px -6% 0px' },
-    )
-    io.observe(el)
-    return () => io.disconnect()
-  }, [])
-  useEffect(() => {
-    if (!shown || done) return
-    // longest stagger delay + entrance duration, then park on the final state with no animation to replay
-    const t = window.setTimeout(() => setDone(true), itemCount * 70 + 700)
-    return () => window.clearTimeout(t)
-  }, [shown, done, itemCount])
-  return { ref, shown, done }
+const ICONS: Record<string, IconType> = {
+  about: FaUser, portfolio: FaLayerGroup, skills: FaCode, certificate: FaCertificate, news: FaNewspaper,
+  work: FaBriefcase, project: FaDiagramProject, organization: FaPeopleGroup, award: FaTrophy, hire: FaEnvelopeOpenText,
+  design: FaPenRuler, writing: FaFeatherPointed, education: FaGraduationCap, timeline: FaClockRotateLeft, sitemap: FaSitemap,
 }
+/** one accent per group: Profile, Experience, Artwork, Other */
+const TONES = ['#a78bfa', '#38bdf8', '#f472b6', '#fbbf24']
 
-function GroupHeader({ group }: { group: NavGroup }) {
-  const { t } = useSettings()
-  return (
-    <div className="mb-4 flex items-baseline gap-3">
-      <h3 className="font-display text-lg font-semibold tracking-tight">{t(group.title)}</h3>
-      <span className="ml-auto explore-static rounded-full border border-line bg-fg/5 px-2.5 py-0.5 text-xs font-bold tabular-nums text-fg2">{group.items.length}</span>
-    </div>
-  )
-}
-
-/** Typographic thumb: first letter of the title. No icon glyphs. */
-function Initial({ item }: { item: NavItem }) {
-  const { lang } = useSettings()
-  const letter = localized(item.title, lang).trim().charAt(0).toUpperCase()
-  return (
-    <span aria-hidden="true" className="explore-static grid size-10 shrink-0 place-items-center rounded-xl border border-line bg-fg/5 font-display text-base font-bold text-brand">
-      {letter}
-    </span>
-  )
-}
-
-function AchievementRow({ item, d }: { item: NavItem; d: number }) {
-  const { t } = useSettings()
-  return (
-    <Link
-      to={'/' + item.key}
-      style={{ '--d': d } as CSSProperties}
-      className="explore-item group flex min-h-11 items-center gap-3.5 border-t border-line px-1 py-3 hover:pl-2.5 motion-safe:hover:-translate-y-px"
-    >
-      <Initial item={item} />
-      <span className="min-w-0">
-        <span className="block truncate text-[15px] font-semibold transition-colors duration-200 group-hover:text-brand">{t(item.title)}</span>
-        <small className="block truncate text-[13px] font-normal text-fg2">{t(item.desc)}</small>
-      </span>
-    </Link>
-  )
-}
-
-/** Home "bento": achievement-style rows inside the existing 4-card grid. */
+/**
+ * Home "Explore": two feature tiles (Projects, Hire me) on top, then a directory of every page grouped by topic.
+ * Styles: .explore-* in globals.css.
+ */
 export default function Explore() {
-  const { t } = useSettings()
-  const [prof, exp, art, oth] = NAV
-  const { ref, shown, done } = useExploreReveal(prof.items.length + exp.items.length + art.items.length + oth.items.length)
+  const { t, lang } = useSettings()
+  const id = lang === 'id'
+  const all = NAV.flatMap((g) => g.items)
+  const proj = all.find((x) => x.key === 'project')
+  const hire = all.find((x) => x.key === 'hire')
+  const shots = projects.filter((p) => p.image).slice(0, 3)
+
   return (
-    <div ref={ref} data-in={shown} data-done={done} className="explore grid gap-5 lg:grid-cols-[1fr_1.5fr]">
-      <div className="card p-6 lg:row-span-2">
-        <GroupHeader group={prof} />
-        <nav aria-label={t(prof.title)}>
-          {prof.items.map((x, i) => <AchievementRow key={x.key} item={x} d={i} />)}
-        </nav>
-      </div>
-      <div className="card p-6">
-        <GroupHeader group={exp} />
-        <nav aria-label={t(exp.title)}>
-          {exp.items.map((x, i) => <AchievementRow key={x.key} item={x} d={prof.items.length + i} />)}
-        </nav>
-      </div>
-      <div className="card p-6">
-        <GroupHeader group={art} />
-        <div className="grid grid-cols-2 gap-3">
-          {art.items.map((x, i) => (
-            <Link
-              key={x.key}
-              to={'/' + x.key}
-              style={{ '--d': prof.items.length + exp.items.length + i } as CSSProperties}
-              className={`thumb t${i} explore-item group flex min-h-30 flex-col justify-end overflow-hidden !rounded-2xl !p-3.5 font-bold text-white hover:-translate-y-0.5 hover:shadow-[var(--shadow-lift)] motion-safe:hover:-translate-y-0.5`}
-            >
-              <span className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-white/10 opacity-80 transition-opacity duration-200 group-hover:opacity-100" aria-hidden="true" />
-              <span className="relative">{t(x.title)}</span>
-              <small className="relative line-clamp-1 text-[12.5px] font-normal text-white/80">{t(x.desc)}</small>
+    <div className="grid gap-5">
+      <div className="grid gap-5 lg:grid-cols-[1.7fr_1fr]">
+        {proj && (
+          <Reveal>
+            <Link to="/project" className="explore-feature explore-feature--projects">
+              <div className="explore-feature__text">
+                <span className="explore-chip">{projects.length} {id ? 'proyek' : 'projects'}</span>
+                <h3>{t(proj.title)}</h3>
+                <p>{t(proj.desc)}</p>
+                <span className="explore-cta">{id ? 'Lihat semua proyek' : 'Browse all projects'}<i aria-hidden>→</i></span>
+              </div>
+              <div className="explore-shots" aria-hidden>
+                {shots.map((p, k) => (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img key={k} src={p.image} alt="" loading="lazy" decoding="async" className={`explore-shot explore-shot--${k}`} />
+                ))}
+              </div>
             </Link>
-          ))}
-        </div>
-      </div>
-      <div className="card p-6 lg:col-span-2">
-        <GroupHeader group={oth} />
-        <div className="flex flex-wrap gap-2.5">
-          {oth.items.map((x, i) => (
-            <Link
-              key={x.key}
-              to={'/' + x.key}
-              style={{ '--d': prof.items.length + exp.items.length + art.items.length + i } as CSSProperties}
-              className="explore-item group inline-flex min-h-11 items-center gap-2 rounded-full border border-line px-5 py-2.5 text-sm font-semibold hover:-translate-y-px hover:border-brand hover:bg-brand hover:text-ink hover:shadow-[var(--shadow-soft)] motion-safe:hover:-translate-y-px"
-            >
-              {t(x.title)}
-              <span className="sr-only"> — {t(x.desc)}</span>
+          </Reveal>
+        )}
+        {hire && (
+          <Reveal index={1}>
+            <Link to="/hire" className="explore-feature explore-feature--hire">
+              <div className="explore-feature__text">
+                <span className="explore-chip explore-chip--live"><i aria-hidden />{id ? 'Terbuka untuk peluang' : 'Open to opportunities'}</span>
+                <h3>{t(hire.title)}</h3>
+                <p>{t(hire.desc)}</p>
+                <span className="explore-cta">{id ? 'Mulai ngobrol' : 'Say hello'}<i aria-hidden>→</i></span>
+              </div>
             </Link>
-          ))}
-        </div>
+          </Reveal>
+        )}
       </div>
+
+      <Reveal>
+        <nav aria-label={id ? 'Semua halaman' : 'All pages'} className="card explore-dir">
+          {NAV.map((g, gi) => {
+            const first = g.items[0]
+            const GIcon = first ? ICONS[first.key] : undefined
+            return (
+              <section key={gi} className="explore-col" style={{ '--tone': TONES[gi % TONES.length] } as CSSProperties}>
+                <h3 className="explore-col__head">
+                  <span className="explore-col__badge" aria-hidden>{GIcon ? <GIcon /> : null}</span>
+                  {t(g.title)}
+                </h3>
+                <ul>
+                  {g.items.map((x) => {
+                    const Icon = ICONS[x.key]
+                    return (
+                      <li key={x.key}>
+                        <Link to={'/' + x.key} className="explore-row">
+                          <span className="explore-row__icon" aria-hidden>{Icon && <Icon />}</span>
+                          <span className="explore-row__text"><b>{t(x.title)}</b><small>{localized(x.desc, lang)}</small></span>
+                        </Link>
+                      </li>
+                    )
+                  })}
+                </ul>
+              </section>
+            )
+          })}
+        </nav>
+      </Reveal>
     </div>
   )
 }
