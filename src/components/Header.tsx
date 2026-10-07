@@ -6,7 +6,7 @@ import { LocLink as Link, NavLink } from './LocLink'
 import { NAV } from '../data/nav'
 import { useSettings } from '../context/Settings'
 
-const link = 'inline-flex min-h-11 items-center rounded-full px-3.5 text-[15px] font-medium text-fg2 hover:text-fg aria-[current=page]:bg-muted aria-[current=page]:text-fg'
+const link = 'inline-flex min-h-11 items-center rounded-full px-3.5 text-[15px] font-medium text-fg2 hover:text-fg aria-[current=page]:text-brand'
 
 export default function Header() {
   const { t, lang, theme, toggleLang, toggleTheme } = useSettings()
