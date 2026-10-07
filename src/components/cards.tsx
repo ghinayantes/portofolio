@@ -1,4 +1,4 @@
-import { projectSlug, type Award, type Entry, type Note, type Project } from '../data/content'
+import { projectSlug, type Award, type Certificate, type Entry, type NewsItem, type Note, type Project } from '../data/content'
 import { useEffect, useRef, useState, type PointerEvent } from 'react'
 import { LocLink } from './LocLink'
 import { localized, type Localized } from '../data/nav'
@@ -104,19 +104,6 @@ export function ProjectCard({ p, i, featured, interactive = false, tilt = true, 
   )
 }
 
-const RANKS = ['gold', 'silver', 'bronze'] as const
-
-export const Medal = ({ n, i }: { n: Note; i: number }) => {
-  const { lang } = useSettings()
-  const rank = RANKS[i % RANKS.length]
-  return <div className="card medal-card">
-    <span className="medal-year">{localized(n.meta, lang)}</span>
-    <div className={`mdl rank-${rank}`} />
-    <b className="my-1 block font-display text-xl font-semibold">{localized(n.title, lang)}</b>
-    <p className="text-[15px] text-fg2">{localized(n.desc, lang)}</p>
-  </div>
-}
-
 /** Award list row (reference-style): date, title, category + organizer. Bullets show inline on mobile; on md+ they live in the sticky preview. */
 export function AwardRow({ a, selected, onSelect }: { a: Award; selected: boolean; onSelect: () => void }) {
   const { lang } = useSettings()
@@ -132,7 +119,7 @@ export function AwardRow({ a, selected, onSelect }: { a: Award; selected: boolea
       <p className="text-[13px] font-semibold text-fg2">{a.date ? localized(a.date, lang) : localized(a.meta, lang)}</p>
       <h3 className="mt-1 font-display text-xl font-semibold transition-colors group-data-[active=true]:text-brand">{localized(a.title, lang)}</h3>
       <p className="mt-1.5 flex flex-wrap items-center gap-2">
-        {a.category && <span className="rounded-full border border-line bg-muted px-3 py-0.5 text-xs font-semibold text-fg2">{localized(a.category, lang)}</span>}
+        {a.category && <span className="rounded-full border border-brand/30 bg-brand/10 px-3 py-0.5 text-xs font-semibold text-fg2">{localized(a.category, lang)}</span>}
         {a.org && <span className="text-sm text-fg2">{localized(a.org, lang)}</span>}
       </p>
       <ul className="mt-3 space-y-1.5 md:hidden">
@@ -158,8 +145,8 @@ export function AwardPreview({ a, i }: { a: Award | null; i: number }) {
       </div>
       <div className="p-6">
         <p className="flex flex-wrap items-center gap-2">
-          {a.category && <span className="rounded-full border border-line bg-muted px-3 py-0.5 text-xs font-semibold text-fg2">{localized(a.category, lang)}</span>}
-          {a.org && <span className="text-sm font-semibold text-brand">{localized(a.org, lang)}</span>}
+        {a.category && <span className="rounded-full border border-brand/30 bg-brand/10 px-3 py-0.5 text-xs font-semibold text-fg2">{localized(a.category, lang)}</span>}
+        {a.org && <span className="text-sm font-semibold text-brand">{localized(a.org, lang)}</span>}
         </p>
         <ul className="mt-4 space-y-2 border-t border-line pt-4">
           {bullets.map((b) => <li key={localized(b, lang)} className="flex gap-2 text-[15px] text-fg2"><span aria-hidden="true" className="text-brand">•</span>{localized(b, lang)}</li>)}
@@ -169,24 +156,54 @@ export function AwardPreview({ a, i }: { a: Award | null; i: number }) {
   )
 }
 
-export function Ticket({ n }: { n: Note }) {
+/** Certificate image card: certificate image (or gradient + medal fallback) above, issuer + title + desc below. */
+export function Ticket({ n, i }: { n: Certificate; i: number }) {
   const { lang } = useSettings()
   const [issuer, year] = localized(n.meta, lang).split(', ')
   return (
-    <div className="tk">
-      <div className="stub"><b className="font-display text-3xl font-extrabold">{year}</b><small className="text-xs text-fg2">{issuer}</small></div>
-      <div className="p-5"><h3 className="font-display text-lg font-semibold">{localized(n.title, lang)}</h3><p className="mt-1.5 text-sm text-fg2">{localized(n.desc, lang)}</p></div>
+    <div className="card overflow-hidden !p-0">
+      {n.image ? (
+        <div className="cert-img aspect-[16/10] overflow-hidden">
+          <img src={n.image} alt={localized(n.title, lang)} loading="lazy" className="h-full w-full object-cover transition-transform duration-300 hover:scale-105" />
+        </div>
+      ) : (
+        <div className={`thumb t${i % 3} aspect-[16/10]`} aria-hidden="true">
+          <div className="win"><span /><span /><span /></div>
+          <div className="ln"><i /><i /><i /></div>
+        </div>
+      )}
+      <div className="p-4">
+        <p className="text-xs font-semibold text-fg2">{issuer}{year ? ` · ${year}` : ''}</p>
+        <h3 className="mt-1 font-display text-base font-semibold">{localized(n.title, lang)}</h3>
+        <p className="mt-1 text-[13px] text-fg2">{localized(n.desc, lang)}</p>
+      </div>
     </div>
   )
 }
 
-export const FeedItem = ({ n }: { n: Note }) => {
+/** Editorial news list card: image left, tag + title + org + desc right. */
+export const FeedItem = ({ n, i }: { n: NewsItem; i: number }) => {
   const { lang } = useSettings()
-  const [mon, ...rest] = localized(n.meta, lang).split(' ')
-  return <article className="news-card">
-    <div className="news-date"><b>{rest.join(' ')}</b><span>{mon}</span></div>
-    <div><h3 className="font-display text-lg font-semibold">{localized(n.title, lang)}</h3><p className="mt-1.5 text-fg2">{localized(n.desc, lang)}</p></div>
-  </article>
+  return (
+    <article className="card overflow-hidden !p-0 sm:grid sm:grid-cols-[2fr_3fr]">
+      <div className="news-img relative min-h-44 overflow-hidden sm:min-h-full">
+        {n.image ? (
+          <img src={n.image} alt={localized(n.title, lang)} loading="lazy" className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 hover:scale-105" />
+        ) : (
+          <div className={`thumb t${i % 3} absolute inset-0`} aria-hidden="true" />
+        )}
+      </div>
+      <div className="p-5 sm:p-6">
+        <p className="flex flex-wrap items-center gap-2">
+          {n.tag && <span className="rounded-full border border-brand/30 bg-brand/10 px-3 py-0.5 text-xs font-semibold text-brand">{localized(n.tag, lang)}</span>}
+          <span className="text-[13px] font-semibold text-fg2">{localized(n.meta, lang)}</span>
+        </p>
+        <h3 className="mt-2 font-display text-xl font-bold tracking-tight">{localized(n.title, lang)}</h3>
+        {n.org && <p className="mt-0.5 text-sm italic text-fg2">{localized(n.org, lang)}</p>}
+        <p className="mt-2 text-[15px] leading-relaxed text-fg2">{localized(n.desc, lang)}</p>
+      </div>
+    </article>
+  )
 }
 
 export const Timeline = ({ items }: { items: Entry[] }) => {
