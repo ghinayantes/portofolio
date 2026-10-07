@@ -89,7 +89,8 @@ function Awards() {
     return years.map((year) => ({ year, items: byYear.get(year) ?? [] }))
   }, [])
   if (C.awards.length === 0) return <Empty text={pair('No awards yet.', 'Belum ada penghargaan.')} />
-  const current = C.awards[Math.min(sel, C.awards.length - 1)] ?? null
+  const currentIndex = Math.min(sel, C.awards.length - 1)
+  const current = C.awards[currentIndex] ?? null
   return (
     <div className="grid gap-10 lg:grid-cols-[1.5fr_1fr]">
       <div>
@@ -105,7 +106,7 @@ function Awards() {
       <aside className="hidden lg:block" aria-hidden="true">
         <div className="sticky top-24">
           <p className="mb-3 text-sm font-semibold text-fg2">{id ? 'Pratinjau' : 'Preview'}</p>
-          <AwardPreview a={current} />
+          <AwardPreview a={current} i={currentIndex} />
         </div>
       </aside>
     </div>

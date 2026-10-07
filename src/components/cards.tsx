@@ -142,24 +142,29 @@ export function AwardRow({ a, selected, onSelect }: { a: Award; selected: boolea
   )
 }
 
-/** Sticky hover preview for the award list (desktop). Shows full detail of the selected award. */
-export function AwardPreview({ a }: { a: Award | null }) {
+/** Sticky hover preview for the award list (desktop). Gradient header with big year, full detail below. */
+export function AwardPreview({ a, i }: { a: Award | null; i: number }) {
   const { lang } = useSettings()
   if (!a) {
     return <div className="card p-6 text-[15px] text-fg2">{lang === 'id' ? 'Arahkan kursor ke penghargaan untuk melihat detail.' : 'Hover an award to see details.'}</div>
   }
   const bullets = a.bullets && a.bullets.length > 0 ? a.bullets : [a.desc]
   return (
-    <div key={localized(a.title, 'en')} className="award-preview-swap card p-6">
-      <p className="text-[13px] font-semibold text-fg2">{a.date ? localized(a.date, lang) : localized(a.meta, lang)}</p>
-      <h3 className="mt-1 font-display text-2xl font-bold tracking-tight">{localized(a.title, lang)}</h3>
-      <p className="mt-2 flex flex-wrap items-center gap-2">
-        {a.category && <span className="rounded-full border border-line bg-muted px-3 py-0.5 text-xs font-semibold text-fg2">{localized(a.category, lang)}</span>}
-        {a.org && <span className="text-sm font-semibold text-brand">{localized(a.org, lang)}</span>}
-      </p>
-      <ul className="mt-4 space-y-2 border-t border-line pt-4">
-        {bullets.map((b) => <li key={localized(b, lang)} className="flex gap-2 text-[15px] text-fg2"><span aria-hidden="true" className="text-brand">•</span>{localized(b, lang)}</li>)}
-      </ul>
+    <div key={localized(a.title, 'en')} className="award-preview-swap card overflow-hidden !p-0">
+      <div className={`thumb t${i % 3} relative flex min-h-36 flex-col justify-end overflow-hidden p-5 text-white`}>
+        <span aria-hidden="true" className="pointer-events-none absolute right-4 top-1 font-display text-7xl font-extrabold text-white/25">{localized(a.meta, lang)}</span>
+        <p className="relative text-[13px] font-semibold text-white/80">{a.date ? localized(a.date, lang) : localized(a.meta, lang)}</p>
+        <h3 className="relative mt-1 font-display text-2xl font-bold tracking-tight">{localized(a.title, lang)}</h3>
+      </div>
+      <div className="p-6">
+        <p className="flex flex-wrap items-center gap-2">
+          {a.category && <span className="rounded-full border border-line bg-muted px-3 py-0.5 text-xs font-semibold text-fg2">{localized(a.category, lang)}</span>}
+          {a.org && <span className="text-sm font-semibold text-brand">{localized(a.org, lang)}</span>}
+        </p>
+        <ul className="mt-4 space-y-2 border-t border-line pt-4">
+          {bullets.map((b) => <li key={localized(b, lang)} className="flex gap-2 text-[15px] text-fg2"><span aria-hidden="true" className="text-brand">•</span>{localized(b, lang)}</li>)}
+        </ul>
+      </div>
     </div>
   )
 }
