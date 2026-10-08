@@ -30,7 +30,7 @@ export const SITE = {
        { src: '/photo.jpg', alt: pair('Portrait of Ghina', 'Potret Ghina') },
        { src: '/photo2.jpg', alt: pair('Inaugurate the association', 'Lantik himpunan') },
      ] as { src: string; alt: Pair; pos?: string }[],
-  cv: '#',
+  cv: '/cv.pdf',
   greeting: pair('Hello, my name is', 'Halo, namaku'),
   role: pair('Informatics student at ITB', 'Mahasiswa Informatika ITB'),
   roles: {

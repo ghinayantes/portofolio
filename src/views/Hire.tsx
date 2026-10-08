@@ -105,6 +105,9 @@ export default function Hire() {
             </li>
           ))}
         </ul>
+        <a href={SITE.cv} download className="btn-ghost mt-6 inline-flex">
+          {id ? 'Unduh CV' : 'Download CV'}
+        </a>
       </div>
       <form onSubmit={submit} noValidate className="card grid gap-4 self-start p-6 md:p-7">
         {(['name', 'email', 'message'] as const).map((k) => (
