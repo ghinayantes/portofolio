@@ -6,7 +6,7 @@ import { awards, organizations, projects } from '../data/content'
 import { useSettings } from '../context/Settings'
 import { useTypewriter } from '../hooks/useTypewriter'
 import Explore from '../components/Explore'
-import { ProjectCard } from '../components/cards'
+import { FeaturedShowcase } from '../components/FeaturedShowcase'
 import { Section } from '../components/ui'
 import HeroPhoto from '../components/HeroPhoto'
 
@@ -19,6 +19,8 @@ export default function Home() {
     [organizations.length, id ? 'Organisasi' : 'Organizations'],
     [awards.length, id ? 'Penghargaan' : 'Awards'],
   ]
+  const flagged = projects.filter((p) => p.featured)
+  const featured = flagged.length > 0 ? flagged : projects.slice(0, 1)
   return (
     <>
       <div className="grid items-center gap-12 py-6 md:grid-cols-[7fr_5fr] md:py-14">
@@ -46,9 +48,7 @@ export default function Home() {
       </div>
 
       <Section title={id ? 'Jelajahi' : 'Explore'}><Explore /></Section>
-      <Section title={id ? 'Proyek unggulan' : 'Featured project'}>
-        <div className="home-featured-project grid gap-6 md:grid-cols-2"><ProjectCard p={projects[0]} i={0} featured interactive tilt={false} reveal={false} /></div>
-      </Section>
+      <FeaturedShowcase list={featured} />
       <div className="mt-16 rounded-3xl border border-white/15 p-8 text-white shadow-[0_24px_80px_-24px_rgba(109,40,217,0.55)] md:p-14" style={{ background: 'linear-gradient(135deg,#150833 0%,#3b1d8f 45%,#6d28d9 75%,#9333ea 100%)' }}>
         <h2 className="font-display text-[clamp(1.5rem,4vw,2.25rem)] font-extrabold">{id ? 'Ayo kerja bareng' : "Let's work together"}</h2>
         <p className="mt-2 opacity-90">{id ? 'Punya proyek, magang, atau pertanyaan?' : 'Have a project, internship, or question?'}</p>

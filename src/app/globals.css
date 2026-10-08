@@ -406,3 +406,37 @@ footer { backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
 .card-media { aspect-ratio: 16 / 10; overflow: hidden; }
 .empty-state { display: grid; gap: 1rem; justify-items: center; text-align: center; padding: 2.5rem 1.5rem; }
 @media (prefers-reduced-motion: reduce) { .page-section-stack, .grid-gallery, .grid-list { scroll-behavior: auto; } }
+
+/* Featured showcase (Home): editorial split with frosted description overlapping the visual. */
+.showcase { position: relative; margin-top: 4.5rem; }
+@media (min-width: 768px) {
+  .showcase { margin-top: 5.5rem; }
+}
+.showcase-slide { display: grid; gap: 2rem; align-items: center; }
+@media (min-width: 1024px) {
+  .showcase-slide { grid-template-columns: 1.1fr 1fr; gap: 1.5rem; }
+  .showcase-copy { position: relative; z-index: 2; }
+  .showcase-desc { margin-right: -3.5rem; }
+  .showcase-visual { position: relative; z-index: 1; }
+}
+@media (min-width: 1280px) {
+  .showcase-slide { grid-template-columns: 1.05fr 1fr; gap: 0; }
+  .showcase-desc { margin-right: -4rem; }
+}
+.showcase-eyebrow { font-family: var(--font-display); font-size: 1.05rem; font-weight: 600; color: var(--brand); }
+.showcase-title { margin-top: 0.5rem; font-family: var(--font-display); font-weight: 800; letter-spacing: -0.02em; line-height: 1.08; font-size: clamp(1.75rem, 4vw, 2.75rem); }
+.showcase-desc { margin-top: 1.25rem; border: 1px solid var(--border); border-radius: 1.25rem; background: color-mix(in srgb, var(--surface) 72%, transparent); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); padding: 1.25rem 1.4rem; font-size: 1rem; line-height: 1.65; color: var(--text); box-shadow: var(--shadow-soft); }
+@media (min-width: 640px) {
+  .showcase-desc { padding: 1.5rem 1.75rem; font-size: 1.05rem; }
+}
+.showcase-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.25rem; }
+.showcase-actions { display: flex; align-items: center; gap: 1rem; margin-top: 1.25rem; }
+.showcase-globe { display: grid; place-items: center; width: 2.75rem; height: 2.75rem; border-radius: 999px; border: 1px solid var(--border); color: var(--text); transition: border-color 0.2s, color 0.2s, transform 0.2s; }
+.showcase-globe:hover { border-color: var(--brand); color: var(--brand); transform: translateY(-2px); }
+.showcase-visual { overflow: hidden; border-radius: 1.5rem; border: 1px solid var(--border); box-shadow: var(--shadow-lift); }
+.showcase-visual img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
+.showcase-fallback { aspect-ratio: 4 / 3; }
+.showcase-slide { animation: showcase-in 0.6s cubic-bezier(0.2, 0.7, 0.2, 1); }
+@keyframes showcase-in { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+.showcase-count { margin-top: 1rem; font-size: 0.85rem; color: var(--text2); tabular-nums: true; }
+@media (prefers-reduced-motion: reduce) { .showcase-slide { animation: none; } }
