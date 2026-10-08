@@ -362,7 +362,7 @@ footer { backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
 .project-page-desc { margin-top: 0.5rem; font-size: 1.05rem; color: var(--text2); }
 .project-stats { margin-bottom: 0.9rem; font-size: 0.9rem; color: var(--text2); }
 .projects-toolbar { position: sticky; top: 4.5rem; z-index: 20; display: grid; gap: 0.65rem; margin-bottom: 1.5rem; padding: 0.8rem 1rem; border: 1px solid var(--border); border-radius: 1rem; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
-.projects-toolbar__row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem; }
+.projects-toolbar__row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem; min-width: 0; }
 .projects-search { flex: 1 1 10rem; min-width: 0; }
 .projects-search input { width: 100%; border: 1px solid var(--border); border-radius: 999px; background: var(--surface); padding: 0.5rem 1rem; font-size: 0.9rem; color: var(--text); }
 .projects-sort { position: relative; display: inline-flex; align-items: center; }
