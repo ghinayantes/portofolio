@@ -19,7 +19,7 @@ export function PageShell({ item, gi, children, compact }: { item: NavItem; gi: 
       <div>
         <p className="mb-4 text-sm text-fg2"><Link to="/" className="hover:text-brand">{lang === 'id' ? 'Beranda' : 'Home'}</Link> / {t(NAV[gi].title)} / {t(item.title)}</p>
         <div className="project-page-head">
-          <h1 className="project-page-title">{t(item.title)}</h1>
+          <h1 className="project-page-title shine pb-1">{t(item.title)}</h1>
           <p className="project-page-desc">{t(item.desc)}</p>
         </div>
         <div>{children}</div>
