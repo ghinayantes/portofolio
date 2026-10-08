@@ -370,7 +370,7 @@ footer { backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
 .projects-sort select::-ms-expand { display: none; }
 .projects-sort__chevron { position: absolute; right: 1rem; width: 0.9rem; height: 0.9rem; pointer-events: none; color: var(--text2); }
 .projects-tech-label { font-size: 0.85rem; font-weight: 600; color: var(--text2); }
-.projects-tech-chips { display: flex; gap: 0.5rem; overflow-x: auto; max-width: 100%; min-width: 0; flex: 1 1 auto; padding-bottom: 0.15rem; }
+.projects-tech-chips { display: flex; gap: 0.5rem; overflow-x: auto; max-width: 100%; min-width: 0; flex: 1 1 auto; padding-bottom: 0.15rem; -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 28px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 28px), transparent); }
 .projects-more { position: relative; }
 .projects-more summary { list-style: none; cursor: pointer; }
 .projects-more summary::-webkit-details-marker { display: none; }
@@ -380,6 +380,12 @@ footer { backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
 .projects-clear:hover { text-decoration: underline; }
 .projects-featured { margin-bottom: 0; }
 .projects-empty { display: grid; gap: 1rem; justify-items: start; }
+/* Deterministic mobile stacking: search and sort each take a full row so flex can never squeeze them to zero. Desktop untouched. */
+@media (max-width: 767px) {
+  .projects-search { flex: 1 1 100%; }
+  .projects-sort { flex: 1 1 100%; }
+  .projects-sort select { width: 100%; }
+}
 @media (prefers-reduced-motion: reduce) { .projects-toolbar, .projects-tech-chips { scroll-behavior: auto; } }
 
 /* Continuity foundation (Sub A): shared rhythm, grids, card base, empty state. Additive only. */
