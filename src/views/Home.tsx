@@ -38,7 +38,7 @@ export default function Home() {
             <Link to="/project" className="btn-primary">{id ? 'Lihat proyek' : 'View projects'}</Link>
             <Link to="/hire" className="btn-ghost">{id ? 'Hubungi aku' : 'Hire me'}</Link>
           </div>
-          <div className="mt-10 flex gap-10">
+          <div className="mt-10 flex flex-wrap gap-x-10 gap-y-6">
             {stats.map(([n, label]) => <div key={label}><b className="shine block font-display text-3xl font-extrabold">{n}</b><span className="text-sm text-fg2">{label}</span></div>)}
           </div>
         </div>

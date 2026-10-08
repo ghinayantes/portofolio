@@ -47,6 +47,7 @@ html.theme-animating, html.theme-animating *, html.theme-animating *::before, ht
 /* Explore text swaps instantly during a theme flip (single step) instead of fading in
    unsynchronized stages, which read as blinking. Hover motion is untouched outside the flip. */
 html.theme-animating .explore, html.theme-animating .explore *, html.theme-animating .award-preview-swap, html.theme-animating .award-preview-swap *, html.theme-animating .sitemap-graph, html.theme-animating .sitemap-graph *, html.theme-animating header nav, html.theme-animating header nav *, html.theme-animating form.card input, html.theme-animating form.card textarea, html.theme-animating .tl, html.theme-animating .tl *, html.theme-animating .explore-feature, html.theme-animating .explore-feature *, html.theme-animating .explore-dir, html.theme-animating .explore-dir * { transition: none !important; animation: none !important; }
+html, body { overflow-x: clip; }
 body {
   background-color: var(--bg);
   background-image: radial-gradient(70% 45% at 50% -5%, var(--glow), transparent 70%);
@@ -300,6 +301,11 @@ footer { backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
 
 .bubble { position: absolute; z-index: 20; right: calc(100% - var(--rim-x) - var(--s) / 2); top: calc(var(--rim-y) + var(--s) / 2 + 8px); opacity: 0; visibility: hidden; transform: translateY(-6px) scale(0.94); transform-origin: 100% 0; transition: opacity 0.3s, transform 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.15), visibility 0s linear 0.35s; }
 .bubble[data-show='true'] { opacity: 1; visibility: visible; transform: none; transition-delay: 0s; }
+/* Keep the greeting bubble inside the viewport on phones: dock it below the photo instead of left of it. */
+@media (max-width: 767px) {
+  .bubble { left: 0; right: auto; top: calc(100% + 10px); transform-origin: 0 0; }
+  .bubble::after { display: none; }
+}
 .bubble::after { content: ''; position: absolute; right: calc(var(--s) / 2 - 5px); top: -5px; width: 10px; height: 10px; background: inherit; border: inherit; border-right: 0; border-bottom: 0; transform: rotate(45deg); }
 @media (prefers-reduced-motion: reduce) { .flip-anim { animation: none; } .dial-item, .bubble { transition: none; } }
 

@@ -216,7 +216,7 @@ function About() {
           </div>
         </div>
         <dl>
-          {rest.map(([k, v]) => <div key={localized(k, lang)} className="grid grid-cols-[120px_1fr] gap-3 border-b border-line px-5 py-3.5 last:border-0"><dt className="text-fg2">{localized(k, lang)}</dt><dd className="font-medium">{localized(v, lang)}</dd></div>)}
+          {rest.map(([k, v]) => <div key={localized(k, lang)} className="grid grid-cols-[120px_1fr] gap-3 border-b border-line px-5 py-3.5 last:border-0"><dt className="text-fg2">{localized(k, lang)}</dt><dd className="min-w-0 break-words font-medium">{localized(v, lang)}</dd></div>)}
         </dl>
         </div>
       </Reveal>
