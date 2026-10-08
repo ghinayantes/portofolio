@@ -109,23 +109,79 @@ export default function Hire() {
           {id ? 'Unduh CV' : 'Download CV'}
         </a>
       </div>
-      <form onSubmit={submit} noValidate className="card grid gap-4 self-start p-6 md:p-7">
-        {(['name', 'email', 'message'] as const).map((k) => (
-          <label key={k} className="grid gap-1.5 text-sm font-medium capitalize">
-            {id ? ({ name: 'Nama', email: 'Email', message: 'Pesan' }[k]) : k}
-            {k === 'message'
-              ? <textarea name={k} rows={5} onBlur={blurField(k)} aria-invalid={!!err[k]} aria-describedby={err[k] ? `hire-${k}-error` : undefined} className={`${field} ${err[k] ? 'border-red-500' : 'border-brand/25'}`} />
-              : <input name={k} type={k === 'email' ? 'email' : 'text'} autoComplete={k === 'email' ? 'email' : 'name'} onBlur={blurField(k)} aria-invalid={!!err[k]} aria-describedby={err[k] ? `hire-${k}-error` : undefined} className={`${field} ${err[k] ? 'border-red-500' : 'border-brand/25'}`} />}
-            {err[k] && <span id={`hire-${k}-error`} role="alert" className="text-[13px] text-red-500">{err[k]}</span>}
-          </label>
-        ))}
-        <button type="submit" disabled={status === 'sending'} className="btn-primary justify-self-start disabled:opacity-60">
-          {status === 'sending' ? (id ? 'Mengirim…' : 'Sending…') : (id ? 'Kirim pesan' : 'Send message')}
-        </button>
-        {status === 'sent' && <p role="status" className="text-sm text-fg2">{id ? 'Pesan terkirim. Terima kasih, akan kubalas dalam dua hari.' : 'Message sent. Thank you, I’ll reply within two days.'}</p>}
-        {status === 'error' && <p role="alert" className="text-sm text-red-500">{id ? 'Gagal mengirim. Coba lagi atau hubungi lewat kontak di samping.' : 'Failed to send. Try again or reach me via the contacts on the side.'}</p>}
-        {status === 'unconfigured' && <p role="status" className="text-sm text-fg2">{id ? 'Formulir belum terhubung (isi FORMSPREE_ENDPOINT di Hire.tsx).' : 'Form is not connected yet (set FORMSPREE_ENDPOINT in Hire.tsx).'}</p>}
-      </form>
+
+      {status === 'sent' ? (
+        <div className="hire-success card grid gap-4 self-start p-6 md:p-7" role="status">
+          {/* Success checkmark */}
+          <div className="hire-success__icon" aria-hidden="true">
+            <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" className="size-12">
+              <circle cx="24" cy="24" r="23" stroke="currentColor" strokeWidth="2" opacity="0.2"/>
+              <circle cx="24" cy="24" r="23" stroke="currentColor" strokeWidth="2" strokeDasharray="145" strokeDashoffset="145" className="hire-check-ring"/>
+              <path d="M14 25l7 7 13-14" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" strokeDasharray="30" strokeDashoffset="30" className="hire-check-mark"/>
+            </svg>
+          </div>
+          <div>
+            <p className="font-display text-base font-semibold text-fg">
+              {id ? 'Pesan terkirim' : 'Message sent'}
+            </p>
+            <p className="mt-1 text-sm leading-relaxed text-fg2">
+              {id
+                ? 'Terima kasih sudah menghubungi. Aku akan membalasnya dalam dua hari.'
+                : "Thank you for reaching out. I'll get back to you within two days."}
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => setStatus('idle')}
+            className="btn-ghost justify-self-start"
+          >
+            {id ? 'Kirim pesan lain' : 'Send another message'}
+          </button>
+        </div>
+      ) : (
+        <form onSubmit={submit} noValidate className="card grid gap-4 self-start p-6 md:p-7">
+          {(['name', 'email', 'message'] as const).map((k) => (
+            <label key={k} className="grid gap-1.5 text-sm font-medium capitalize">
+              {id ? ({ name: 'Nama', email: 'Email', message: 'Pesan' }[k]) : k}
+              {k === 'message'
+                ? <textarea name={k} rows={5} onBlur={blurField(k)} aria-invalid={!!err[k]} aria-describedby={err[k] ? `hire-${k}-error` : undefined} className={`${field} ${err[k] ? 'border-red-500' : 'border-brand/25'}`} />
+                : <input name={k} type={k === 'email' ? 'email' : 'text'} autoComplete={k === 'email' ? 'email' : 'name'} onBlur={blurField(k)} aria-invalid={!!err[k]} aria-describedby={err[k] ? `hire-${k}-error` : undefined} className={`${field} ${err[k] ? 'border-red-500' : 'border-brand/25'}`} />}
+              {err[k] && <span id={`hire-${k}-error`} role="alert" className="text-[13px] text-red-500">{err[k]}</span>}
+            </label>
+          ))}
+          <button
+            type="submit"
+            disabled={status === 'sending'}
+            aria-busy={status === 'sending'}
+            className="btn-primary inline-flex min-h-[44px] min-w-[44px] items-center gap-2.5 justify-self-start disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {status === 'sending' ? (
+              <>
+                <svg className="hire-spinner" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <circle cx="10" cy="10" r="8" stroke="currentColor" strokeWidth="2" strokeOpacity="0.3"/>
+                  <path d="M10 2a8 8 0 0 1 8 8" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                </svg>
+                <span>{id ? 'Mengirim' : 'Sending'}</span>
+              </>
+            ) : (
+              <span>{id ? 'Kirim pesan' : 'Send message'}</span>
+            )}
+          </button>
+          {status === 'error' && (
+            <div role="alert" className="hire-error-banner">
+              <svg viewBox="0 0 20 20" fill="currentColor" className="size-4 shrink-0" aria-hidden="true">
+                <path fillRule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 10 5zm0 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2z" clipRule="evenodd"/>
+              </svg>
+              <span>{id ? 'Gagal mengirim. Coba lagi atau hubungi lewat kontak di samping.' : 'Failed to send. Try again or reach me via the contacts on the left.'}</span>
+            </div>
+          )}
+          {status === 'unconfigured' && (
+            <p role="status" className="text-sm text-fg2">
+              {id ? 'Formulir belum terhubung (isi FORMSPREE_ENDPOINT di Hire.tsx).' : 'Form is not connected yet (set FORMSPREE_ENDPOINT in Hire.tsx).'}
+            </p>
+          )}
+        </form>
+      )}
     </div>
   )
 }
