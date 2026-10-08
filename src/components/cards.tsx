@@ -4,6 +4,7 @@ import { LocLink } from './LocLink'
 import { localized, type Localized } from '../data/nav'
 import { useSettings } from '../context/Settings'
 import { getProjectCardAction, getProjectCardLeanForPointer } from '../lib/project-card-motion'
+import { getAvailableProjectLinks } from '../lib/project-links'
 
 export function ProjectCard({ p, i, featured, interactive = false, tilt = true, reveal = true }: { p: Project; i: number; featured?: boolean; interactive?: boolean; tilt?: boolean; reveal?: boolean }) {
   const { lang } = useSettings()
@@ -12,6 +13,11 @@ export function ProjectCard({ p, i, featured, interactive = false, tilt = true, 
   const action = interactive
     ? getProjectCardAction(p.links.map((link) => localized(link, lang)), p.linkHrefs)
     : null
+  const beacon = action && action.href.trim() !== '' && action.href !== '#' ? action : null
+  const availableLinks = getAvailableProjectLinks(
+    p.links.map((link) => localized(link, lang)),
+    p.linkHrefs,
+  )
 
   useEffect(() => {
     if (!interactive || !reveal) return
@@ -59,7 +65,7 @@ export function ProjectCard({ p, i, featured, interactive = false, tilt = true, 
         <h3 className={`font-display ${interactive ? 'text-lg' : 'text-xl'} font-semibold`}><LocLink to={`/project/${projectSlug(p)}`} className="hover:text-brand">{localized(p.title, lang)}</LocLink></h3>
         <p className={interactive ? 'text-sm text-fg2' : 'text-[15px] text-fg2'}>{localized(p.desc, lang)}</p>
         <div className="flex flex-wrap gap-1.5">{p.tags.map((g) => <span key={localized(g, lang)} className={`rounded-md border border-brand/25 bg-brand/10 ${interactive ? 'px-2.5 py-1 text-xs' : 'px-3 py-1 text-[13px]'}`}>{localized(g, lang)}</span>)}</div>
-        {p.links.length > 0 && <div className="mt-auto flex gap-4 pt-1.5">{p.links.map((link, index) => <a key={localized(link, lang)} href={p.linkHrefs?.[index] || '#'} className="text-sm font-semibold text-brand">{localized(link, lang)}</a>)}</div>}
+        {availableLinks.length > 0 && <div className="mt-auto flex gap-4 pt-1.5">{availableLinks.map(({ label, href }) => <a key={label} href={href} className="text-sm font-semibold text-brand">{label}</a>)}</div>}
       </div>
     </article>
   )
@@ -74,7 +80,7 @@ export function ProjectCard({ p, i, featured, interactive = false, tilt = true, 
       onPointerLeave={resetPointerTilt}
     >
       <div className="project-card-stage">{card}</div>
-      {action && (
+      {beacon && (
         <div className="project-beacon">
           <div className="project-beacon__waves" aria-hidden="true">
             <span />
@@ -86,16 +92,16 @@ export function ProjectCard({ p, i, featured, interactive = false, tilt = true, 
           <span className="project-beacon__dot" aria-hidden="true" />
           <a
             className="project-beacon__link"
-            href={action.href}
+            href={beacon.href}
             target="_blank"
             rel="noreferrer"
             aria-label={lang === 'id'
-              ? action.label === 'live' ? `Lihat situs ${localized(p.title, lang)}` : `Lihat ${localized(p.title, lang)} di GitHub`
-              : action.label === 'live' ? `View ${localized(p.title, lang)} live site` : `See ${localized(p.title, lang)} on GitHub`}
+              ? beacon.label === 'live' ? `Lihat situs ${localized(p.title, lang)}` : `Lihat ${localized(p.title, lang)} di GitHub`
+              : beacon.label === 'live' ? `View ${localized(p.title, lang)} live site` : `See ${localized(p.title, lang)} on GitHub`}
           >
             {lang === 'id'
-              ? action.label === 'live' ? 'Lihat Situs' : 'Lihat di GitHub'
-              : action.label === 'live' ? 'View Live Site' : 'See on GitHub'}
+              ? beacon.label === 'live' ? 'Lihat Situs' : 'Lihat di GitHub'
+              : beacon.label === 'live' ? 'View Live Site' : 'See on GitHub'}
             <span aria-hidden="true"> ↗</span>
           </a>
         </div>

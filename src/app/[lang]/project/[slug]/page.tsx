@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import { LocLink as Link } from '../../../../components/LocLink'
 import { projects, projectSlug } from '../../../../data/content'
 import { localized } from '../../../../data/nav'
+import { getAvailableProjectLinks } from '../../../../lib/project-links'
 import { LANGS, isLang } from '../../../../lib/i18n'
 
 type Props = { params: Promise<{ lang: string; slug: string }> }
@@ -63,24 +64,30 @@ export default async function Page({ params }: Props) {
             </span>
           ))}
         </div>
-        {project.links.length > 0 && (
-          <div className="mt-6 flex flex-wrap gap-3">
-            {project.links.map((link, index) => {
-              const href = project.linkHrefs?.[index] || '#'
-              const external = /^https?:/.test(href)
-              return (
-                <a
-                  key={localized(link, lang)}
-                  href={href}
-                  {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-                  className="btn-ghost"
-                >
-                  {localized(link, lang)}
-                </a>
-              )
-            })}
-          </div>
-        )}
+        {(() => {
+          const availableLinks = getAvailableProjectLinks(
+            project.links.map((link) => localized(link, lang)),
+            project.linkHrefs,
+          )
+          if (availableLinks.length === 0) return null
+          return (
+            <div className="mt-6 flex flex-wrap gap-3">
+              {availableLinks.map(({ label, href }) => {
+                const external = /^https?:/.test(href)
+                return (
+                  <a
+                    key={label}
+                    href={href}
+                    {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                    className="btn-ghost"
+                  >
+                    {label}
+                  </a>
+                )
+              })}
+            </div>
+          )
+        })()}
         <div className="mt-10">
           <Link to="/project" className="font-medium text-brand">
             {id ? '← Kembali ke semua proyek' : '← Back to all projects'}
