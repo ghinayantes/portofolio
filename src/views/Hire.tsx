@@ -115,7 +115,7 @@ export default function Hire() {
             {id ? ({ name: 'Nama', email: 'Email', message: 'Pesan' }[k]) : k}
             {k === 'message'
               ? <textarea name={k} rows={5} onBlur={blurField(k)} aria-invalid={!!err[k]} aria-describedby={err[k] ? `hire-${k}-error` : undefined} className={`${field} ${err[k] ? 'border-red-500' : 'border-brand/25'}`} />
-              : <input name={k} type={k === 'email' ? 'email' : 'text'} onBlur={blurField(k)} aria-invalid={!!err[k]} aria-describedby={err[k] ? `hire-${k}-error` : undefined} className={`${field} ${err[k] ? 'border-red-500' : 'border-brand/25'}`} />}
+              : <input name={k} type={k === 'email' ? 'email' : 'text'} autoComplete={k === 'email' ? 'email' : 'name'} onBlur={blurField(k)} aria-invalid={!!err[k]} aria-describedby={err[k] ? `hire-${k}-error` : undefined} className={`${field} ${err[k] ? 'border-red-500' : 'border-brand/25'}`} />}
             {err[k] && <span id={`hire-${k}-error`} role="alert" className="text-[13px] text-red-500">{err[k]}</span>}
           </label>
         ))}

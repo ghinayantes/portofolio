@@ -49,6 +49,7 @@ export default async function RootLayout({ children, params }: { children: React
          <script dangerouslySetInnerHTML={{ __html: THEME_INIT }} />
        </head>
       <body>
+          <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:bg-brand focus:px-5 focus:py-2.5 focus:font-semibold focus:text-ink">{lang === 'id' ? 'Lewati ke konten utama' : 'Skip to main content'}</a>
           <SettingsProvider lang={lang}>
             <SmoothScroll>
               <CloudShader />
@@ -57,7 +58,7 @@ export default async function RootLayout({ children, params }: { children: React
               <Spotlight />
               <div className="relative z-10 flex min-h-screen flex-col">
                 <Header />
-                <main className="mx-auto w-full max-w-page flex-1 px-5 pb-28 pt-10 sm:px-8 lg:px-20">{children}</main>
+                <main id="main-content" className="mx-auto w-full max-w-page flex-1 px-5 pb-28 pt-10 sm:px-8 lg:px-20">{children}</main>
                 <Footer />
               </div>
             </SmoothScroll>
