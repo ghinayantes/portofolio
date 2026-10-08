@@ -6,6 +6,7 @@ import * as C from '../data/content'
 import { SITE } from '../data/site'
 import { NAV, localized, pair } from '../data/nav'
 import type { Lang } from '../lib/i18n'
+import { filterProjects, getProjectStacks } from '../lib/project-filter'
 import { useSettings } from '../context/Settings'
 import { AwardPreview, AwardRow, Empty, FeedItem, ProjectCard, SkillMarquee, Ticket, Timeline } from '../components/cards'
 import { Reveal } from '../components/motion'
@@ -22,18 +23,7 @@ const Cards = ({ list, feature }: { list: C.Project[]; feature?: boolean }) => (
   </div>
 )
 
-const KNOWN_LANGS = ['Python', 'JavaScript', 'TypeScript', 'Java', 'SQL', 'C', 'Assembly', 'Prolog']
-
-const projectLangs = (p: C.Project, lang: Lang): string[] => {
-  const names: string[] = []
-  for (const t of p.tags) {
-    const name = localized(t, lang)
-    if (KNOWN_LANGS.includes(name) && !names.includes(name)) names.push(name)
-  }
-  return names
-}
-
-/** Project grid with status + language filter chips (used on the project page and portfolio section). */
+/** Project grid with status + stack filter chips (used on the project page and portfolio section). */
 function ProjectsExplorer({ list }: { list: C.Project[] }) {
   const { lang } = useSettings()
   const id = lang === 'id'
@@ -41,14 +31,13 @@ function ProjectsExplorer({ list }: { list: C.Project[] }) {
   const [stack, setStack] = useState<string>('all')
   const stacks = useMemo(() => {
     const seen: string[] = []
-    for (const p of list) for (const name of projectLangs(p, lang)) if (!seen.includes(name)) seen.push(name)
+    for (const p of list) for (const name of getProjectStacks(p, lang as Lang)) if (!seen.includes(name)) seen.push(name)
     return seen
   }, [list, lang])
-  const filtered = list.filter((p) => {
-    const okStatus = status === 'all' || (status === 'wip' ? p.wip : !p.wip)
-    const okStack = stack === 'all' || projectLangs(p, lang).includes(stack)
-    return okStatus && okStack
-  })
+  const filtered = useMemo(
+    () => filterProjects(list, lang as Lang, status, stack),
+    [list, lang, status, stack],
+  )
   const chip = (active: boolean) =>
     `rounded-full border px-4 py-2 text-sm font-medium ${active ? 'border-brand bg-brand text-ink' : 'border-brand/25 text-fg2 hover:border-brand/50 hover:text-brand'}`
   return (
