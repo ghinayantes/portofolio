@@ -10,6 +10,16 @@ export type NewsItem = Note & { image?: string; tag?: Localized; org?: Localized
 /** Award with reference-style detail fields. All detail fields are optional and fall back to desc. */
 export type Award = Note & { org?: Pair; category?: Localized; date?: Pair; bullets?: Pair[] }
 export type SkillGroup = { title: Pair; items: Localized[] }
+export type WorkExperience = {
+  role: Pair
+  company: Pair
+  when: Pair
+  location: Pair
+  desc: Pair
+  highlights: Pair[]
+  tech: string[]
+  current?: boolean
+}
 
 /** URL slug derived from the English title, e.g. 'Food Waste Stop' -> 'food-waste-stop'. */
 export const projectSlug = (p: Project): string =>
@@ -166,4 +176,28 @@ export const skills: SkillGroup[] = [
   { title: pair('Code', 'Pemrograman'), items: ['Python', 'JavaScript', 'TypeScript', 'Java', 'SQL', 'HTML/CSS'] },
   { title: pair('Frameworks and tools', 'Framework dan tools'), items: ['React', 'Next.js', 'Tailwind', 'Git', 'Figma'] },
   { title: pair('Working with people', 'Kolaborasi'), items: [pair('Event planning', 'Perencanaan acara'), pair('Public speaking', 'Berbicara di depan umum'), pair('Documentation', 'Dokumentasi'), pair('Leadership', 'Kepemimpinan')] },
+]
+
+/**
+ * Work experience entries — replace the placeholder values with your real data.
+ * Each entry supports bilingual content (Pair = { en: string, id: string }).
+ */
+export const work: WorkExperience[] = [
+  {
+    role: pair('Technology Development (frontend) Intern', 'Intern Technology Development (Frontend)'),
+    company: pair("HMIF ITB 'Prisma'", "HMIF ITB 'Prisma'"),
+    when: pair('Sep 2026 – Present', 'Sep 2026 – Sekarang'),
+    location: pair('Bandung, Indonesia', 'Jakarta, Indonesia'),
+    desc: pair(
+      'Describe what you worked on, the team size, and the domain — e.g. "Built and shipped three customer-facing features in a fintech product used by 200 k users, collaborating across design, backend, and QA in a two-week sprint cycle."',
+      'Ceritakan apa yang kamu kerjakan, ukuran tim, dan domain — mis. "Membangun dan merilis tiga fitur produk fintech yang digunakan 200 rb pengguna, berkolaborasi dengan tim desain, backend, dan QA dalam siklus sprint dua minggu."',
+    ),
+    highlights: [
+      pair('Delivered feature X that reduced load time by Y%', 'Merilis fitur X yang memangkas waktu muat sebesar Y%'),
+      pair('Wrote unit + integration tests, lifting coverage from A% to B%', 'Menulis unit + integration test, menaikkan coverage dari A% ke B%'),
+      pair('Collaborated with a cross-functional team of N engineers', 'Berkolaborasi dengan tim lintas fungsi beranggotakan N engineer'),
+    ],
+    tech: ['React', 'TypeScript', 'Node.js', 'PostgreSQL'],
+    current: true,
+  }
 ]

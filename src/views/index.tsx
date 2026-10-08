@@ -184,11 +184,46 @@ function Awards() {
 }
 const Work = () => {
   const { lang } = useSettings()
+  const id = lang === 'id'
   return (
-    <Empty
-      text={pair('No work history yet. Add your first internship or freelance project here, with your role and one result.', 'Belum ada pengalaman kerja. Tambahkan pengalaman magang atau proyek lepas pertamamu, beserta peran dan hasilnya.')}
-      action={<Link to="/project" className="btn-primary">{lang === 'id' ? 'Lihat proyek' : 'View projects'}</Link>}
-    />
+    <div className="work-list">
+      {C.work.map((job, i) => (
+        <Reveal key={i} index={i}>
+          <article className="work-card">
+            {job.current && (
+              <span className="work-badge">{id ? 'Sekarang' : 'Current'}</span>
+            )}
+            <header className="work-card__header">
+              <div>
+                <h3 className="work-card__role">{id ? job.role.id : job.role.en}</h3>
+                <p className="work-card__meta">
+                  <span className="work-card__company">{id ? job.company.id : job.company.en}</span>
+                  <span className="work-card__sep" aria-hidden="true">·</span>
+                  <span>{id ? job.when.id : job.when.en}</span>
+                  <span className="work-card__sep" aria-hidden="true">·</span>
+                  <span>{id ? job.location.id : job.location.en}</span>
+                </p>
+              </div>
+            </header>
+            <p className="work-card__desc">{id ? job.desc.id : job.desc.en}</p>
+            {job.highlights.length > 0 && (
+              <ul className="work-card__highlights" aria-label={id ? 'Pencapaian' : 'Highlights'}>
+                {job.highlights.map((h, j) => (
+                  <li key={j}>{id ? h.id : h.en}</li>
+                ))}
+              </ul>
+            )}
+            {job.tech.length > 0 && (
+              <ul className="work-card__tech" aria-label={id ? 'Teknologi' : 'Tech stack'}>
+                {job.tech.map((t) => (
+                  <li key={t} className="work-chip">{t}</li>
+                ))}
+              </ul>
+            )}
+          </article>
+        </Reveal>
+      ))}
+    </div>
   )
 }
 
