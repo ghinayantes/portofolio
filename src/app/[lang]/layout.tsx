@@ -30,7 +30,28 @@ export const metadata: Metadata = {
   title: { default: `${SITE.name} — Portfolio`, template: `%s — ${SITE.name}` },
   description: SITE.lead.en,
   icons: { icon: '/favicon.svg' },
-  openGraph: { type: 'website', siteName: SITE.name },
+  openGraph: {
+    type: 'website',
+    siteName: SITE.name,
+    title: `${SITE.name} — Portfolio`,
+    description: SITE.lead.en,
+    url: SITE_URL,
+    locale: 'en_US',
+    images: [
+      {
+        url: '/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: `${SITE.name} — Portfolio`,
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: `${SITE.name} — Portfolio`,
+    description: SITE.lead.en,
+    images: ['/og-image.png'],
+  },
 }
 export const viewport: Viewport = {
   viewportFit: 'cover',

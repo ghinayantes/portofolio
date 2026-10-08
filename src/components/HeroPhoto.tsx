@@ -184,6 +184,9 @@ export default function HeroPhoto() {
         ) : photos.map((p, k) => (
           // eslint-disable-next-line @next/next/no-img-element
           <img key={p.src} src={p.src} alt={k === i ? t(p.alt) : ''} aria-hidden={k !== i} draggable={false}
+            loading={k === 0 ? 'eager' : 'lazy'}
+            decoding={k === 0 ? 'sync' : 'async'}
+            fetchPriority={k === 0 ? 'high' : 'low'}
             style={{ objectPosition: p.pos }} className={`absolute inset-0 h-full w-full object-cover ${k === i ? 'opacity-100' : 'opacity-0'}`} />
         ))}
       </button>
