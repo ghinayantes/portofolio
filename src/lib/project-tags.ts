@@ -37,3 +37,8 @@ export function legacyTagToId(raw: string): string | null {
   const key = raw.trim().toLowerCase()
   return LEGACY.get(key) ?? null
 }
+
+/** Keeps only known tag ids so unknown URL tokens fall back instead of matching nothing. */
+export function sanitizeTechIds(ids: Set<string>): Set<string> {
+  return new Set(Array.from(ids).filter((id) => BY_ID.has(id)))
+}

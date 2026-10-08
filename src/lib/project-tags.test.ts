@@ -6,6 +6,7 @@ const mod = await import(modUrl).catch(() => undefined)
 const tagLabel = mod?.tagLabel as ((id: string, lang: 'en' | 'id') => string) | undefined
 const legacyTagToId = mod?.legacyTagToId as ((raw: string) => string | null) | undefined
 const PROJECT_TAGS = mod?.PROJECT_TAGS as Array<{ id: string; label: { en: string; id: string }; group: string }> | undefined
+const sanitizeTechIds = mod?.sanitizeTechIds as ((ids: Set<string>) => Set<string>) | undefined
 
 test('exposes the tag registry helpers', () => {
   assert.equal(typeof tagLabel, 'function', 'tagLabel should be exported')
@@ -28,4 +29,12 @@ test('maps legacy labels to ids and drops generic descriptors', () => {
   assert.equal(legacyTagToId!('Web app'), null)
   assert.equal(legacyTagToId!('Team of 4'), null)
   assert.equal(legacyTagToId!('Aplikasi desktop'), null)
+})
+
+test('drops unknown tech ids instead of matching nothing', () => {
+  assert.equal(typeof sanitizeTechIds, 'function', 'sanitizeTechIds should be exported')
+  const kept = sanitizeTechIds!(new Set(['bogus-id', 'python']))
+  assert.ok(!kept.has('bogus-id'))
+  assert.ok(kept.has('python'))
+  assert.equal(sanitizeTechIds!(new Set(['bogus-id'])).size, 0)
 })

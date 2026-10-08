@@ -361,7 +361,7 @@ footer { backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
 .projects-search input { width: 100%; border: 1px solid var(--border); border-radius: 999px; background: var(--surface); padding: 0.5rem 1rem; font-size: 0.9rem; color: var(--text); }
 .projects-sort select { border: 1px solid var(--border); border-radius: 999px; background: var(--surface); padding: 0.5rem 0.9rem; font-size: 0.9rem; font-weight: 500; color: var(--text); }
 .projects-tech-label { font-size: 0.85rem; font-weight: 600; color: var(--text2); }
-.projects-tech-chips { display: flex; gap: 0.5rem; overflow-x: auto; max-width: 100%; padding-bottom: 0.15rem; }
+.projects-tech-chips { display: flex; gap: 0.5rem; overflow-x: auto; max-width: 100%; min-width: 0; flex: 1 1 auto; padding-bottom: 0.15rem; }
 .projects-more { position: relative; }
 .projects-more summary { list-style: none; cursor: pointer; }
 .projects-more summary::-webkit-details-marker { display: none; }

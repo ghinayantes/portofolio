@@ -1,8 +1,7 @@
 export type ProjectStatus = 'completed' | 'in-progress'
 export type SortKey = 'newest' | 'az' | 'status'
 export type FilterState = { status: 'all' | ProjectStatus; tags: Set<string>; q: string; sort: SortKey }
-export type FilterableProject = {
-  title: string | { en: string; id: string }
+export type FilterableProject = {  title: string | { en: string; id: string }
   desc: string | { en: string; id: string }
   tags: string[]
   status: ProjectStatus
@@ -15,7 +14,7 @@ const resolve = (v: string | { en: string; id: string }, lang: Lang): string =>
   typeof v === 'string' ? v : v[lang]
 
 export function normalizeQuery(s: string): string {
-  return s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').trim()
+  return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim()
 }
 
 function matchesQuery(p: FilterableProject, q: string, lang: Lang, tagLabels: (id: string) => string): boolean {

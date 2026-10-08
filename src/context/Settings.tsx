@@ -3,6 +3,7 @@
 import { createContext, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { usePathname } from 'next/navigation'
 import type { Pair } from '../data/nav'
+import { switchLangPath } from '../lib/i18n'
 import type { Lang } from '../lib/i18n'
 
 type Theme = 'dark' | 'light'
@@ -70,8 +71,9 @@ export function SettingsProvider({ lang, children }: { lang: Lang; children: Rea
     toggleLang: () => {
       const next: Lang = lang === 'en' ? 'id' : 'en'
       document.cookie = `lang=${next}; path=/; max-age=31536000; samesite=lax`
-      // full navigation: the root <html lang> changes, so let the browser reload instead of re-rendering <head> on the client
-      window.location.assign(pathname.replace(/^\/(en|id)/, '/' + next))
+      // full navigation: the root <html lang> changes, so let the browser reload instead of re-rendering <head> on the client.
+      // The query string is preserved so page state such as project filters survives the switch.
+      window.location.assign(switchLangPath(pathname, window.location.search, next))
     },
   }), [lang, theme, pathname])
 
