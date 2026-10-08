@@ -25,5 +25,5 @@ export default async function Page({ params }: Props) {
   const { slug } = await params
   const item = ALL.find((i) => i.key === slug)
   if (!item) notFound()
-  return <PageShell item={item} gi={item.gi}><PageBody k={slug} /></PageShell>
+  return <PageShell item={item} gi={item.gi} compact={slug === 'project'}><PageBody k={slug} /></PageShell>
 }

@@ -1,12 +1,15 @@
 'use client'
 
-import { useMemo, useState, type ReactElement, type ReactNode } from 'react'
+import { Suspense, useCallback, useMemo, useState, type ReactElement, type ReactNode } from 'react'
 import { LocLink as Link } from '../components/LocLink'
 import * as C from '../data/content'
 import { SITE } from '../data/site'
 import { NAV, localized, pair } from '../data/nav'
 import type { Lang } from '../lib/i18n'
-import { filterProjects, getProjectStacks } from '../lib/project-filter'
+import { tagLabel } from '../lib/project-tags'
+import type { FilterableProject } from '../lib/project-filters'
+import { useProjectFilters } from '../hooks/useProjectFilters'
+import { ProjectsToolbar, type TechChip } from '../components/projects/ProjectsToolbar'
 import { useSettings } from '../context/Settings'
 import { AwardPreview, AwardRow, Empty, FeedItem, ProjectCard, SkillMarquee, Ticket, Timeline } from '../components/cards'
 import { Reveal } from '../components/motion'
@@ -23,44 +26,121 @@ const Cards = ({ list, feature }: { list: C.Project[]; feature?: boolean }) => (
   </div>
 )
 
-/** Project grid with status + stack filter chips (used on the project page and portfolio section). */
-function ProjectsExplorer({ list }: { list: C.Project[] }) {
+/** Adapter from content projects to the stable filter shape (missing fields fall back safely). */
+function toFilterable(p: C.Project): FilterableProject {
+  return {
+    title: p.title,
+    desc: p.desc,
+    tags: p.tech ?? [],
+    status: p.state ?? (p.wip ? 'in-progress' : 'completed'),
+    date: p.date ?? '',
+  }
+}
+
+/** Project grid with status + tech-stack filters, search, sort, and URL sync (used on the project page and portfolio section). */
+function ProjectsExplorerInner({ list, syncUrl }: { list: C.Project[]; syncUrl: boolean }) {
   const { lang } = useSettings()
   const id = lang === 'id'
-  const [status, setStatus] = useState<'all' | 'done' | 'wip'>('all')
-  const [stack, setStack] = useState<string>('all')
-  const stacks = useMemo(() => {
-    const seen: string[] = []
-    for (const p of list) for (const name of getProjectStacks(p, lang as Lang)) if (!seen.includes(name)) seen.push(name)
-    return seen
-  }, [list, lang])
-  const filtered = useMemo(
-    () => filterProjects(list, lang as Lang, status, stack),
-    [list, lang, status, stack],
-  )
-  const chip = (active: boolean) =>
-    `rounded-full border px-4 py-2 text-sm font-medium ${active ? 'border-brand bg-brand text-ink' : 'border-brand/25 text-fg2 hover:border-brand/50 hover:text-brand'}`
+  const filterable = useMemo(() => list.map(toFilterable), [list])
+  const labels = useCallback((tagId: string) => tagLabel(tagId, lang as Lang), [lang])
+  const { state, results, counts, setStatus, toggleTag, setQuery, setSort, clear } = useProjectFilters({
+    lang: lang as Lang,
+    projects: filterable,
+    syncUrl,
+    tagLabels: labels,
+  })
+  const resultProjects = useMemo(() => {
+    const back = new Map<FilterableProject, C.Project>()
+    filterable.forEach((f, i) => {
+      const orig = list[i]
+      if (orig) back.set(f, orig)
+    })
+    return results.map((r) => back.get(r)).filter((p): p is C.Project => Boolean(p))
+  }, [filterable, list, results])
+  const sortedTags = useMemo(() => {
+    const all = Array.from(new Set(filterable.flatMap((f) => f.tags)))
+    return all.sort((a, b) => (counts.tech[b] ?? 0) - (counts.tech[a] ?? 0))
+  }, [filterable, counts])
+  const toChip = (tagId: string): TechChip => ({
+    id: tagId,
+    label: labels(tagId),
+    count: counts.tech[tagId] ?? 0,
+    disabled: (counts.tech[tagId] ?? 0) === 0,
+  })
+  const visibleTags = sortedTags.slice(0, 6).map(toChip)
+  const overflowTags = sortedTags.slice(6).map(toChip)
+  const isDefault = state.status === 'all' && state.tags.size === 0 && state.q.trim() === '' && state.sort === 'newest'
+  const featured = isDefault ? resultProjects.filter((p) => p.featured) : []
+  const rest = isDefault ? resultProjects.filter((p) => !p.featured) : resultProjects
+  const done = filterable.filter((f) => f.status === 'completed').length
+  const wip = filterable.length - done
+  const grid = 'project-cards-grid project-cards-grid--interactive grid gap-x-4 gap-y-8 md:grid-cols-2'
   return (
     <div>
-      <div className="mb-3 flex flex-wrap gap-2" role="group" aria-label={id ? 'Filter status' : 'Status filter'}>
-        <button type="button" aria-pressed={status === 'all'} onClick={() => setStatus('all')} className={chip(status === 'all')}>{id ? 'Semua' : 'All'}</button>
-        <button type="button" aria-pressed={status === 'done'} onClick={() => setStatus('done')} className={chip(status === 'done')}>{id ? 'Selesai' : 'Completed'}</button>
-        <button type="button" aria-pressed={status === 'wip'} onClick={() => setStatus('wip')} className={chip(status === 'wip')}>{id ? 'Dikerjakan' : 'In progress'}</button>
-      </div>
-      <div className="mb-8 flex flex-wrap gap-2" role="group" aria-label={id ? 'Filter bahasa' : 'Language filter'}>
-        <button type="button" aria-pressed={stack === 'all'} onClick={() => setStack('all')} className={chip(stack === 'all')}>{id ? 'Semua bahasa' : 'All languages'}</button>
-        {stacks.map((s) => (
-          <button key={s} type="button" aria-pressed={stack === s} onClick={() => setStack(s)} className={chip(stack === s)}>{s}</button>
-        ))}
-      </div>
-      {filtered.length === 0 ? (
-        <Empty text={pair('No projects match this filter.', 'Tidak ada proyek yang cocok dengan filter ini.')} />
+      <p className="project-stats">
+        {id
+          ? `${filterable.length} proyek · ${done} selesai · ${wip} berjalan`
+          : `${filterable.length} projects · ${done} completed · ${wip} in progress`}
+      </p>
+      <ProjectsToolbar
+        lang={lang as Lang}
+        state={state}
+        statusCounts={counts.status}
+        visibleTags={visibleTags}
+        overflowTags={overflowTags}
+        resultCount={resultProjects.length}
+        totalCount={filterable.length}
+        onStatus={setStatus}
+        onToggleTag={toggleTag}
+        onQuery={setQuery}
+        onSort={setSort}
+        onClear={clear}
+      />
+      {featured.length > 0 && (
+        <div className={`${grid} projects-featured`}>
+          {featured.map((p) => <ProjectCard key={localized(p.title, lang)} p={p} i={0} featured interactive />)}
+        </div>
+      )}
+      {rest.length === 0 ? (
+        <div className="projects-empty">
+          <Empty text={pair('No projects match this filter.', 'Tidak ada proyek yang cocok dengan filter ini.')} />
+          <button type="button" onClick={clear} className="rounded-full border border-brand bg-brand px-4 py-2 text-sm font-medium text-ink">
+            {id ? 'Hapus filter' : 'Clear filters'}
+          </button>
+        </div>
       ) : (
-        <div className="project-cards-grid project-cards-grid--interactive grid gap-x-4 gap-y-8 md:grid-cols-2">
-          {filtered.map((p, i) => <ProjectCard key={localized(p.title, lang)} p={p} i={i} featured={i === 0} interactive />)}
+        <div className={grid}>
+          {rest.map((p, i) => <ProjectCard key={localized(p.title, lang)} p={p} i={i + featured.length} interactive />)}
         </div>
       )}
     </div>
+  )
+}
+
+/** Static grid fallback for the Suspense boundary required by URL-synced filtering. */
+function ProjectsGridFallback({ list }: { list: C.Project[] }) {
+  const { lang } = useSettings()
+  return (
+    <div className="project-cards-grid project-cards-grid--interactive grid gap-x-4 gap-y-8 md:grid-cols-2">
+      {list.map((p, i) => <ProjectCard key={localized(p.title, lang)} p={p} i={i} featured={i === 0} interactive />)}
+    </div>
+  )
+}
+
+function ProjectsExplorer({ list }: { list: C.Project[] }) {
+  return (
+    <Suspense fallback={<ProjectsGridFallback list={list} />}>
+      <ProjectsExplorerInner list={list} syncUrl={false} />
+    </Suspense>
+  )
+}
+
+/** Standalone project page: same explorer with filters synced to the URL. */
+function ProjectPage() {
+  return (
+    <Suspense fallback={<ProjectsGridFallback list={C.projects} />}>
+      <ProjectsExplorerInner list={C.projects} syncUrl={true} />
+    </Suspense>
   )
 }
 /** Awards grouped by year with a sticky hover preview (desktop); inline bullets on mobile. */
@@ -222,7 +302,7 @@ export const PAGES: Record<string, () => ReactElement> = {
   certificate: () => <Grid3>{C.certificates.map((n, i) => <Ticket key={i} n={n} i={i} />)}</Grid3>,
   news: () => <div className="grid max-w-3xl gap-5">{C.news.map((n, i) => <FeedItem key={i} n={n} i={i} />)}</div>,
   work: Work,
-  project: () => <ProjectsExplorer list={C.projects} />,
+  project: ProjectPage,
   organization: () => <Timeline items={C.organizations} />,
   award: Awards,
   hire: Hire,
