@@ -30,6 +30,7 @@ function ThemeIcon({ theme, animate }: { theme: 'dark' | 'light'; animate: boole
 export default function Header() {
   const { t, lang, theme, toggleLang, toggleTheme } = useSettings()
   const [open, setOpen] = useState<number | null>(null)
+  const [pinned, setPinned] = useState<number | null>(null)
   const [menu, setMenu] = useState(false)
   // Enable the icon morph only after mount: the theme state starts as 'dark' and is
   // corrected in an effect, so animating from the start would replay the morph on
@@ -41,11 +42,43 @@ export default function Header() {
   }, [])
   const ref = useRef<HTMLElement>(null)
   const pathname = usePathname()
+  // Hover intent timers: open fast, close with a grace period so crossing menus doesn't flicker.
+  const openTimer = useRef<number | undefined>(undefined)
+  const closeTimer = useRef<number | undefined>(undefined)
+  useEffect(() => () => {
+    window.clearTimeout(openTimer.current)
+    window.clearTimeout(closeTimer.current)
+  }, [])
 
-  useEffect(() => { setOpen(null); setMenu(false) }, [pathname])
+  const canHover = () =>
+    typeof matchMedia !== 'undefined' && matchMedia('(hover: hover) and (pointer: fine)').matches
+
+  const scheduleOpen = (i: number) => {
+    window.clearTimeout(closeTimer.current)
+    window.clearTimeout(openTimer.current)
+    openTimer.current = window.setTimeout(() => setOpen(i), 120)
+  }
+  const scheduleClose = () => {
+    window.clearTimeout(openTimer.current)
+    window.clearTimeout(closeTimer.current)
+    closeTimer.current = window.setTimeout(() => setOpen(null), 150)
+  }
+  const togglePin = (i: number) => {
+    window.clearTimeout(openTimer.current)
+    window.clearTimeout(closeTimer.current)
+    setPinned((prev) => (prev === i ? null : i))
+    setOpen(null)
+  }
+  const shown = pinned ?? open
+
+  useEffect(() => { setOpen(null); setPinned(null); setMenu(false) }, [pathname])
   useEffect(() => {
-    const out = (e: MouseEvent) => { if (!ref.current?.contains(e.target as Node)) setOpen(null) }
-    const esc = (e: KeyboardEvent) => { if (e.key === 'Escape') setOpen(null) }
+    const out = (e: MouseEvent) => {
+      if (!ref.current?.contains(e.target as Node)) { setOpen(null); setPinned(null) }
+    }
+    const esc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') { setOpen(null); setPinned(null) }
+    }
     addEventListener('mousedown', out)
     addEventListener('keydown', esc)
     return () => { removeEventListener('mousedown', out); removeEventListener('keydown', esc) }
@@ -58,12 +91,19 @@ export default function Header() {
         <nav data-lenis-prevent aria-label={lang === 'id' ? 'Navigasi utama' : 'Main'} id="main-nav" className={`${menu ? 'flex' : 'hidden'} absolute inset-x-0 top-full max-h-[calc(100vh-4.25rem)] flex-col overflow-auto border-b border-brand/25 bg-bg/90 px-5 pb-5 backdrop-blur-xl lg:static lg:col-start-2 lg:flex lg:max-h-none lg:flex-row lg:items-center lg:justify-center lg:gap-1 lg:overflow-visible lg:border-0 lg:bg-transparent lg:p-0 lg:backdrop-blur-none`}>
           <NavLink to="/" end className={link}>{lang === 'id' ? 'Beranda' : 'Home'}</NavLink>
           {NAV.map((g, i) => (
-            <div key={i} className="relative">
-              <button type="button" aria-expanded={open === i} aria-haspopup="true" onClick={() => setOpen(open === i ? null : i)} className={`${link} gap-1.5`}>
+            <div
+              key={i}
+              className="relative"
+              onMouseEnter={() => { if (canHover()) scheduleOpen(i) }}
+              onMouseLeave={() => { if (canHover()) scheduleClose() }}
+              onFocus={() => scheduleOpen(i)}
+              onBlur={(e) => { if (!e.currentTarget.contains(e.relatedTarget as Node | null)) scheduleClose() }}
+            >
+              <button type="button" aria-expanded={shown === i} aria-haspopup="true" onClick={() => togglePin(i)} className={`${link} gap-1.5`}>
                 {t(g.title)}
-                <span aria-hidden="true" className={`size-1.5 -translate-y-px border-b-2 border-r-2 border-current transition-transform ${open === i ? '-rotate-[135deg]' : 'rotate-45'}`} />
+                <span aria-hidden="true" className={`size-1.5 -translate-y-px border-b-2 border-r-2 border-current transition-transform ${shown === i ? '-rotate-[135deg]' : 'rotate-45'}`} />
               </button>
-              {open === i && (
+              {shown === i && (
                 <div className="lg:absolute lg:left-1/2 lg:top-full lg:mt-2 lg:w-56 lg:-translate-x-1/2 lg:rounded-2xl lg:border lg:border-brand/25 lg:bg-surface lg:p-2 lg:shadow-[0_24px_60px_-20px_rgba(109,40,217,0.4)]">
                   {g.items.map((x) => (
                     <NavLink key={x.key} to={'/' + x.key} className="block rounded-xl px-3.5 py-2.5 hover:bg-muted aria-[current=page]:bg-muted">
