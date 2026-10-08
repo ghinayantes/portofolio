@@ -169,16 +169,16 @@ export function Ticket({ n, i }: { n: Certificate; i: number }) {
   return (
     <div className="card overflow-hidden !p-0">
       {n.image ? (
-        <div className="cert-img aspect-[16/10] overflow-hidden">
+        <div className="cert-img card-media">
           <img src={n.image} alt={localized(n.title, lang)} loading="lazy" className="h-full w-full object-cover transition-transform duration-300 hover:scale-105" />
         </div>
       ) : (
-        <div className={`thumb t${i % 3} aspect-[16/10]`} aria-hidden="true">
+        <div className={`thumb t${i % 3} card-media`} aria-hidden="true">
           <div className="win"><span /><span /><span /></div>
           <div className="ln"><i /><i /><i /></div>
         </div>
       )}
-      <div className="p-4">
+      <div className="p-6">
         <p className="text-xs font-semibold text-fg2">{issuer}{year ? ` · ${year}` : ''}</p>
         <h3 className="mt-1 font-display text-base font-semibold">{localized(n.title, lang)}</h3>
         <p className="mt-1 text-[13px] text-fg2">{localized(n.desc, lang)}</p>
@@ -199,7 +199,7 @@ export const FeedItem = ({ n, i }: { n: NewsItem; i: number }) => {
           <div className={`thumb t${i % 3} absolute inset-0`} aria-hidden="true" />
         )}
       </div>
-      <div className="p-5 sm:p-6">
+      <div className="p-6">
         <p className="flex flex-wrap items-center gap-2">
           {n.tag && <span className="rounded-full border border-brand/30 bg-brand/10 px-3 py-0.5 text-xs font-semibold text-brand">{localized(n.tag, lang)}</span>}
           <span className="text-[13px] font-semibold text-fg2">{localized(n.meta, lang)}</span>
@@ -227,9 +227,17 @@ export const Timeline = ({ items }: { items: Entry[] }) => {
   </ul>
 }
 
-export const Empty = ({ text }: { text: Localized }) => {
+export const Empty = ({ text, action }: { text: Localized; action?: ReactNode }) => {
   const { lang } = useSettings()
-  return <div className="max-w-3xl rounded-2xl border border-dashed border-line p-7 text-fg2">{localized(text, lang)}</div>
+  if (!action) {
+    return <div className="max-w-3xl rounded-2xl border border-dashed border-line p-7 text-fg2">{localized(text, lang)}</div>
+  }
+  return (
+    <div className="empty-state mx-auto max-w-3xl rounded-2xl border border-dashed border-line p-7 text-fg2">
+      <p>{localized(text, lang)}</p>
+      {action}
+    </div>
+  )
 }
 
 /** Official brand glyph (single-color path). */

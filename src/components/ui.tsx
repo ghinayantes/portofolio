@@ -12,7 +12,7 @@ export const Section = ({ title, children }: { title: string; children: ReactNod
   </section>
 )
 
-export function PageShell({ item, gi, children, compact }: { item: NavItem; gi: number; children: ReactNode; compact?: boolean }) {
+export function PageShell({ item, gi, children, compact, stats }: { item: NavItem; gi: number; children: ReactNode; compact?: boolean; stats?: ReactNode }) {
   const { t, lang } = useSettings()
   if (compact) {
     return (
@@ -21,6 +21,7 @@ export function PageShell({ item, gi, children, compact }: { item: NavItem; gi: 
         <div className="project-page-head">
           <h1 className="project-page-title shine pb-1">{t(item.title)}</h1>
           <p className="project-page-desc">{t(item.desc)}</p>
+          {stats ? <div className="project-stats">{stats}</div> : null}
         </div>
         <div>{children}</div>
       </div>

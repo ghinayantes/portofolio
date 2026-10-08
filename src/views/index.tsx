@@ -4,7 +4,7 @@ import { Suspense, useCallback, useMemo, useState, type ReactElement, type React
 import { LocLink as Link } from '../components/LocLink'
 import * as C from '../data/content'
 import { SITE } from '../data/site'
-import { NAV, localized, pair } from '../data/nav'
+import { NAV, localized, pair, type Pair } from '../data/nav'
 import type { Lang } from '../lib/i18n'
 import { tagLabel } from '../lib/project-tags'
 import type { FilterableProject } from '../lib/project-filters'
@@ -182,7 +182,15 @@ function Awards() {
     </div>
   )
 }
-const Work = () => <Empty text={pair('No work history yet. Add your first internship or freelance project here, with your role and one result.', 'Belum ada pengalaman kerja. Tambahkan pengalaman magang atau proyek lepas pertamamu, beserta peran dan hasilnya.')} />
+const Work = () => {
+  const { lang } = useSettings()
+  return (
+    <Empty
+      text={pair('No work history yet. Add your first internship or freelance project here, with your role and one result.', 'Belum ada pengalaman kerja. Tambahkan pengalaman magang atau proyek lepas pertamamu, beserta peran dan hasilnya.')}
+      action={<Link to="/project" className="btn-primary">{lang === 'id' ? 'Lihat proyek' : 'View projects'}</Link>}
+    />
+  )
+}
 
 function About() {
   const { lang } = useSettings()
@@ -292,6 +300,43 @@ function Sitemap() {
       </div>
     </div>
   )
+}
+
+/** Plural-aware count line for compact page headers (Sub A foundation, reused by Sub B-D). */
+export function CollectionStats({ total, single, plural }: { total: number; single: Pair; plural: Pair }) {
+  const { lang } = useSettings()
+  const word = total === 1 ? localized(single, lang) : localized(plural, lang)
+  return <>{total} {word}</>
+}
+
+/** Availability badge for the Hire header, reusing the About status pattern. */
+export function HireStats() {
+  const { lang } = useSettings()
+  const statusEntry = C.about.find(([k]) => k.en === 'Status')
+  if (!statusEntry) return null
+  return (
+    <span className="inline-flex items-center gap-1.5 rounded-full border border-brand/25 bg-brand/10 px-3 py-1 text-xs font-semibold"><i className="dot" />{localized(statusEntry[1], lang)}</span>
+  )
+}
+
+/** Per-page stats line for the compact header. `project` renders its own line; pages without a meaningful metric return null. */
+export function PageStats({ k }: { k: string }) {
+  switch (k) {
+    case 'award': return <CollectionStats total={C.awards.length} single={pair('award', 'penghargaan')} plural={pair('awards', 'penghargaan')} />
+    case 'certificate': return <CollectionStats total={C.certificates.length} single={pair('credential', 'kredensial')} plural={pair('credentials', 'kredensial')} />
+    case 'news': return <CollectionStats total={C.news.length} single={pair('note', 'catatan')} plural={pair('notes', 'catatan')} />
+    case 'skills': {
+      const total = C.skills.reduce((n, g) => n + g.items.length, 0)
+      return <CollectionStats total={total} single={pair('skill', 'keahlian')} plural={pair('skills', 'keahlian')} />
+    }
+    case 'organization': return <CollectionStats total={C.organizations.length} single={pair('organization', 'organisasi')} plural={pair('organizations', 'organisasi')} />
+    case 'education': return <CollectionStats total={C.education.length} single={pair('school', 'sekolah')} plural={pair('schools', 'sekolah')} />
+    case 'timeline': return <CollectionStats total={C.milestones.length} single={pair('milestone', 'tonggak')} plural={pair('milestones', 'tonggak')} />
+    case 'design': return <CollectionStats total={C.design.length} single={pair('work', 'karya')} plural={pair('works', 'karya')} />
+    case 'writing': return <CollectionStats total={C.writing.length} single={pair('piece', 'tulisan')} plural={pair('pieces', 'tulisan')} />
+    case 'hire': return <HireStats />
+    default: return null
+  }
 }
 
 /** key (from data/nav.ts) -> page component */

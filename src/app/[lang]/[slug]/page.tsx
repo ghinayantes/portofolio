@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation'
 import { ALL } from '../../../data/nav'
 import { LANGS, isLang } from '../../../lib/i18n'
 import { PageShell } from '../../../components/ui'
-import { PageBody } from '../../../views'
+import { PageBody, PageStats } from '../../../views'
 
 type Props = { params: Promise<{ lang: string; slug: string }> }
 
@@ -25,5 +25,5 @@ export default async function Page({ params }: Props) {
   const { slug } = await params
   const item = ALL.find((i) => i.key === slug)
   if (!item) notFound()
-  return <PageShell item={item} gi={item.gi} compact={slug === 'project'}><PageBody k={slug} /></PageShell>
+  return <PageShell item={item} gi={item.gi} compact={slug !== 'portfolio'} stats={<PageStats k={slug} />}><PageBody k={slug} /></PageShell>
 }

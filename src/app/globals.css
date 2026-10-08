@@ -375,3 +375,15 @@ footer { backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
 .projects-featured { margin-bottom: 0; }
 .projects-empty { display: grid; gap: 1rem; justify-items: start; }
 @media (prefers-reduced-motion: reduce) { .projects-toolbar, .projects-tech-chips { scroll-behavior: auto; } }
+
+/* Continuity foundation (Sub A): shared rhythm, grids, card base, empty state. Additive only. */
+.page-section-stack { display: grid; gap: 3.5rem; }
+.page-section-stack > section { margin-top: 0; }
+.grid-gallery { display: grid; gap: 1.25rem; grid-template-columns: 1fr; }
+@media (min-width: 768px) { .grid-gallery { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1104px) { .grid-gallery { grid-template-columns: repeat(3, 1fr); } }
+.grid-list { display: grid; gap: 1.25rem; grid-template-columns: 1fr; max-width: 48rem; }
+.card-base { border-radius: 1.25rem; }
+.card-media { aspect-ratio: 16 / 10; overflow: hidden; }
+.empty-state { display: grid; gap: 1rem; justify-items: center; text-align: center; padding: 2.5rem 1.5rem; }
+@media (prefers-reduced-motion: reduce) { .page-section-stack, .grid-gallery, .grid-list { scroll-behavior: auto; } }
