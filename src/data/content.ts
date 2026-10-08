@@ -59,14 +59,84 @@ export const milestones: Entry[] = [
 ]
 
 export const awards: Award[] = [
-  { meta: pair('2026', '2026'), date: pair('June 2026', 'Juni 2026'), title: pair('Award name', 'Nama penghargaan'), category: pair('Competition', 'Kompetisi'), org: pair('Organizer name', 'Nama penyelenggara'), desc: pair('Organizer and one line on why it mattered.', 'Penyelenggara dan penjelasan singkat tentang arti penghargaan ini.'), bullets: [pair('What you achieved and why it mattered.', 'Apa yang dicapai dan mengapa itu penting.')] },
-  { meta: pair('2025', '2025'), date: pair('November 2025 – Present', 'November 2025 – Sekarang'), title: pair('Scholarship grantee', 'Penerima beasiswa'), category: pair('Scholarship', 'Beasiswa'), org: pair('Program provider', 'Penyelenggara program'), desc: pair('Selected for a scholarship and mentorship program.', 'Terpilih untuk mengikuti program beasiswa dan pendampingan.'), bullets: [pair('Selected for a scholarship and mentorship program.', 'Terpilih untuk mengikuti program beasiswa dan pendampingan.')] },
+  { 
+    meta: pair('2025', '2025'), 
+    date: pair('14 November 2025 - Present', '14 November 2025 - Sekarang'), 
+    title: pair('Paragon Scholarship Program Excellence Grantee Batch 2025', 'Penerima Paragon Scholarship Program Excellence Batch 2025'), 
+    category: pair('Scholarship', 'Beasiswa'), 
+    org: pair('PT Paragon Technology and Innovation', 'PT Paragon Technology and Innovation'), 
+    desc: pair('Awarded the highly competitive Paragon Scholarship (top 1% of Indonesian students) for academic excellence and leadership potential.', 'Meraih beasiswa Paragon yang sangat kompetitif (top 1% mahasiswa Indonesia) atas keunggulan akademik dan potensi kepemimpinan.'), 
+    bullets: [
+      pair('Awarded the highly competitive Paragon Scholarship (top 1% of Indonesian students) for academic excellence and leadership potential.', 'Meraih beasiswa Paragon yang sangat kompetitif (top 1% mahasiswa Indonesia) atas keunggulan akademik dan potensi kepemimpinan.'),
+      pair('Participated in 10+ leadership training and community development programs.', 'Berpartisipasi dalam 10+ pelatihan kepemimpinan dan program pengembangan masyarakat.')
+    ] 
+  },
+  { 
+    meta: pair('2024', '2024'), 
+    date: pair('25-28 April 2024', '25-28 April 2024'), 
+    title: pair('Gold Medal Indonesia Mathematics Olympiad (OMI) 2024', 'Medali Emas Olimpiade Matematika Indonesia (OMI) 2024'), 
+    category: pair('Competition', 'Kompetisi'), 
+    org: pair('INDONESIA SCIENTIFIC SOCIETY (ISS)', 'INDONESIA SCIENTIFIC SOCIETY (ISS)'), 
+    desc: pair('Secured the Gold Medal in a prestigious national mathematics competition, demonstrating advanced analytical and problem-solving capabilities.', 'Meraih Medali Emas dalam kompetisi matematika nasional bergengsi, menunjukkan kemampuan analitis dan pemecahan masalah tingkat lanjut.'), 
+    bullets: [
+      pair('Secured the Gold Medal in a prestigious national mathematics competition, demonstrating advanced analytical and problem-solving capabilities.', 'Meraih Medali Emas dalam kompetisi matematika nasional bergengsi, menunjukkan kemampuan analitis dan pemecahan masalah tingkat lanjut.'),
+      pair('Competed against top students nationwide and successfully mastered complex mathematical concepts under tight time constraints.', 'Bersaing dengan siswa-siswi terbaik nasional dan berhasil menguasai konsep matematika kompleks di bawah batasan waktu yang ketat.')
+    ] 
+  },
+  { 
+    meta: pair('2024', '2024'), 
+    date: pair('06-09 November 2024', '06-09 November 2024'), 
+    title: pair('Finalist of Lomba Seni Bermatematika Tingkat SMA - Pekan Seni Bermatematika XXI se-INDONESIA', 'Finalis Lomba Seni Bermatematika Tingkat SMA - Pekan Seni Bermatematika XXI se-INDONESIA'), 
+    category: pair('Competition', 'Kompetisi'), 
+    org: pair('HIMATIKA FMIPA Universitas Andalas', 'HIMATIKA FMIPA Universitas Andalas'), 
+    desc: pair('Competed nationally as a finalist in the Mathematics Art Competition (PSB XXI) organized by HIMATIKA FMIPA Universitas Andalas.', 'Berkompetisi di tingkat nasional sebagai finalis Lomba Seni Bermatematika (PSB XXI) yang diselenggarakan oleh HIMATIKA FMIPA Universitas Andalas.'), 
+    bullets: [
+      pair('Competed nationally as a finalist in the Mathematics Art Competition (PSB XXI) organized by HIMATIKA FMIPA Universitas Andalas.', 'Berkompetisi di tingkat nasional sebagai finalis Lomba Seni Bermatematika (PSB XXI) yang diselenggarakan oleh HIMATIKA FMIPA Universitas Andalas.'),
+      pair('Demonstrated mathematical proficiency and creative problem-solving skills in a competitive national event.', 'Menunjukkan kemampuan matematika dan keterampilan pemecahan masalah yang kreatif dalam ajang kompetisi nasional.')
+    ] 
+  },
+  { 
+    meta: pair('2025', '2025'), 
+    date: pair('5-12 January 2025', '5-12 Januari 2025'), 
+    title: pair('2nd Highest Try Out Score - SITOPLASMA XVII 2025', 'Skor Try Out Tertinggi Kedua - SITOPLASMA XVII 2025'), 
+    category: pair('Competition', 'Kompetisi'), 
+    org: pair('BEM KM Fakultas Kedokteran Universitas Andalas', 'BEM KM Fakultas Kedokteran Universitas Andalas'), 
+    desc: pair('Achieved the second highest try out score in the regional cluster (Rumpun Regio) at SITOPLASMA XVII 2025 held by FK Universitas Andalas.', 'Mencapai skor try out tertinggi kedua di rumpun regio pada ajang SITOPLASMA XVII 2025 yang diadakan oleh FK Universitas Andalas.'), 
+    bullets: [
+      pair('Achieved the second highest try out score in the regional cluster (Rumpun Regio) at SITOPLASMA XVII 2025 held by FK Universitas Andalas.', 'Mencapai skor try out tertinggi kedua di rumpun regio pada ajang SITOPLASMA XVII 2025 yang diadakan oleh FK Universitas Andalas.'),
+      pair('Demonstrated academic excellence and strong preparation performance in SNBT 2025 preparation try out assessments.', 'Menunjukkan keunggulan akademik dan performa persiapan yang kuat dalam penilaian try out kompetitif persiapan SNBT 2025')
+    ] 
+  },
+  { 
+    meta: pair('2023', '2023'), 
+    date: pair('1, 2 September and 26 September 2023', '1, 2 September dan 26 September 2023'), 
+    title: pair('Finalist of 3rd Math Competition West Sumatra', 'Finalis 3rd Math Competition West Sumatra'), 
+    category: pair('Competition', 'Kompetisi'), 
+    org: pair('MGMP Matematika SMA / SMK Provinsi Sumatera Barat & Dinas Pendidikan Prov. Sumbar with Casio Education Indonesia', 'MGMP Matematika SMA / SMK Provinsi Sumatera Barat & Dinas Pendidikan Prov. Sumbar bersama Casio Education Indonesia'), 
+    desc: pair('Competed as a finalist in the 3rd Math Competition West Sumatra organized by MGMP Matematika SMA/SMK Provinsi Sumatera Barat and the Education Office in collaboration with Casio Education Indonesia.', 'Berkompetisi sebagai finalis dalam 3rd Math Competition West Sumatra yang diselenggarakan oleh MGMP Matematika SMA/SMK Provinsi Sumatera Barat dan Dinas Pendidikan bekerja sama dengan Casio Education Indonesia.'), 
+    bullets: [
+      pair('Competed as a finalist in the 3rd Math Competition West Sumatra organized by MGMP Matematika SMA/SMK Provinsi Sumatera Barat and the Education Office in collaboration with Casio Education Indonesia.', 'Berkompetisi sebagai finalis dalam 3rd Math Competition West Sumatra yang diselenggarakan oleh MGMP Matematika SMA/SMK Provinsi Sumatera Barat dan Dinas Pendidikan bekerja sama dengan Casio Education Indonesia.'),
+      pair('Demonstrated mathematical competency and applied technological skills using Classwiz in a regional competitive setting.', 'Menunjukkan kompetensi matematika dan mengaplikasikan keterampilan teknologi menggunakan Classwiz dalam ajang kompetisi regional.')
+    ] 
+  },
+  { 
+    meta: pair('2023', '2023'), 
+    date: pair('21, 28, and 29 October 2023', '21, 28, dan 29 Oktober 2023'), 
+    title: pair('Semifinalist of UNP Mathematics Challenge Tingkat SMA Ke-XXXV Se-Indonesia', 'Semifinalis UNP Mathematics Challenge Tingkat SMA Ke-XXXV Se-Indonesia'), 
+    category: pair('Competition', 'Kompetisi'), 
+    org: pair('Departemen Matematika FMIPA Universitas Negeri Padang (UNP)', 'Departemen Matematika FMIPA Universitas Negeri Padang (UNP)'), 
+    desc: pair('Achieved semifinalist standing in the 35th national-level UNP Mathematics Challenge organized by the Mathematics Department of FMIPA Universitas Negeri Padang.', 'Mencapai tahap semifinalis dalam ajang UNP Mathematics Challenge Tingkat SMA Ke-XXXV se-Indonesia yang diselenggarakan oleh Departemen Matematika FMIPA Universitas Negeri Padang.'), 
+    bullets: [
+      pair('Achieved semifinalist standing in the 35th national-level UNP Mathematics Challenge organized by the Mathematics Department of FMIPA Universitas Negeri Padang.', 'Mencapai tahap semifinalis dalam ajang UNP Mathematics Challenge Tingkat SMA Ke-XXXV se-Indonesia yang diselenggarakan oleh Departemen Matematika FMIPA Universitas Negeri Padang.'),
+      pair('Demonstrated critical, superior, and prominent mathematical problem-solving skills in a competitive national arena.', 'Menunjukkan kemampuan pemecahan masalah matematika yang kritis, unggul, dan menonjol di arena kompetisi tingkat nasional.')
+    ] 
+  }
 ]
 
 export const certificates: Certificate[] = [
-  { meta: pair('Issuer, 2026', 'Penerbit, 2026'), title: pair('Certificate name', 'Nama sertifikat'), desc: pair('What you learned and the skills it covers.', 'Hal yang dipelajari dan keterampilan yang tercakup.') },
-  { meta: pair('Issuer, 2025', 'Penerbit, 2025'), title: pair('Certificate name', 'Nama sertifikat'), desc: pair('What you learned and the skills it covers.', 'Hal yang dipelajari dan keterampilan yang tercakup.') },
-  { meta: pair('Issuer, 2025', 'Penerbit, 2025'), title: pair('Certificate name', 'Nama sertifikat'), desc: pair('What you learned and the skills it covers.', 'Hal yang dipelajari dan keterampilan yang tercakup.') },
+  { meta: pair('Badan Pengembangan dan Pembinaan Bahasa, 2025', 'Badan Pengembangan dan Pembinaan Bahasa, 2025'), title: pair('Uji Kemahiran Berbahasa Indonesia (UKBI)', 'Uji Kemahiran Berbahasa Indonesia (UKBI)'), desc: pair('Achieved an "Istimewa" (Special) proficiency rank with a score of 729, demonstrating flawless communication skills in Indonesian for personal, social, professional, and academic purposes.', 'Mencapai peringkat kemahiran "Istimewa" dengan skor 729, menunjukkan kemampuan komunikasi berbahasa Indonesia yang sempurna untuk keperluan personal, sosial, keprofesian, dan keilmiahan.') },
+  { meta: pair('STEI-K ITB, 2025', 'STEI-K ITB, 2025'), title: pair('Mathematics Tutor - IMPACT 6.0', 'Tutor Matematika - IMPACT 6.0'), desc: pair('Served as a Mathematics Tutor for IMPACT 6.0 organized by the Student Batch Board of STEI-K (School of Electrical Engineering and Informatics - Computation), mentoring participants in high school mathematics.', 'Berperan sebagai Tutor Matematika untuk IMPACT 6.0 yang diselenggarakan oleh Badan Pengurus Angkatan STEI-K (Sekolah Teknik Elektro dan Informatika - Komputasi), membimbing peserta dalam bidang matematika tingkat SMA.') },
+  { meta: pair('SNPMB / BPPP, 2025', 'SNPMB / BPPP, 2025'), title: pair('UTBK SNBT 2025', 'UTBK SNBT 2025'), desc: pair('Successfully completed the UTBK-SNBT 2025 examination with an average score of 777.56, achieving top scores including 898.45 in Mathematical Reasoning and 830.25 in Quantitative Knowledge.', 'Berhasil menyelesaikan ujian UTBK-SNBT 2025 dengan rata-rata skor 777,56, serta meraih skor tertinggi di antaranya 898,45 pada Penalaran Matematika dan 830,25 pada Pengetahuan Kuantitatif.') },
 ]
 
 export const news: NewsItem[] = [

@@ -1,11 +1,11 @@
 import { pair, type Pair } from './nav'
 
 const contacts = [
-       { key: 'email', label: pair('Email me', 'Kirim email'), href: 'mailto:ghinayantes2006@gmail.com' },
+       { key: 'email', label: pair('Email me', 'Kirim email'), href: 'mailto:ghnaemeliayantes@gmail.com' },
        { key: 'linkedin', label: pair('LinkedIn'), href: 'https://www.linkedin.com/in/ghina-emelia-yantes-3162592a7/' },
        { key: 'github', label: pair('GitHub'), href: 'https://github.com/ghinayantes' },
        { key: 'instagram', label: pair('Instagram'), href: 'https://www.instagram.com/ghinayantes' },
-       { key: 'whatsapp', label: pair('WhatsApp'), href: 'https://wa.me/62maintain' },
+       { key: 'whatsapp', label: pair('WhatsApp'), href: 'https://wa.me/6282173733818' },
      ]
 
 export type Hello = { text: Pair; cta?: Pair; to?: string; action?: 'flip' | 'dial' }
@@ -25,10 +25,10 @@ const hello: Hello[] = [
 
 export const SITE = {
   name: 'Ghina Emelia Yantes',
-  email: 'nama@email.com',
+  email: 'ghnaemeliayantes@gmail.com',
    photos: [
        { src: '/photo.jpg', alt: pair('Portrait of Ghina', 'Potret Ghina') },
-       { src: '/photo2.jpg', alt: pair('Inaugurate the assocoation', 'Lantik himpunan') },
+       { src: '/photo2.jpg', alt: pair('Inaugurate the association', 'Lantik himpunan') },
      ] as { src: string; alt: Pair; pos?: string }[],
   cv: '#',
   greeting: pair('Hello, my name is', 'Halo, namaku'),
