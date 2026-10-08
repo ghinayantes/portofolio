@@ -378,7 +378,7 @@ footer { backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
 .projects-result { font-size: 0.85rem; color: var(--text2); }
 .projects-clear { font-size: 0.85rem; font-weight: 600; color: var(--brand); }
 .projects-clear:hover { text-decoration: underline; }
-.projects-featured { margin-bottom: 0; }
+.projects-featured { margin-bottom: 2rem; }
 .projects-empty { display: grid; gap: 1rem; justify-items: start; }
 /* Deterministic mobile stacking: search and sort each take a full row so flex can never squeeze them to zero. Desktop untouched. */
 @media (max-width: 767px) {
