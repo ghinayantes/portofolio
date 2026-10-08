@@ -90,6 +90,7 @@ export function ProjectsToolbar(props: ToolbarProps): ReactElement {
             <option value="az">{id ? 'A–Z' : 'A–Z'}</option>
             <option value="status">{id ? 'Status' : 'Status'}</option>
           </select>
+          <svg aria-hidden="true" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="projects-sort__chevron"><path d="m4 6 4 4 4-4" /></svg>
         </label>
       </div>
       <div className="projects-toolbar__row">
