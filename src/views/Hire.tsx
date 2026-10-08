@@ -1,8 +1,9 @@
 'use client'
 
-import { useState, type FormEvent } from 'react'
+import { useState, type FocusEvent, type FormEvent } from 'react'
 import { SITE } from '../data/site'
 import { useSettings } from '../context/Settings'
+import { validateHireField, type HireField } from '../lib/hire-validation'
 
 const field = 'w-full rounded-xl border bg-surface px-3.5 py-3 text-base text-fg outline-none transition-colors focus:border-brand focus:ring-2 focus:ring-brand/40'
 
@@ -49,13 +50,11 @@ export default function Hire() {
     e.preventDefault()
     const form = e.currentTarget
     const f = new FormData(form)
-    const name = String(f.get('name') ?? '').trim()
-    const email = String(f.get('email') ?? '').trim()
-    const message = String(f.get('message') ?? '').trim()
     const er: Record<string, string> = {}
-    if (!name) er.name = id ? 'Nama wajib diisi.' : 'Enter your name.'
-    if (!/^\S+@\S+\.\S+$/.test(email)) er.email = id ? 'Masukkan email yang valid, misalnya nama@mail.com.' : 'Enter a valid email, like name@mail.com.'
-    if (!message) er.message = id ? 'Tulis pesan singkat.' : 'Write a short message.'
+    for (const k of ['name', 'email', 'message'] as const) {
+      const msg = validateHireField(k, String(f.get(k) ?? ''), lang)
+      if (msg) er[k] = msg
+    }
     setErr(er)
     if (Object.keys(er).length) return
     if (!FORMSPREE_ENDPOINT) {
@@ -67,13 +66,29 @@ export default function Hire() {
       const res = await fetch(FORMSPREE_ENDPOINT, {
         method: 'POST',
         headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, message }),
+        body: JSON.stringify({
+          name: String(f.get('name') ?? '').trim(),
+          email: String(f.get('email') ?? '').trim(),
+          message: String(f.get('message') ?? '').trim(),
+        }),
       })
       if (!res.ok) throw new Error(`Formspree responded ${res.status}`)
       setStatus('sent')
       form.reset()
     } catch {
       setStatus('error')
+    }
+  }
+
+  function blurField(field: HireField) {
+    return (e: FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      const msg = validateHireField(field, e.currentTarget.value, lang)
+      setErr((prev: Record<string, string>) => {
+        if (msg) return { ...prev, [field]: msg }
+        const next = { ...prev }
+        delete next[field]
+        return next
+      })
     }
   }
 
@@ -96,9 +111,9 @@ export default function Hire() {
           <label key={k} className="grid gap-1.5 text-sm font-medium capitalize">
             {id ? ({ name: 'Nama', email: 'Email', message: 'Pesan' }[k]) : k}
             {k === 'message'
-              ? <textarea name={k} rows={5} aria-invalid={!!err[k]} className={`${field} ${err[k] ? 'border-red-500' : 'border-brand/25'}`} />
-              : <input name={k} type={k === 'email' ? 'email' : 'text'} aria-invalid={!!err[k]} className={`${field} ${err[k] ? 'border-red-500' : 'border-brand/25'}`} />}
-            {err[k] && <span className="text-[13px] text-red-500">{err[k]}</span>}
+              ? <textarea name={k} rows={5} onBlur={blurField(k)} aria-invalid={!!err[k]} aria-describedby={err[k] ? `hire-${k}-error` : undefined} className={`${field} ${err[k] ? 'border-red-500' : 'border-brand/25'}`} />
+              : <input name={k} type={k === 'email' ? 'email' : 'text'} onBlur={blurField(k)} aria-invalid={!!err[k]} aria-describedby={err[k] ? `hire-${k}-error` : undefined} className={`${field} ${err[k] ? 'border-red-500' : 'border-brand/25'}`} />}
+            {err[k] && <span id={`hire-${k}-error`} role="alert" className="text-[13px] text-red-500">{err[k]}</span>}
           </label>
         ))}
         <button type="submit" disabled={status === 'sending'} className="btn-primary justify-self-start disabled:opacity-60">
