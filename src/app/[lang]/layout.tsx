@@ -20,7 +20,7 @@ import Footer from '../../components/Footer'
 import SmoothScroll from '../../components/SmoothScroll'
 import { SITE } from '../../data/site'
 import { LANGS, isLang } from '../../lib/i18n'
-import { SITE_URL } from '../../lib/seo'
+import { SEO_KEYWORDS, SITE_URL } from '../../lib/seo'
 
 export const dynamicParams = false
 const THEME_INIT = "try{var t=localStorage.getItem('theme');document.documentElement.dataset.theme=t==='light'?'light':'dark'}catch(e){}"
@@ -30,6 +30,14 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: { default: `${SITE.name} — Portfolio`, template: `%s — ${SITE.name}` },
   description: SITE.lead.en,
+  applicationName: `${SITE.name} — Portfolio`,
+  authors: [{ name: SITE.name, url: SITE_URL }],
+  creator: SITE.name,
+  publisher: SITE.name,
+  keywords: SEO_KEYWORDS,
+  category: 'portfolio',
+  robots: { index: true, follow: true, googleBot: { index: true, follow: true, 'max-image-preview': 'large', 'max-snippet': -1, 'max-video-preview': -1 } },
+  ...(process.env.GOOGLE_SITE_VERIFICATION ? { verification: { google: process.env.GOOGLE_SITE_VERIFICATION } } : {}),
   icons: { icon: '/favicon.svg' },
   openGraph: {
     type: 'website',

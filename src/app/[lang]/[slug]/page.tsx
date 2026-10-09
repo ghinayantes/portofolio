@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { ALL } from '../../../data/nav'
+import { languageAlternates } from '../../../lib/seo'
 import { LANGS, isLang } from '../../../lib/i18n'
 import { PageShell } from '../../../components/ui'
 import { PageBody, PageStats } from '../../../views'
@@ -17,7 +18,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: item.title[lang],
     description: item.desc[lang],
-    alternates: { canonical: `/${lang}/${slug}`, languages: Object.fromEntries(LANGS.map((x) => [x, `/${x}/${slug}`])) },
+    alternates: { canonical: `/${lang}/${slug}`, languages: languageAlternates(LANGS, `/${slug}`) },
   }
 }
 
