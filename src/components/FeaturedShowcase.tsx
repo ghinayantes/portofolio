@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useMemo, useState, type ReactElement } from 'react'
-import { FaGithub, FaGlobe } from 'react-icons/fa6'
+import { FaChevronLeft, FaChevronRight, FaGithub, FaGlobe } from 'react-icons/fa6'
 import { LocLink as Link } from './LocLink'
 import { localized } from '../data/nav'
 import { projectSlug, type Project } from '../data/content'
@@ -17,6 +17,7 @@ export function FeaturedShowcase({ list }: { list: Project[] }): ReactElement | 
   const { lang } = useSettings()
   const id = lang === 'id'
   const [index, setIndex] = useState(0)
+  const [dir, setDir] = useState<1 | -1>(1)
   const [paused, setPaused] = useState(false)
   const reduceMotion = useMemo(
     () => typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches,
@@ -27,12 +28,17 @@ export function FeaturedShowcase({ list }: { list: Project[] }): ReactElement | 
 
   useEffect(() => {
     if (list.length < 2 || paused || reduceMotion) return
-    const t = window.setTimeout(() => setIndex((i) => (i + 1) % list.length), ROTATE_MS)
+    const t = window.setTimeout(() => { setDir(1); setIndex((i) => (i + 1) % list.length) }, ROTATE_MS)
     return () => window.clearTimeout(t)
   }, [list.length, paused, reduceMotion, safeIndex])
 
   useEffect(() => { setIndex(0) }, [lang])
   if (!current) return null
+
+  const go = (delta: number) => {
+    setDir(delta < 0 ? -1 : 1)
+    setIndex((i) => (i + delta + list.length) % list.length)
+  }
 
   const availableLinks = getAvailableProjectLinks(
     current.links.map((link) => localized(link, lang)),
@@ -54,7 +60,7 @@ export function FeaturedShowcase({ list }: { list: Project[] }): ReactElement | 
       onFocus={() => setPaused(true)}
       onBlur={(e) => { if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setPaused(false) }}
     >
-      <div key={key} className="showcase-slide">
+      <div key={key} className="showcase-slide" data-dir={dir}>
         <div className="showcase-copy">
           <p className="showcase-eyebrow">{id ? 'Proyek Unggulan' : 'Featured Project'}</p>
           <h3 className="showcase-title">
@@ -106,6 +112,12 @@ export function FeaturedShowcase({ list }: { list: Project[] }): ReactElement | 
               <div className="win"><span /><span /><span /></div>
               <div className="ln"><i /><i /><i /></div>
             </div>
+          )}
+          {list.length > 1 && (
+            <>
+              <button type="button" onClick={() => go(-1)} aria-label={id ? 'Proyek sebelumnya' : 'Previous project'} className="showcase-arrow showcase-arrow--prev"><FaChevronLeft aria-hidden="true" /></button>
+              <button type="button" onClick={() => go(1)} aria-label={id ? 'Proyek berikutnya' : 'Next project'} className="showcase-arrow showcase-arrow--next"><FaChevronRight aria-hidden="true" /></button>
+            </>
           )}
         </div>
       </div>

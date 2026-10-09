@@ -433,13 +433,23 @@ footer { backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
 .showcase-actions { display: flex; align-items: center; gap: 1rem; margin-top: 1.25rem; }
 .showcase-globe { display: grid; place-items: center; width: 2.75rem; height: 2.75rem; border-radius: 999px; border: 1px solid var(--border); color: var(--text); transition: border-color 0.2s, color 0.2s, transform 0.2s; }
 .showcase-globe:hover { border-color: var(--brand); color: var(--brand); transform: translateY(-2px); }
-.showcase-visual { overflow: hidden; border-radius: 1.5rem; border: 1px solid var(--border); box-shadow: var(--shadow-lift); }
+.showcase-visual { position: relative; overflow: hidden; border-radius: 1.5rem; border: 1px solid var(--border); box-shadow: var(--shadow-lift); }
 .showcase-visual img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
 .showcase-fallback { aspect-ratio: 4 / 3; }
 .showcase-slide { animation: showcase-in 0.6s cubic-bezier(0.2, 0.7, 0.2, 1); }
 @keyframes showcase-in { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+/* Directional slide for manual/auto rotation: next enters from the right, prev from the left. */
+.showcase-slide[data-dir='1'] { animation: showcase-in-right 0.55s cubic-bezier(0.2, 0.7, 0.2, 1); }
+.showcase-slide[data-dir='-1'] { animation: showcase-in-left 0.55s cubic-bezier(0.2, 0.7, 0.2, 1); }
+@keyframes showcase-in-right { from { opacity: 0; transform: translateX(32px); } to { opacity: 1; transform: none; } }
+@keyframes showcase-in-left { from { opacity: 0; transform: translateX(-32px); } to { opacity: 1; transform: none; } }
+/* Manual carousel arrows overlaid on the visual. */
+.showcase-arrow { position: absolute; top: 50%; z-index: 2; display: grid; place-items: center; width: 2.75rem; height: 2.75rem; border-radius: 999px; border: 1px solid var(--border); background: color-mix(in srgb, var(--surface) 82%, transparent); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); color: var(--text); font-size: 1rem; cursor: pointer; opacity: 0.92; transform: translateY(-50%); transition: transform 0.2s, border-color 0.2s, color 0.2s, opacity 0.2s; }
+.showcase-arrow--prev { left: 0.75rem; }
+.showcase-arrow--next { right: 0.75rem; }
+.showcase-arrow:hover { opacity: 1; border-color: var(--brand); color: var(--brand); transform: translateY(-50%) scale(1.06); }
 .showcase-count { margin-top: 1rem; font-size: 0.85rem; color: var(--text2); font-variant-numeric: tabular-nums; }
-@media (prefers-reduced-motion: reduce) { .showcase-slide { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .showcase-slide, .showcase-slide[data-dir='1'], .showcase-slide[data-dir='-1'] { animation: none; } .showcase-arrow { transition: none; } }
 
 /* ── Work experience page ──────────────────────────────────────────── */
 .work-list { display: grid; gap: 1.5rem; max-width: 52rem; }
