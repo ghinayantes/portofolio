@@ -7,7 +7,7 @@ import { LocLink as Link, NavLink } from './LocLink'
 import { NAV } from '../data/nav'
 import { useSettings } from '../context/Settings'
 
-const link = 'inline-flex min-h-11 items-center rounded-full px-3.5 text-[15px] font-medium text-fg2 hover:text-fg aria-[current=page]:text-brand'
+const link = 'inline-flex min-h-12 w-full items-center rounded-full px-4 text-[15px] font-medium text-fg2 hover:text-fg aria-[current=page]:text-brand lg:min-h-11 lg:w-auto lg:px-3.5'
 
 /** Sun/moon morph toggle (Josh Comeau-style): the two glyphs cross-fade while rotating + scaling.
     The icon shows the *destination* theme: sun while dark, moon while light. */
@@ -63,15 +63,24 @@ export default function Header() {
     window.clearTimeout(closeTimer.current)
     closeTimer.current = window.setTimeout(() => setOpen(null), 150)
   }
-  const togglePin = (i: number) => {
+  const clearTimers = () => {
     window.clearTimeout(openTimer.current)
     window.clearTimeout(closeTimer.current)
+  }
+  const closeAll = () => {
+    clearTimers()
+    setOpen(null)
+    setPinned(null)
+    setMenu(false)
+  }
+  const togglePin = (i: number) => {
+    clearTimers()
     setPinned((prev) => (prev === i ? null : i))
     setOpen(null)
   }
   const shown = pinned ?? open
 
-  useEffect(() => { setOpen(null); setPinned(null); setMenu(false) }, [pathname])
+  useEffect(() => { clearTimers(); setOpen(null); setPinned(null); setMenu(false) }, [pathname])
   useEffect(() => {
     const out = (e: MouseEvent) => {
       if (!ref.current?.contains(e.target as Node)) { setOpen(null); setPinned(null) }
@@ -89,24 +98,23 @@ export default function Header() {
         <div className="mx-auto grid h-17 max-w-page grid-cols-2 items-center gap-3 lg:grid-cols-[1fr_auto_1fr] px-5 sm:px-8 lg:px-20">
           <Link to="/" className="justify-self-start font-display text-2xl font-extrabold">G<span className="text-brand">.</span></Link>
         <nav data-lenis-prevent aria-label={lang === 'id' ? 'Navigasi utama' : 'Main'} id="main-nav" className={`${menu ? 'flex' : 'hidden'} absolute inset-x-0 top-full max-h-[calc(100vh-4.25rem)] flex-col overflow-auto border-b border-brand/25 bg-bg/90 px-5 pb-5 backdrop-blur-xl lg:static lg:col-start-2 lg:flex lg:max-h-none lg:flex-row lg:items-center lg:justify-center lg:gap-1 lg:overflow-visible lg:border-0 lg:bg-transparent lg:p-0 lg:backdrop-blur-none`}>
-          <NavLink to="/" end className={link}>{lang === 'id' ? 'Beranda' : 'Home'}</NavLink>
+          <NavLink to="/" end onClick={closeAll} className={link}>{lang === 'id' ? 'Beranda' : 'Home'}</NavLink>
           {NAV.map((g, i) => (
             <div
               key={i}
               className="relative"
               onMouseEnter={() => { if (canHover()) scheduleOpen(i) }}
               onMouseLeave={() => { if (canHover()) scheduleClose() }}
-              onFocus={() => scheduleOpen(i)}
               onBlur={(e) => { if (!e.currentTarget.contains(e.relatedTarget as Node | null)) scheduleClose() }}
             >
-              <button type="button" aria-expanded={shown === i} aria-haspopup="true" onClick={() => togglePin(i)} className={`${link} gap-1.5`}>
+              <button type="button" aria-expanded={shown === i} aria-haspopup="true" onClick={() => togglePin(i)} onFocus={() => scheduleOpen(i)} className={`${link} gap-1.5 py-1 lg:py-0`}>
                 {t(g.title)}
                 <span aria-hidden="true" className={`size-1.5 -translate-y-px border-b-2 border-r-2 border-current transition-transform ${shown === i ? '-rotate-[135deg]' : 'rotate-45'}`} />
               </button>
               {shown === i && (
-                <div className="lg:absolute lg:left-1/2 lg:top-full lg:mt-2 lg:w-56 lg:-translate-x-1/2 lg:rounded-2xl lg:border lg:border-brand/25 lg:bg-surface lg:p-2 lg:shadow-[0_24px_60px_-20px_rgba(109,40,217,0.4)]">
+                <div className="mt-1 flex flex-col gap-0.5 lg:mt-2 lg:block lg:absolute lg:left-1/2 lg:top-full lg:w-56 lg:-translate-x-1/2 lg:rounded-2xl lg:border lg:border-brand/25 lg:bg-surface lg:p-2 lg:shadow-[0_24px_60px_-20px_rgba(109,40,217,0.4)]">
                   {g.items.map((x) => (
-                    <NavLink key={x.key} to={'/' + x.key} className="block rounded-xl px-3.5 py-2.5 hover:bg-muted aria-[current=page]:bg-muted">
+                    <NavLink key={x.key} to={'/' + x.key} onClick={closeAll} className="block min-h-12 rounded-xl px-4 py-3 hover:bg-muted active:bg-muted aria-[current=page]:bg-muted lg:min-h-0 lg:px-3.5 lg:py-2.5 lg:active:bg-transparent">
                       <b className="block font-display text-[15px] font-semibold">{t(x.title)}</b>
                       <small className="text-fg2">{t(x.desc)}</small>
                     </NavLink>
