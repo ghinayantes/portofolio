@@ -16,11 +16,13 @@ type Lang = ReturnType<typeof useSettings>['lang']
 type Dir = 0 | 1 | -1
 
 /** One showcase slide: eyebrow, big title, frosted description overlapping a large visual. */
-function ShowcaseSlide({ project, lang, dir, leaving = false, onLeft }: {
+type SlideState = 'active' | 'leave' | 'idle'
+
+function ShowcaseSlide({ project, lang, dir, state, onLeft }: {
   project: Project
   lang: Lang
   dir: Dir
-  leaving?: boolean
+  state: SlideState
   onLeft?: () => void
 }): ReactElement {
   const id = lang === 'id'
@@ -36,11 +38,11 @@ function ShowcaseSlide({ project, lang, dir, leaving = false, onLeft }: {
 
   return (
     <div
-      className={leaving ? 'showcase-slide showcase-slide--leave' : 'showcase-slide'}
+      className={`showcase-slide showcase-slide--${state}`}
       data-dir={dir}
-      aria-hidden={leaving || undefined}
-      inert={leaving || undefined}
-      onAnimationEnd={leaving ? done : undefined}
+      aria-hidden={state !== 'active' || undefined}
+      inert={state !== 'active' || undefined}
+      onAnimationEnd={state === 'leave' ? done : undefined}
     >
       <div className="showcase-copy">
         <p className="showcase-eyebrow">{id ? 'Proyek Unggulan' : 'Featured Project'}</p>
@@ -102,7 +104,9 @@ function ShowcaseSlide({ project, lang, dir, leaving = false, onLeft }: {
 const slideKey = (p: Project): string => p.slug ?? localized(p.title, 'en')
 
 /** Editorial featured-project showcase. Rotates automatically when given 2+ projects;
-    the outgoing slide slides out while the next one slides in from the travel direction. */
+    the outgoing slide slides out while the next one slides in from the travel direction.
+    Every slide stays mounted (idle ones hidden) so the stage keeps the tallest slide's height
+    and nothing jumps vertically between projects. */
 export function FeaturedShowcase({ list }: { list: Project[] }): ReactElement | null {
   const { lang } = useSettings()
   const id = lang === 'id'
@@ -116,7 +120,6 @@ export function FeaturedShowcase({ list }: { list: Project[] }): ReactElement | 
   )
   const safeIndex = list.length === 0 ? 0 : index % list.length
   const current = list[safeIndex] ?? null
-  const outgoing = leaving === null ? null : list[leaving % list.length] ?? null
 
   const go = useCallback((delta: 1 | -1) => {
     if (list.length < 2 || leaving !== null) return
@@ -152,10 +155,16 @@ export function FeaturedShowcase({ list }: { list: Project[] }): ReactElement | 
       onBlur={(e) => { if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setPaused(false) }}
     >
       <div className="showcase-stage">
-        {outgoing && (
-          <ShowcaseSlide key={`leave-${slideKey(outgoing)}`} project={outgoing} lang={lang} dir={dir} leaving onLeft={() => setLeaving(null)} />
-        )}
-        <ShowcaseSlide key={slideKey(current)} project={current} lang={lang} dir={dir} />
+        {list.map((project, i) => (
+          <ShowcaseSlide
+            key={slideKey(project)}
+            project={project}
+            lang={lang}
+            dir={dir}
+            state={i === safeIndex ? 'active' : i === leaving ? 'leave' : 'idle'}
+            onLeft={() => setLeaving(null)}
+          />
+        ))}
       </div>
       {list.length > 1 && (
         <div className="showcase-nav">

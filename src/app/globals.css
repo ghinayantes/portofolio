@@ -440,11 +440,14 @@ footer { backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
    The stage clips the travel (with room left for the visual's shadow). */
 .showcase-stage { display: grid; overflow: clip; overflow-clip-margin: 2.5rem; }
 .showcase-stage > .showcase-slide { grid-area: 1 / 1; min-width: 0; }
-.showcase-slide[data-dir='0'] { animation: showcase-in 0.6s cubic-bezier(0.2, 0.7, 0.2, 1); }
+.showcase-slide--idle { visibility: hidden; pointer-events: none; }
+/* Stacked (mobile) slides align to the top so titles don't shift between shorter and taller projects. */
+@media (max-width: 1023.98px) { .showcase-stage > .showcase-slide { align-content: start; } }
+.showcase-slide--active[data-dir='0'] { animation: showcase-in 0.6s cubic-bezier(0.2, 0.7, 0.2, 1); }
 @keyframes showcase-in { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
 /* Directional slide: next enters from the right and pushes the current one out left; prev mirrors it. */
-.showcase-slide[data-dir='1'] { animation: showcase-enter-right 0.75s cubic-bezier(0.65, 0, 0.35, 1) both; }
-.showcase-slide[data-dir='-1'] { animation: showcase-enter-left 0.75s cubic-bezier(0.65, 0, 0.35, 1) both; }
+.showcase-slide--active[data-dir='1'] { animation: showcase-enter-right 0.75s cubic-bezier(0.65, 0, 0.35, 1) both; }
+.showcase-slide--active[data-dir='-1'] { animation: showcase-enter-left 0.75s cubic-bezier(0.65, 0, 0.35, 1) both; }
 .showcase-slide--leave { pointer-events: none; }
 .showcase-slide--leave[data-dir='1'] { animation: showcase-leave-left 0.75s cubic-bezier(0.65, 0, 0.35, 1) both; }
 .showcase-slide--leave[data-dir='-1'] { animation: showcase-leave-right 0.75s cubic-bezier(0.65, 0, 0.35, 1) both; }
@@ -465,7 +468,7 @@ footer { backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
   .showcase-arrow--next { right: calc(50% - 50vw + 1.25rem); }
   .showcase-arrow:hover { transform: translateY(-50%) scale(1.06); }
 }
-@media (prefers-reduced-motion: reduce) { .showcase-slide, .showcase-slide[data-dir='0'], .showcase-slide[data-dir='1'], .showcase-slide[data-dir='-1'] { animation: none; } .showcase-arrow { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .showcase-slide--active[data-dir], .showcase-slide--leave[data-dir] { animation: none; } .showcase-arrow { transition: none; } }
 
 /* ── Work experience page ──────────────────────────────────────────── */
 .work-list { display: grid; gap: 1.5rem; max-width: 52rem; }
