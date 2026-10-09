@@ -9,6 +9,7 @@ import '@fontsource/poppins/800.css'
 import 'lenis/dist/lenis.css'
 import '../globals.css'
 import { Analytics } from '@vercel/analytics/react'
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { SettingsProvider } from '../../context/Settings'
 import CloudShader from '../../components/CloudShader'
 import Background from '../../components/Background'
@@ -85,6 +86,7 @@ export default async function RootLayout({ children, params }: { children: React
             </SmoothScroll>
             <Analytics />
           </SettingsProvider>
+          <SpeedInsights />
       </body>
     </html>
   )
