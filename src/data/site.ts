@@ -38,8 +38,8 @@ export const SITE = {
     id: ['Mahasiswa Informatika', 'Web Developer', 'UI/UX Designer', 'Pemecah Masalah'],
   },
   lead: pair(
-    'I build web apps and design the interfaces people actually use, from first sketch to shipped code.',
-    'Aku membuat aplikasi web dan mendesain antarmuka yang benar-benar dipakai, dari sketsa awal sampai jadi kode.',
+    "I'm an Informatics student at Institut Teknologi Bandung, interested in software engineering and AI. I approach problems analytically, enjoy understanding how things work, and am driven to turn ideas into well-crafted software.",
+    'Saya adalah mahasiswa Informatika di Institut Teknologi Bandung yang tertarik pada bidang rekayasa perangkat lunak dan kecerdasan buatan. Saya terbiasa mendekati permasalahan secara analitis, senang memahami cara kerja berbagai sistem, dan termotivasi untuk mengubah ide menjadi perangkat lunak yang dirancang dengan baik.',
   ),
   contacts,
   hello,
