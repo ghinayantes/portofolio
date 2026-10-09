@@ -144,14 +144,14 @@ export const awards: Award[] = [
 ]
 
 export const certificates: Certificate[] = [
-  { meta: pair('Badan Pengembangan dan Pembinaan Bahasa, 2025', 'Badan Pengembangan dan Pembinaan Bahasa, 2025'), title: pair('Uji Kemahiran Berbahasa Indonesia (UKBI)', 'Uji Kemahiran Berbahasa Indonesia (UKBI)'), desc: pair('Achieved an "Istimewa" (Special) proficiency rank with a score of 729, demonstrating flawless communication skills in Indonesian for personal, social, professional, and academic purposes.', 'Mencapai peringkat kemahiran "Istimewa" dengan skor 729, menunjukkan kemampuan komunikasi berbahasa Indonesia yang sempurna untuk keperluan personal, sosial, keprofesian, dan keilmiahan.') },
-  { meta: pair('STEI-K ITB, 2025', 'STEI-K ITB, 2025'), title: pair('Mathematics Tutor - IMPACT 6.0', 'Tutor Matematika - IMPACT 6.0'), desc: pair('Served as a Mathematics Tutor for IMPACT 6.0 organized by the Student Batch Board of STEI-K (School of Electrical Engineering and Informatics - Computation), mentoring participants in high school mathematics.', 'Berperan sebagai Tutor Matematika untuk IMPACT 6.0 yang diselenggarakan oleh Badan Pengurus Angkatan STEI-K (Sekolah Teknik Elektro dan Informatika - Komputasi), membimbing peserta dalam bidang matematika tingkat SMA.') },
-  { meta: pair('SNPMB / BPPP, 2025', 'SNPMB / BPPP, 2025'), title: pair('UTBK SNBT 2025', 'UTBK SNBT 2025'), desc: pair('Successfully completed the UTBK-SNBT 2025 examination with an average score of 777.56, achieving top scores including 898.45 in Mathematical Reasoning and 830.25 in Quantitative Knowledge.', 'Berhasil menyelesaikan ujian UTBK-SNBT 2025 dengan rata-rata skor 777,56, serta meraih skor tertinggi di antaranya 898,45 pada Penalaran Matematika dan 830,25 pada Pengetahuan Kuantitatif.') },
+  { meta: pair('Badan Pengembangan dan Pembinaan Bahasa, 2025', 'Badan Pengembangan dan Pembinaan Bahasa, 2025'), title: pair('Uji Kemahiran Berbahasa Indonesia (UKBI)', 'Uji Kemahiran Berbahasa Indonesia (UKBI)'), desc: pair('Achieved an "Istimewa" (Special) proficiency rank with a score of 729, demonstrating flawless communication skills in Indonesian for personal, social, professional, and academic purposes.', 'Mencapai peringkat kemahiran "Istimewa" dengan skor 729, menunjukkan kemampuan komunikasi berbahasa Indonesia yang sempurna untuk keperluan personal, sosial, keprofesian, dan keilmiahan.'), image: '/ukbi.png' },
+  { meta: pair('STEI-K ITB, 2025', 'STEI-K ITB, 2025'), title: pair('Mathematics Tutor - IMPACT 6.0', 'Tutor Matematika - IMPACT 6.0'), desc: pair('Served as a Mathematics Tutor for IMPACT 6.0 organized by the Student Batch Board of STEI-K (School of Electrical Engineering and Informatics - Computation), mentoring participants in high school mathematics.', 'Berperan sebagai Tutor Matematika untuk IMPACT 6.0 yang diselenggarakan oleh Badan Pengurus Angkatan STEI-K (Sekolah Teknik Elektro dan Informatika - Komputasi), membimbing peserta dalam bidang matematika tingkat SMA.'), image: '/tutor.png' },
+  { meta: pair('SNPMB / BPPP, 2025', 'SNPMB / BPPP, 2025'), title: pair('UTBK SNBT 2025', 'UTBK SNBT 2025'), desc: pair('Successfully completed the UTBK-SNBT 2025 examination with an average score of 777.56, achieving top scores including 898.45 in Mathematical Reasoning and 830.25 in Quantitative Knowledge.', 'Berhasil menyelesaikan ujian UTBK-SNBT 2025 dengan rata-rata skor 777,56, serta meraih skor tertinggi di antaranya 898,45 pada Penalaran Matematika dan 830,25 pada Pengetahuan Kuantitatif.'), image: '/utbk.png' },
 ]
 
 export const news: NewsItem[] = [
-  { meta: pair('Oct 2026', 'Okt 2026'), title: pair('Designing my portfolio in Figma', 'Merancang portofolio di Figma'), desc: pair('Notes on the sitemap, design tokens, and what I would change.', 'Catatan tentang peta situs, token desain, dan hal yang ingin kuubah.') },
-  { meta: pair('Sep 2026', 'Sep 2026'), title: pair('Wrapping up a team project', 'Menuntaskan proyek tim'), desc: pair('What worked, what slipped, and what I learned.', 'Hal yang berjalan baik, yang tertunda, dan pelajaran yang kudapat.') },
+  //{ meta: pair('Oct 2026', 'Okt 2026'), title: pair('Designing my portfolio in Figma', 'Merancang portofolio di Figma'), desc: pair('Notes on the sitemap, design tokens, and what I would change.', 'Catatan tentang peta situs, token desain, dan hal yang ingin kuubah.') },
+  //{ meta: pair('Sep 2026', 'Sep 2026'), title: pair('Wrapping up a team project', 'Menuntaskan proyek tim'), desc: pair('What worked, what slipped, and what I learned.', 'Hal yang berjalan baik, yang tertunda, dan pelajaran yang kudapat.') },
 ]
 
 export const design: Project[] = [
@@ -163,7 +163,7 @@ export const writing: Project[] = [
 ]
 
 export const about: [Pair, Localized][] = [
-  [pair('University', 'Universitas'), 'Institut Teknologi Bandung'],
+  [pair('University', 'Universitas'), pair('Bandung Institute of Technology', 'Institut Teknologi Bandung')],
   [pair('Major', 'Program studi'), pair('Informatics Engineering', 'Teknik Informatika')],
   [pair('Location', 'Lokasi'), pair('Bandung, Indonesia', 'Bandung, Indonesia')],
   [pair('Email', 'Email'), 'ghnaemeliayantes@gmail.com'],
@@ -171,7 +171,7 @@ export const about: [Pair, Localized][] = [
 ]
 
 export const skills: SkillGroup[] = [
-  { title: pair('Code', 'Pemrograman'), items: ['Python', 'JavaScript', 'TypeScript', 'Java', 'SQL', 'HTML/CSS'] },
+  { title: pair('Code', 'Pemrograman'), items: ['Python', 'JavaScript', 'TypeScript', 'Java', 'SQL', 'HTML/CSS', 'C'] },
   { title: pair('Frameworks and tools', 'Framework dan tools'), items: ['React', 'Next.js', 'Tailwind', 'Git', 'Figma'] },
   { title: pair('Working with people', 'Kolaborasi'), items: [pair('Event planning', 'Perencanaan acara'), pair('Public speaking', 'Berbicara di depan umum'), pair('Documentation', 'Dokumentasi'), pair('Leadership', 'Kepemimpinan')] },
 ]
