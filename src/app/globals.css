@@ -346,7 +346,7 @@ footer { backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
 @media (min-width: 1024px) { .explore-col + .explore-col { border-left: 1px solid var(--border); } }
 .explore-col ul { margin: 0; padding: 0; list-style: none; }
 .explore-col__head { display: flex; align-items: center; gap: 0.7rem; margin: 0 0 0.75rem; font-family: var(--font-display); font-size: 1.05rem; font-weight: 700; }
-.explore-col__badge { display: grid; place-items: center; width: 2.1rem; height: 2.1rem; border-radius: 0.7rem; font-size: 0.95rem; color: var(--tone); background: color-mix(in srgb, var(--tone) 16%, transparent); border: 1px solid color-mix(in srgb, var(--tone) 32%, transparent); }
+.explore-col__num { font-size: 0.85rem; font-weight: 700; letter-spacing: 0.08em; color: var(--tone); font-variant-numeric: tabular-nums; }
 .explore-row { display: flex; align-items: flex-start; gap: 0.75rem; padding: 0.6rem 0.55rem; margin: 0 -0.55rem; border-radius: 0.85rem; text-decoration: none; transition: background-color 0.2s, transform 0.25s; }
 .explore-row:hover, .explore-row:focus-visible { background: color-mix(in srgb, var(--tone) 11%, transparent); transform: translateX(3px); }
 .explore-row__icon { flex: none; display: grid; place-items: center; width: 1.9rem; height: 1.9rem; margin-top: 1px; border-radius: 0.55rem; font-size: 0.8rem; color: var(--text2); background: color-mix(in srgb, var(--text) 6%, transparent); transition: color 0.2s, background-color 0.2s; }

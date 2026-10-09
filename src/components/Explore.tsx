@@ -70,12 +70,10 @@ export default function Explore() {
       <Reveal>
         <nav aria-label={id ? 'Semua halaman' : 'All pages'} className="card explore-dir">
           {NAV.map((g, gi) => {
-            const first = g.items[0]
-            const GIcon = first ? ICONS[first.key] : undefined
             return (
               <section key={gi} className="explore-col" style={{ '--tone': TONES[gi % TONES.length] } as CSSProperties}>
                 <h3 className="explore-col__head">
-                  <span className="explore-col__badge" aria-hidden>{GIcon ? <GIcon /> : null}</span>
+                  <span className="explore-col__num" aria-hidden>{String(gi + 1).padStart(2, '0')}</span>
                   {t(g.title)}
                 </h3>
                 <ul>
