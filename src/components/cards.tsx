@@ -212,18 +212,54 @@ export const FeedItem = ({ n, i }: { n: NewsItem; i: number }) => {
   )
 }
 
-export const Timeline = ({ items }: { items: Entry[] }) => {
+/** Institution emblem tile: the logo image when provided, otherwise a monogram. */
+export function OrgLogo({ name, logo, mono }: { name: string; logo?: string; mono?: string }) {
+  const text = mono ?? name.split(/\s+/).filter((w) => /^[A-Z]/.test(w)).map((w) => w[0]).join('').slice(0, 3)
+  return (
+    <span className="org-logo" data-long={text.length > 4 ? 'true' : undefined}>
+      {logo
+        ? <img src={logo} alt={`${name} logo`} loading="lazy" className="org-logo__img" />
+        : <span aria-hidden="true" className="org-logo__mono">{text}</span>}
+    </span>
+  )
+}
+
+/** Splits 'Role - Organization' (or 'Role — Organization') into its two parts. */
+export function splitRole(title: string): { role: string; org: string | null } {
+  const m = title.match(/^(.*\S)\s+[-—]\s+(\S.*)$/)
+  return m ? { role: m[1], org: m[2] } : { role: title, org: null }
+}
+
+export const Timeline = ({ items, logos = false }: { items: Entry[]; logos?: boolean }) => {
   const { lang } = useSettings()
-  return <ul className="tl">
-    {items.map((e) => (
-      <li key={localized(e.title, lang) + localized(e.when, lang)} className={e.current ? 'cur' : ''}>
-        <div className="tl-card">
-          <span className="tl-year">{localized(e.when, lang)}</span>
-          <h3 className="font-display text-lg font-semibold">{localized(e.title, lang)}</h3>
-          <p className="mt-1 text-fg2">{localized(e.desc, lang)}</p>
-        </div>
-      </li>
-    ))}
+  return <ul className={logos ? 'tl tl--org' : 'tl'}>
+    {items.map((e) => {
+      const title = localized(e.title, lang)
+      const { role, org } = splitRole(title)
+      return (
+        <li key={title + localized(e.when, lang)} className={e.current ? 'cur' : ''}>
+          {logos ? (
+            <div className="tl-card tl-card--org">
+              <OrgLogo name={org ?? role} logo={e.logo} mono={e.mono} />
+              <div className="min-w-0">
+                <div className="tl-org-head flex flex-wrap items-center gap-x-3 gap-y-1.5">
+                  {org && <p className="tl-org">{org}</p>}
+                  <span className="tl-year !mb-0">{localized(e.when, lang)}</span>
+                </div>
+                <h3 className="mt-1.5 font-display text-lg font-semibold">{role}</h3>
+                <p className="mt-1 text-fg2">{localized(e.desc, lang)}</p>
+              </div>
+            </div>
+          ) : (
+            <div className="tl-card">
+              <span className="tl-year">{localized(e.when, lang)}</span>
+              <h3 className="font-display text-lg font-semibold">{title}</h3>
+              <p className="mt-1 text-fg2">{localized(e.desc, lang)}</p>
+            </div>
+          )}
+        </li>
+      )
+    })}
   </ul>
 }
 

@@ -9,6 +9,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
   return paths.flatMap((p) => LANGS.map((l) => ({
     url: `${SITE_URL}/${l}${p}`,
     lastModified: new Date(),
-    alternates: { languages: Object.fromEntries(LANGS.map((x) => [x, `${SITE_URL}/${x}${p}`])) },
+    changeFrequency: p === '' ? 'weekly' : 'monthly',
+    priority: p === '' ? 1 : p.startsWith('/project/') ? 0.6 : 0.8,
+    alternates: { languages: { ...Object.fromEntries(LANGS.map((x) => [x, `${SITE_URL}/${x}${p}`])), 'x-default': `${SITE_URL}/en${p}` } },
   })))
 }

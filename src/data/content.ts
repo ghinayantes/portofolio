@@ -1,7 +1,8 @@
 import { localized, pair, type Localized, type Pair } from './nav'
 
 export type Project = { title: Localized; desc: Pair; tags: Localized[]; links: Localized[]; linkHrefs?: string[]; image?: string; status?: Pair; wip?: boolean; slug?: string; date?: string; featured?: boolean; tech?: string[]; state?: 'completed' | 'in-progress' }
-export type Entry = { title: Localized; when: Pair; desc: Pair; current?: boolean }
+/** `logo` = image path in /public (e.g. '/logos/hmif.png'); `mono` = short monogram shown when no logo is set. */
+export type Entry = { title: Localized; when: Pair; desc: Pair; current?: boolean; logo?: string; mono?: string }
 export type Note = { meta: Pair; title: Localized; desc: Pair }
 /** Certificate with optional image (falls back to a gradient + medal). */
 export type Certificate = Note & { image?: string }
@@ -19,6 +20,8 @@ export type WorkExperience = {
   highlights: Pair[]
   tech: string[]
   current?: boolean
+  logo?: string
+  mono?: string
 }
 
 /** URL slug derived from the English title, e.g. 'Food Waste Stop' -> 'food-waste-stop'. */
@@ -43,18 +46,18 @@ export const projects: Project[] = [
 ]
 
 export const organizations: Entry[] = [
-  { title: pair('Technology Development Staff Intern (Frontend) - HMIF ITB', 'Staf Magang Pengembangan Teknologi (Frontend) — HMIF ITB'), when: pair('Sep 2026 – Present', 'Sep 2026 – Sekarang'), desc: pair('Developed and maintained responsive, user-friendly web interfaces for HMIF ITB platforms using modern frontend technologies.', 'Mengembangkan dan memelihara antarmuka web yang responsif dan mudah digunakan untuk platform HMIF ITB dengan teknologi frontend modern.'), current: true },
-  { title: pair('Competitive Programming Staff - ARKAVIDIA 11.0', 'Staf Competitive Programming — ARKAVIDIA 11.0'), when: pair('Sep 2026 – Present', 'Sep 2026 – Sekarang'), desc: pair('Designed and curated competitive programming problem sets, test cases, and solutions for national-level programming contests.', 'Merancang dan menyusun kumpulan soal, kasus uji, serta solusi untuk kompetisi pemrograman tingkat nasional.'), current: true },
-  { title: pair('Wisnight Staff - Wisuda Oktober HMIF ITB 2026', 'Staf Wisnight — Wisuda Oktober HMIF ITB 2026'), when: pair('Sep 2026 – Oct 2026', 'Sep 2026 – Okt 2026'), desc: pair('Designed and conceptualized an engaging, memorable celebration night program dedicated to honoring and celebrating the graduating students of HMIF ITB.', 'Merancang konsep acara malam perayaan yang berkesan untuk menghormati dan merayakan kelulusan mahasiswa HMIF ITB.'), current: true },
-  { title: pair('Frontend - Aksi Angkatan SPARTA HMIF ITB 2025', 'Frontend — Aksi Angkatan SPARTA HMIF ITB 2025'), when: pair('Aug 2026 – Sep 2026', 'Agu 2026 – Sep 2026'), desc: pair('Developed and maintained responsive frontend interfaces for SPARTA HMIF ITB platforms to support angkatan activities and student engagement.', 'Mengembangkan dan memelihara antarmuka frontend yang responsif untuk platform SPARTA HMIF ITB guna mendukung kegiatan angkatan dan keterlibatan mahasiswa.'), current: false },
-  { title: pair('Event Organizer Staff - OSKM ITB 2026', 'Staf Penyelenggara Acara — OSKM ITB 2026'), when: pair('Aug 2026', 'Agu 2026'), desc: pair('Collaborated with the event division team to plan, design, and execute the official student orientation program for incoming undergraduate students at Institut Teknologi Bandung.', 'Berkolaborasi dengan tim divisi acara untuk merencanakan dan menjalankan program orientasi resmi bagi mahasiswa baru Institut Teknologi Bandung.'), current: false },
-  { title: pair('Web Developer Explorer - Google Developer on Campus ITB', 'Web Developer Explorer — Google Developer on Campus ITB'), when: pair('May 2026 – Present', 'Mei 2026 – Sekarang'), desc: pair('Completed hands-on web development modules and built responsive projects leveraging AI-assisted workflows.', 'Menyelesaikan modul praktik pengembangan web dan membuat proyek responsif dengan dukungan alur kerja berbantuan AI.'), current: true },
-  { title: pair('Curriculum Staff - COMPILE 2026', 'Staf Kurikulum — COMPILE 2026'), when: pair('Feb 2026 – Apr 2026', 'Feb 2026 – Apr 2026'), desc: pair('Collaborated with the academic team to coordinate teaching schedules, curriculum delivery, and educational materials to optimize student learning outcomes.', 'Berkolaborasi dengan tim akademik untuk mengatur jadwal pengajaran, pelaksanaan kurikulum, dan materi pembelajaran agar hasil belajar mahasiswa lebih optimal.'), current: false },
-  { title: pair('Media & Publication - Student Body PSP Excellence ITB', 'Media & Publikasi — Student Body PSP Excellence ITB'), when: pair('Jul 2026 – Present', 'Jul 2026 – Sekarang'), desc: pair('Scholarship and mentorship program by ParagonCorp.', 'Program beasiswa dan pendampingan dari ParagonCorp.'), current: true },
-  { title: pair('Competition Staff (Mathematics) - IMPACT ITB 6.0', 'Staf Kompetisi (Matematika) — IMPACT ITB 6.0'), when: pair('Mar 2026 – Jul 2026', 'Mar 2026 – Jul 2026'), desc: pair('Designed, curated, and reviewed mathematics competition problem sets, solution keys, and comprehensive grading rubrics for the IMPACT ITB 6.0 event.', 'Merancang, menyusun, dan meninjau soal kompetisi matematika, kunci jawaban, serta rubrik penilaian untuk acara IMPACT ITB 6.0.'), current: false },
-  { title: pair('IUP Mathematics Class Tutor - IMPACT ITB 6.0', 'Tutor Kelas Matematika IUP — IMPACT ITB 6.0'), when: pair('May 2026', 'Mei 2026'), desc: pair('Delivered engaging and comprehensive mathematics tutoring sessions for IUP students, ensuring clear understanding of advanced mathematical concepts.', 'Mengajar matematika kepada mahasiswa IUP dengan cara yang menarik dan menyeluruh agar mereka memahami konsep matematika tingkat lanjut.'), current: false },
-  { title: pair('Member - Unit Kesenian Minangkabau (UKM) ITB', 'Anggota — Unit Kesenian Minangkabau (UKM) ITB'), when: pair('2025 – Present', '2025 – Sekarang'), desc: pair('Student unit on Minangkabau regional arts and culture at ITB.', 'Unit kegiatan mahasiswa ITB yang berfokus pada seni dan budaya Minangkabau.'), current: true },
-  { title: pair('Academic Staff - Badan Pengurus Angkatan STEI-K ITB 2025', 'Staf Akademik — Badan Pengurus Angkatan STEI-K ITB 2025'), when: pair('Oct 2025 – Sep 2026', 'Okt 2025 – Sep 2026'), desc: pair('Managed academic support programs and initiatives to assist first-year students in adapting to coursework within STEI-K ITB.', 'Mengelola program dan kegiatan dukungan akademik untuk membantu mahasiswa tahun pertama beradaptasi dengan perkuliahan di STEI-K ITB.'), current: false },
+  { title: pair('Technology Development Staff Intern (Frontend) - HMIF ITB', 'Staf Magang Pengembangan Teknologi (Frontend) — HMIF ITB'), when: pair('Sep 2026 – Present', 'Sep 2026 – Sekarang'), desc: pair('Developed and maintained responsive, user-friendly web interfaces for HMIF ITB platforms using modern frontend technologies.', 'Mengembangkan dan memelihara antarmuka web yang responsif dan mudah digunakan untuk platform HMIF ITB dengan teknologi frontend modern.'), current: true, mono: 'HMIF' },
+  { title: pair('Competitive Programming Staff - ARKAVIDIA 11.0', 'Staf Competitive Programming — ARKAVIDIA 11.0'), when: pair('Sep 2026 – Present', 'Sep 2026 – Sekarang'), desc: pair('Designed and curated competitive programming problem sets, test cases, and solutions for national-level programming contests.', 'Merancang dan menyusun kumpulan soal, kasus uji, serta solusi untuk kompetisi pemrograman tingkat nasional.'), current: true, mono: 'ARKA' },
+  { title: pair('Wisnight Staff - Wisuda Oktober HMIF ITB 2026', 'Staf Wisnight — Wisuda Oktober HMIF ITB 2026'), when: pair('Sep 2026 – Oct 2026', 'Sep 2026 – Okt 2026'), desc: pair('Designed and conceptualized an engaging, memorable celebration night program dedicated to honoring and celebrating the graduating students of HMIF ITB.', 'Merancang konsep acara malam perayaan yang berkesan untuk menghormati dan merayakan kelulusan mahasiswa HMIF ITB.'), current: true, mono: 'HMIF' },
+  { title: pair('Frontend - Aksi Angkatan SPARTA HMIF ITB 2025', 'Frontend — Aksi Angkatan SPARTA HMIF ITB 2025'), when: pair('Aug 2026 – Sep 2026', 'Agu 2026 – Sep 2026'), desc: pair('Developed and maintained responsive frontend interfaces for SPARTA HMIF ITB platforms to support angkatan activities and student engagement.', 'Mengembangkan dan memelihara antarmuka frontend yang responsif untuk platform SPARTA HMIF ITB guna mendukung kegiatan angkatan dan keterlibatan mahasiswa.'), current: false, mono: 'SPARTA' },
+  { title: pair('Event Organizer Staff - OSKM ITB 2026', 'Staf Penyelenggara Acara — OSKM ITB 2026'), when: pair('Aug 2026', 'Agu 2026'), desc: pair('Collaborated with the event division team to plan, design, and execute the official student orientation program for incoming undergraduate students at Institut Teknologi Bandung.', 'Berkolaborasi dengan tim divisi acara untuk merencanakan dan menjalankan program orientasi resmi bagi mahasiswa baru Institut Teknologi Bandung.'), current: false, mono: 'OSKM' },
+  { title: pair('Web Developer Explorer - Google Developer on Campus ITB', 'Web Developer Explorer — Google Developer on Campus ITB'), when: pair('May 2026 – Present', 'Mei 2026 – Sekarang'), desc: pair('Completed hands-on web development modules and built responsive projects leveraging AI-assisted workflows.', 'Menyelesaikan modul praktik pengembangan web dan membuat proyek responsif dengan dukungan alur kerja berbantuan AI.'), current: true, mono: 'GDGoC' },
+  { title: pair('Curriculum Staff - COMPILE 2026', 'Staf Kurikulum — COMPILE 2026'), when: pair('Feb 2026 – Apr 2026', 'Feb 2026 – Apr 2026'), desc: pair('Collaborated with the academic team to coordinate teaching schedules, curriculum delivery, and educational materials to optimize student learning outcomes.', 'Berkolaborasi dengan tim akademik untuk mengatur jadwal pengajaran, pelaksanaan kurikulum, dan materi pembelajaran agar hasil belajar mahasiswa lebih optimal.'), current: false, mono: 'CMPL' },
+  { title: pair('Media & Publication - Student Body PSP Excellence ITB', 'Media & Publikasi — Student Body PSP Excellence ITB'), when: pair('Jul 2026 – Present', 'Jul 2026 – Sekarang'), desc: pair('Scholarship and mentorship program by ParagonCorp.', 'Program beasiswa dan pendampingan dari ParagonCorp.'), current: true, mono: 'PSP' },
+  { title: pair('Competition Staff (Mathematics) - IMPACT ITB 6.0', 'Staf Kompetisi (Matematika) — IMPACT ITB 6.0'), when: pair('Mar 2026 – Jul 2026', 'Mar 2026 – Jul 2026'), desc: pair('Designed, curated, and reviewed mathematics competition problem sets, solution keys, and comprehensive grading rubrics for the IMPACT ITB 6.0 event.', 'Merancang, menyusun, dan meninjau soal kompetisi matematika, kunci jawaban, serta rubrik penilaian untuk acara IMPACT ITB 6.0.'), current: false, mono: 'IMPACT' },
+  { title: pair('IUP Mathematics Class Tutor - IMPACT ITB 6.0', 'Tutor Kelas Matematika IUP — IMPACT ITB 6.0'), when: pair('May 2026', 'Mei 2026'), desc: pair('Delivered engaging and comprehensive mathematics tutoring sessions for IUP students, ensuring clear understanding of advanced mathematical concepts.', 'Mengajar matematika kepada mahasiswa IUP dengan cara yang menarik dan menyeluruh agar mereka memahami konsep matematika tingkat lanjut.'), current: false, mono: 'IMPACT' },
+  { title: pair('Member - Unit Kesenian Minangkabau (UKM) ITB', 'Anggota — Unit Kesenian Minangkabau (UKM) ITB'), when: pair('2025 – Present', '2025 – Sekarang'), desc: pair('Student unit on Minangkabau regional arts and culture at ITB.', 'Unit kegiatan mahasiswa ITB yang berfokus pada seni dan budaya Minangkabau.'), current: true, mono: 'UKM' },
+  { title: pair('Academic Staff - Badan Pengurus Angkatan STEI-K ITB 2025', 'Staf Akademik — Badan Pengurus Angkatan STEI-K ITB 2025'), when: pair('Oct 2025 – Sep 2026', 'Okt 2025 – Sep 2026'), desc: pair('Managed academic support programs and initiatives to assist first-year students in adapting to coursework within STEI-K ITB.', 'Mengelola program dan kegiatan dukungan akademik untuk membantu mahasiswa tahun pertama beradaptasi dengan perkuliahan di STEI-K ITB.'), current: false, mono: 'BPA' },
 ]
 
 export const education: Entry[] = [
@@ -162,6 +165,9 @@ export const writing: Project[] = [
   // { title: pair('Use case and scenario document', 'Dokumen use case dan skenario'), desc: pair('How I describe features so a team can build them.', 'Cara menjelaskan fitur agar dapat diwujudkan oleh tim.'), tags: [pair('Documentation', 'Dokumentasi')], links: [pair('Read', 'Baca')] },
 ]
 
+/** Life motto shown on the About page (kept in its original wording for both languages). */
+export const motto = 'Do the best and let God do the rest'
+
 export const about: [Pair, Localized][] = [
   [pair('University', 'Universitas'), pair('Bandung Institute of Technology', 'Institut Teknologi Bandung')],
   [pair('Major', 'Program studi'), pair('Informatics Engineering', 'Teknik Informatika')],
@@ -197,5 +203,6 @@ export const work: WorkExperience[] = [
     ],
     tech: ['React', 'TypeScript'],
     current: true,
+    mono: 'HMIF',
   }
 ]
