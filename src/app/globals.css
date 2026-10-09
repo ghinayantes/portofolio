@@ -436,20 +436,36 @@ footer { backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
 .showcase-visual { position: relative; overflow: hidden; border-radius: 1.5rem; border: 1px solid var(--border); box-shadow: var(--shadow-lift); }
 .showcase-visual img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
 .showcase-fallback { aspect-ratio: 4 / 3; }
-.showcase-slide { animation: showcase-in 0.6s cubic-bezier(0.2, 0.7, 0.2, 1); }
+/* Slides share one grid cell so the outgoing and incoming slides overlap while they travel.
+   The stage clips the travel (with room left for the visual's shadow). */
+.showcase-stage { display: grid; overflow: clip; overflow-clip-margin: 2.5rem; }
+.showcase-stage > .showcase-slide { grid-area: 1 / 1; min-width: 0; }
+.showcase-slide[data-dir='0'] { animation: showcase-in 0.6s cubic-bezier(0.2, 0.7, 0.2, 1); }
 @keyframes showcase-in { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
-/* Directional slide for manual/auto rotation: next enters from the right, prev from the left. */
-.showcase-slide[data-dir='1'] { animation: showcase-in-right 0.55s cubic-bezier(0.2, 0.7, 0.2, 1); }
-.showcase-slide[data-dir='-1'] { animation: showcase-in-left 0.55s cubic-bezier(0.2, 0.7, 0.2, 1); }
-@keyframes showcase-in-right { from { opacity: 0; transform: translateX(32px); } to { opacity: 1; transform: none; } }
-@keyframes showcase-in-left { from { opacity: 0; transform: translateX(-32px); } to { opacity: 1; transform: none; } }
-/* Manual carousel arrows overlaid on the visual. */
-.showcase-arrow { position: absolute; top: 50%; z-index: 2; display: grid; place-items: center; width: 2.75rem; height: 2.75rem; border-radius: 999px; border: 1px solid var(--border); background: color-mix(in srgb, var(--surface) 82%, transparent); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); color: var(--text); font-size: 1rem; cursor: pointer; opacity: 0.92; transform: translateY(-50%); transition: transform 0.2s, border-color 0.2s, color 0.2s, opacity 0.2s; }
-.showcase-arrow--prev { left: 0.75rem; }
-.showcase-arrow--next { right: 0.75rem; }
-.showcase-arrow:hover { opacity: 1; border-color: var(--brand); color: var(--brand); transform: translateY(-50%) scale(1.06); }
-.showcase-count { margin-top: 1rem; font-size: 0.85rem; color: var(--text2); font-variant-numeric: tabular-nums; }
-@media (prefers-reduced-motion: reduce) { .showcase-slide, .showcase-slide[data-dir='1'], .showcase-slide[data-dir='-1'] { animation: none; } .showcase-arrow { transition: none; } }
+/* Directional slide: next enters from the right and pushes the current one out left; prev mirrors it. */
+.showcase-slide[data-dir='1'] { animation: showcase-enter-right 0.75s cubic-bezier(0.65, 0, 0.35, 1) both; }
+.showcase-slide[data-dir='-1'] { animation: showcase-enter-left 0.75s cubic-bezier(0.65, 0, 0.35, 1) both; }
+.showcase-slide--leave { pointer-events: none; }
+.showcase-slide--leave[data-dir='1'] { animation: showcase-leave-left 0.75s cubic-bezier(0.65, 0, 0.35, 1) both; }
+.showcase-slide--leave[data-dir='-1'] { animation: showcase-leave-right 0.75s cubic-bezier(0.65, 0, 0.35, 1) both; }
+@keyframes showcase-enter-right { from { opacity: 0; transform: translateX(calc(100% + 2.5rem)); } to { opacity: 1; transform: none; } }
+@keyframes showcase-enter-left { from { opacity: 0; transform: translateX(calc(-100% - 2.5rem)); } to { opacity: 1; transform: none; } }
+@keyframes showcase-leave-left { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateX(calc(-100% - 2.5rem)); } }
+@keyframes showcase-leave-right { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateX(calc(100% + 2.5rem)); } }
+/* Carousel nav: a centered "‹ 1 / 3 ›" row on small screens; on desktop the arrows pin to the screen edges. */
+.showcase-nav { display: flex; align-items: center; justify-content: center; gap: 1.25rem; margin-top: 1.5rem; }
+.showcase-arrow { z-index: 3; display: grid; place-items: center; width: 2.75rem; height: 2.75rem; border-radius: 999px; border: 1px solid var(--border); background: color-mix(in srgb, var(--surface) 82%, transparent); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); color: var(--text); font-size: 1rem; cursor: pointer; opacity: 0.92; transition: transform 0.2s, border-color 0.2s, color 0.2s, opacity 0.2s; }
+.showcase-arrow:hover { opacity: 1; border-color: var(--brand); color: var(--brand); transform: scale(1.06); }
+.showcase-count { font-size: 0.85rem; color: var(--text2); font-variant-numeric: tabular-nums; }
+@media (min-width: 1024px) {
+  .showcase-nav { display: contents; }
+  .showcase-count { margin-top: 1rem; text-align: center; }
+  .showcase-arrow { position: absolute; top: calc(50% - 1.15rem); width: 3.25rem; height: 3.25rem; font-size: 1.1rem; transform: translateY(-50%); }
+  .showcase-arrow--prev { left: calc(50% - 50vw + 1.25rem); }
+  .showcase-arrow--next { right: calc(50% - 50vw + 1.25rem); }
+  .showcase-arrow:hover { transform: translateY(-50%) scale(1.06); }
+}
+@media (prefers-reduced-motion: reduce) { .showcase-slide, .showcase-slide[data-dir='0'], .showcase-slide[data-dir='1'], .showcase-slide[data-dir='-1'] { animation: none; } .showcase-arrow { transition: none; } }
 
 /* ── Work experience page ──────────────────────────────────────────── */
 .work-list { display: grid; gap: 1.5rem; max-width: 52rem; }
