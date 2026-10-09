@@ -155,13 +155,11 @@ export const news: NewsItem[] = [
 ]
 
 export const design: Project[] = [
-  { title: pair('Portfolio UI', 'UI Portofolio'), desc: pair('Design system, wireframes, and hi-fi screens.', 'Sistem desain, wireframe, dan rancangan antarmuka berfidelitas tinggi.'), tags: ['Figma', pair('Design system', 'Sistem desain')], links: [] },
-  { title: pair('App flow', 'Alur aplikasi'), desc: pair('User flow and prototype for a team project.', 'Alur pengguna dan prototipe untuk proyek tim.'), tags: ['UX', pair('Prototype', 'Prototipe')], links: [] },
+  //{ title: pair('Portfolio UI', 'UI Portofolio'), desc: pair('Design system, wireframes, and hi-fi screens.', 'Sistem desain, wireframe, dan rancangan antarmuka berfidelitas tinggi.'), tags: ['Figma', pair('Design system', 'Sistem desain')], links: ['https://www.figma.com/design/WfhnKPbIsFHr6SrHxXXu3X/Untitled?node-id=0-1&t=j3K9wj5MYUkHKbZA-1'] },
 ]
 
 export const writing: Project[] = [
-  { title: pair('Use case and scenario document', 'Dokumen use case dan skenario'), desc: pair('How I describe features so a team can build them.', 'Cara menjelaskan fitur agar dapat diwujudkan oleh tim.'), tags: [pair('Documentation', 'Dokumentasi')], links: [pair('Read', 'Baca')] },
-  { title: pair('Event run-of-show', 'Susunan acara'), desc: pair('A minute-by-minute plan for a learning session.', 'Rencana kegiatan sesi pembelajaran secara terperinci dari menit ke menit.'), tags: [pair('Planning', 'Perencanaan')], links: [pair('Read', 'Baca')] },
+  // { title: pair('Use case and scenario document', 'Dokumen use case dan skenario'), desc: pair('How I describe features so a team can build them.', 'Cara menjelaskan fitur agar dapat diwujudkan oleh tim.'), tags: [pair('Documentation', 'Dokumentasi')], links: [pair('Read', 'Baca')] },
 ]
 
 export const about: [Pair, Localized][] = [
@@ -184,20 +182,20 @@ export const skills: SkillGroup[] = [
  */
 export const work: WorkExperience[] = [
   {
-    role: pair('Technology Development (frontend) Intern', 'Intern Technology Development (Frontend)'),
-    company: pair("HMIF ITB 'Prisma'", "HMIF ITB 'Prisma'"),
+    role: pair('Technology Development Intern', 'Intern Technology Development'),
+    company: pair("Executive Department HMIF ITB 'Prisma'", "Departemen Eksekutif HMIF ITB 'Prisma'"),
     when: pair('Sep 2026 – Present', 'Sep 2026 – Sekarang'),
-    location: pair('Bandung, Indonesia', 'Jakarta, Indonesia'),
+    location: pair('Bandung, Indonesia', 'Bandung, Indonesia'),
     desc: pair(
-      'Describe what you worked on, the team size, and the domain — e.g. "Built and shipped three customer-facing features in a fintech product used by 200 k users, collaborating across design, backend, and QA in a two-week sprint cycle."',
-      'Ceritakan apa yang kamu kerjakan, ukuran tim, dan domain — mis. "Membangun dan merilis tiga fitur produk fintech yang digunakan 200 rb pengguna, berkolaborasi dengan tim desain, backend, dan QA dalam siklus sprint dua minggu."',
+      "Contributing to frontend development in HMIF super app initiatives within Executive Department HMIF ITB 'Prisma', focusing on building and refining user-facing web interfaces. Collaborating with the technology development team to translate requirements into functional, responsive, and maintainable interfaces while continuing to develop practical software engineering skills.",
+      "Berkontribusi dalam pengembangan frontend HMIF super app di Departemen Eksekutif HMIF ITB 'Prisma', dengan fokus pada pembuatan dan penyempurnaan antarmuka web yang digunakan oleh pengguna. Berkolaborasi dengan tim pengembangan teknologi untuk menerjemahkan kebutuhan menjadi antarmuka yang fungsional, responsif, dan mudah dipelihara, sekaligus mengembangkan keterampilan praktis di bidang rekayasa perangkat lunak.",
     ),
     highlights: [
-      pair('Delivered feature X that reduced load time by Y%', 'Merilis fitur X yang memangkas waktu muat sebesar Y%'),
-      pair('Wrote unit + integration tests, lifting coverage from A% to B%', 'Menulis unit + integration test, menaikkan coverage dari A% ke B%'),
-      pair('Collaborated with a cross-functional team of N engineers', 'Berkolaborasi dengan tim lintas fungsi beranggotakan N engineer'),
+      pair('Developing and refining responsive frontend components for web interfaces.', 'Mengembangkan dan menyempurnakan komponen frontend yang responsif untuk antarmuka web.'),
+      pair('Translating design concepts and requirements into functional user experiences.', 'Menerjemahkan konsep desain dan kebutuhan pengguna menjadi antarmuka yang fungsional dan nyaman digunakan.'),
+      pair('Collaborating with team members to implement features and maintain code quality.', 'Berkolaborasi dengan anggota tim untuk mengimplementasikan fitur serta menjaga kualitas kode.'),
     ],
-    tech: ['React', 'TypeScript', 'Node.js', 'PostgreSQL'],
+    tech: ['React', 'TypeScript'],
     current: true,
   }
 ]
