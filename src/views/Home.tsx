@@ -25,9 +25,6 @@ export default function Home() {
     <>
       <div className="grid items-center gap-12 py-6 md:grid-cols-[7fr_5fr] md:py-14">
         <div>
-          <span className="inline-flex items-center gap-2 rounded-full border border-line bg-surface px-3.5 py-1.5 text-sm text-fg2">
-            <i className="dot" />{id ? 'Terbuka untuk peluang' : 'Open to opportunities'}
-          </span>
           <p className="halo mt-6 text-[clamp(1rem,2vw,1.3rem)] font-semibold text-fg2">{t(SITE.greeting)}</p>
           <h1 className="shine name-outline pb-1 font-display text-name font-extrabold leading-[1.05] tracking-[-.045em]">{SITE.name}</h1>
           <i className="gl gl-left" />
