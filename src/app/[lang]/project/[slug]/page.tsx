@@ -4,6 +4,7 @@ import { LocLink as Link } from '../../../../components/LocLink'
 import { projects, projectSlug } from '../../../../data/content'
 import { localized } from '../../../../data/nav'
 import { getAvailableProjectLinks } from '../../../../lib/project-links'
+import { languageAlternates } from '../../../../lib/seo'
 import { LANGS, isLang } from '../../../../lib/i18n'
 
 type Props = { params: Promise<{ lang: string; slug: string }> }
@@ -21,7 +22,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     description: localized(project.desc, lang),
     alternates: {
       canonical: `/${lang}/project/${slug}`,
-      languages: Object.fromEntries(LANGS.map((x) => [x, `/${x}/project/${slug}`])),
+      languages: languageAlternates(LANGS, `/project/${slug}`),
     },
   }
 }

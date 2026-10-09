@@ -3,7 +3,6 @@
 import { Suspense, useCallback, useMemo, useState, type ReactElement, type ReactNode } from 'react'
 import { LocLink as Link } from '../components/LocLink'
 import * as C from '../data/content'
-import { SITE } from '../data/site'
 import { NAV, localized, pair, type Pair } from '../data/nav'
 import type { Lang } from '../lib/i18n'
 import { tagLabel } from '../lib/project-tags'
@@ -11,8 +10,9 @@ import type { FilterableProject } from '../lib/project-filters'
 import { useProjectFilters } from '../hooks/useProjectFilters'
 import { ProjectsToolbar, type TechChip } from '../components/projects/ProjectsToolbar'
 import { useSettings } from '../context/Settings'
-import { AwardPreview, AwardRow, Empty, FeedItem, ProjectCard, SkillMarquee, Ticket, Timeline } from '../components/cards'
+import { AwardPreview, AwardRow, Empty, FeedItem, OrgLogo, ProjectCard, SkillMarquee, Ticket, Timeline } from '../components/cards'
 import { Reveal } from '../components/motion'
+import { AboutCard, AboutHighlights } from '../components/AboutCard'
 import { Section } from '../components/ui'
 import Hire from './Hire'
 
@@ -194,15 +194,18 @@ const Work = () => {
               <span className="work-badge">{id ? 'Sekarang' : 'Current'}</span>
             )}
             <header className="work-card__header">
-              <div>
-                <h3 className="work-card__role">{id ? job.role.id : job.role.en}</h3>
-                <p className="work-card__meta">
-                  <span className="work-card__company">{id ? job.company.id : job.company.en}</span>
-                  <span className="work-card__sep" aria-hidden="true">·</span>
-                  <span>{id ? job.when.id : job.when.en}</span>
-                  <span className="work-card__sep" aria-hidden="true">·</span>
-                  <span>{id ? job.location.id : job.location.en}</span>
-                </p>
+              <div className="work-card__ident">
+                <OrgLogo name={id ? job.company.id : job.company.en} logo={job.logo} mono={job.mono} />
+                <div className="min-w-0">
+                  <h3 className="work-card__role">{id ? job.role.id : job.role.en}</h3>
+                  <p className="work-card__meta">
+                    <span className="work-card__company">{id ? job.company.id : job.company.en}</span>
+                    <span className="work-card__sep" aria-hidden="true">·</span>
+                    <span>{id ? job.when.id : job.when.en}</span>
+                    <span className="work-card__sep" aria-hidden="true">·</span>
+                    <span>{id ? job.location.id : job.location.en}</span>
+                  </p>
+                </div>
               </div>
             </header>
             <p className="work-card__desc">{id ? job.desc.id : job.desc.en}</p>
@@ -230,9 +233,6 @@ const Work = () => {
 function About() {
   const { lang } = useSettings()
   const id = lang === 'id'
-  const photo = SITE.photos[0]
-  const statusEntry = C.about.find(([k]) => k.en === 'Status')
-  const rest = C.about.filter(([k]) => k.en !== 'Status')
   return (
     <div className="grid gap-12 md:grid-cols-2">
       <Reveal>
@@ -242,20 +242,14 @@ function About() {
           <p>{id ? 'Di luar perkuliahan, saya menghargai kesempatan untuk berkolaborasi, berkontribusi dalam tim, dan terlibat dalam berbagai kegiatan yang mendorong saya untuk belajar lebih jauh. Pengalaman tersebut mengajarkan saya bahwa membangun sesuatu yang bermakna tidak hanya membutuhkan kemampuan teknis, tetapi juga komunikasi yang baik, kemampuan beradaptasi, dan kemauan untuk terus belajar.' : 'Beyond academics, I value opportunities to collaborate with others, contribute to teams, and take part in projects that challenge me to learn beyond the classroom. These experiences have taught me that building something meaningful takes more than technical ability. It also requires communication, adaptability, and a willingness to keep learning.'}</p>
           <p>{id ? 'Saat ini, saya berfokus pada penguatan fondasi rekayasa perangkat lunak sembari mengeksplorasi bagaimana kecerdasan buatan dapat diterapkan untuk menyelesaikan permasalahan nyata. Portfolio ini menjadi ruang untuk mendokumentasikan pengalaman, proyek, dan perjalanan saya dalam terus berkembang sebagai seorang pengembang perangkat lunak.' : "I'm currently focused on strengthening my foundations in software engineering while exploring how AI can be applied to solve real-world problems. This portfolio is a collection of my experiences, projects, and progress as I continue to grow as a developer."}</p>
         </div>
+        <figure className="about-motto">
+          <figcaption className="about-motto__label">{id ? 'Moto hidup' : 'Life motto'}</figcaption>
+          <blockquote className="about-motto__quote">{C.motto}</blockquote>
+        </figure>
+        <AboutHighlights />
       </Reveal>
       <Reveal index={1}>
-        <div className="card self-start">
-        <div className="flex items-center gap-4 border-b border-line p-5">
-          {photo && <img src={photo.src} alt={localized(photo.alt, lang)} className="size-16 rounded-full border border-brand/30 object-cover" />}
-          <div>
-            <b className="block font-display text-lg font-semibold">{SITE.name}</b>
-            {statusEntry && <span className="mt-1 inline-flex items-center gap-1.5 rounded-full border border-brand/25 bg-brand/10 px-3 py-1 text-xs font-semibold"><i className="dot" />{localized(statusEntry[1], lang)}</span>}
-          </div>
-        </div>
-        <dl>
-          {rest.map(([k, v]) => <div key={localized(k, lang)} className="grid grid-cols-[120px_1fr] gap-3 border-b border-line px-5 py-3.5 last:border-0"><dt className="text-fg2">{localized(k, lang)}</dt><dd className="min-w-0 break-words font-medium">{localized(v, lang)}</dd></div>)}
-        </dl>
-        </div>
+        <AboutCard />
       </Reveal>
     </div>
   )
@@ -301,7 +295,7 @@ function Portfolio() {
       <Section title={lang === 'id' ? 'Pendidikan' : 'Education'}><Timeline items={C.education} /></Section>
       <Section title={lang === 'id' ? 'Pengalaman kerja' : 'Work'}><Work /></Section>
       <Section title={lang === 'id' ? 'Proyek' : 'Projects'}><ProjectsExplorer list={C.projects} /></Section>
-      <Section title={lang === 'id' ? 'Organisasi' : 'Organizations'}><Timeline items={C.organizations} /></Section>
+      <Section title={lang === 'id' ? 'Organisasi' : 'Organizations'}><Timeline items={C.organizations} logos /></Section>
       <Section title={lang === 'id' ? 'Penghargaan' : 'Awards'}><Awards /></Section>
       <Section title={lang === 'id' ? 'Keahlian' : 'Skills'}><Skills /></Section>
     </div>
@@ -385,7 +379,7 @@ export const PAGES: Record<string, () => ReactElement> = {
   news: () => <div className="grid max-w-3xl gap-5">{C.news.map((n, i) => <FeedItem key={i} n={n} i={i} />)}</div>,
   work: Work,
   project: ProjectPage,
-  organization: () => <Timeline items={C.organizations} />,
+  organization: () => <Timeline items={C.organizations} logos />,
   award: Awards,
   hire: Hire,
   design: () => <Cards list={C.design} />,
