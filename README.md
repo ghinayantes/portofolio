@@ -130,7 +130,7 @@ All optional. Set them in the Vercel project settings; for local use put them in
 
 ## Deploy
 
-The site runs on the Vercel project `portofolio`. Deploy through that project's Git integration or with `vercel --prod`. No configuration beyond the optional environment variables is needed.
+The site runs on the Vercel project `portofolio`. Pushing to `main` deploys it automatically. No configuration beyond the optional environment variables is needed.
 
 ## Open items
 
