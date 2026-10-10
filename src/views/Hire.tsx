@@ -5,7 +5,7 @@ import { SITE } from '../data/site'
 import { useSettings } from '../context/Settings'
 import { validateHireField, type HireField } from '../lib/hire-validation'
 
-const field = 'w-full rounded-xl border bg-surface px-3.5 py-3 text-base text-fg outline-none transition-colors focus:border-brand focus:ring-2 focus:ring-brand/40'
+const field = 'w-full rounded-xl border bg-[var(--panel)] px-3.5 py-3 text-base text-fg outline-none transition-colors focus:border-brand focus:ring-2 focus:ring-brand/40'
 
 /** Official brand glyphs (Simple Icons, 24x24 fill). Email uses a plain envelope outline. */
 const BRAND_PATHS: Record<string, string> = {
@@ -31,14 +31,18 @@ function SocialIcon({ k }: { k: string }) {
   )
 }
 
-/**
- * Paste your Formspree endpoint here after registering at https://formspree.io
- * (create a form, verify your email, then copy the endpoint, e.g. 'https://formspree.io/f/abcdwxyz').
- * While empty, the form only validates locally and shows a notice.
- */
+/** Readable handle for a contact link, e.g. 'github.com/ghinayantes' or the address itself for email. */
+function contactValue(key: string, href: string): string {
+  if (key === 'whatsapp') return `+${href.replace(/\D/g, '')}`
+  return href.replace(/^mailto:/, '').replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')
+}
+
+/** Site backend (src/app/api/hire/route.ts): validates, filters spam, and delivers the message. */
+const HIRE_API = '/api/hire'
+/** Direct mail endpoint, used only if the site backend cannot deliver, so a message is never lost. */
 const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xljgdpgw'
 
-type Status = 'idle' | 'sending' | 'sent' | 'error' | 'unconfigured'
+type Status = 'idle' | 'sending' | 'sent' | 'error' | 'limited'
 
 export default function Hire() {
   const { t, lang } = useSettings()
@@ -57,22 +61,43 @@ export default function Hire() {
     }
     setErr(er)
     if (Object.keys(er).length) return
-    if (!FORMSPREE_ENDPOINT) {
-      setStatus('unconfigured')
-      return
+    const values = {
+      name: String(f.get('name') ?? '').trim(),
+      email: String(f.get('email') ?? '').trim(),
+      message: String(f.get('message') ?? '').trim(),
     }
     setStatus('sending')
     try {
-      const res = await fetch(FORMSPREE_ENDPOINT, {
-        method: 'POST',
-        headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: String(f.get('name') ?? '').trim(),
-          email: String(f.get('email') ?? '').trim(),
-          message: String(f.get('message') ?? '').trim(),
-        }),
-      })
-      if (!res.ok) throw new Error(`Formspree responded ${res.status}`)
+      let res: Response | null = null
+      try {
+        res = await fetch(HIRE_API, {
+          method: 'POST',
+          headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ...values, lang, company: String(f.get('company') ?? '') }),
+        })
+      } catch {
+        res = null
+      }
+      if (res?.status === 400) {
+        const data: unknown = await res.json().catch(() => null)
+        const fields = typeof data === 'object' && data !== null && 'fields' in data ? (data as { fields: Record<string, string> }).fields : {}
+        setErr(fields)
+        setStatus('idle')
+        return
+      }
+      if (res?.status === 429) {
+        setStatus('limited')
+        return
+      }
+      if (!res?.ok) {
+        // The backend could not deliver (or is unreachable): send straight to the mail endpoint instead.
+        const direct = await fetch(FORMSPREE_ENDPOINT, {
+          method: 'POST',
+          headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+          body: JSON.stringify(values),
+        })
+        if (!direct.ok) throw new Error(`Formspree responded ${direct.status}`)
+      }
       setStatus('sent')
       form.reset()
     } catch {
@@ -93,19 +118,30 @@ export default function Hire() {
   }
 
   return (
-    <div className="grid gap-12 md:grid-cols-2">
+    <div className="hire-grid">
       <div>
-        <p className="max-w-[46ch] text-lg text-fg2">{id ? 'Aku terbuka untuk kesempatan magang dan proyek di bidang pengembangan web dan UI/UX. Kirim pesan, dan aku akan membalas dalam dua hari.' : "I'm open to internships and project work in web development and UI/UX. Send a message and I'll reply within two days."}</p>
-        <ul aria-label={id ? 'Kontak' : 'Contacts'} className="mt-6 flex flex-wrap gap-3">
-          {SITE.contacts.map((c) => (
-            <li key={c.key}>
-              <a href={c.href} aria-label={t(c.label)} title={t(c.label)} className="explore-static grid size-12 place-items-center rounded-2xl border border-line bg-surface text-fg transition-all duration-200 hover:-translate-y-0.5 hover:border-brand hover:text-brand hover:shadow-[var(--shadow-lift)]">
-                <SocialIcon k={c.key} />
-              </a>
-            </li>
-          ))}
+        <p className="hire-lead">{id ? 'Punya peran atau proyek?' : 'Have a role or a project?'} <span>{id ? 'Mari bicara.' : "Let's talk."}</span></p>
+        <p className="mt-5 max-w-[46ch] text-[17px] leading-relaxed text-fg2">{id ? 'Terbuka untuk magang dan proyek di bidang rekayasa perangkat lunak, pengembangan web, dan UI/UX. Tulis lewat formulir, atau pilih kontak yang paling nyaman.' : 'Open to internships and project work in software engineering, web development, and UI/UX. Write through the form, or pick whichever contact suits you.'}</p>
+
+        <ul aria-label={id ? 'Kontak' : 'Contacts'} className="card hire-contacts">
+          {SITE.contacts.map((c) => {
+            const external = /^https?:/.test(c.href)
+            return (
+              <li key={c.key}>
+                <a href={c.href} {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})} className="hire-contact">
+                  <span className="hire-contact__icon"><SocialIcon k={c.key} /></span>
+                  <span className="min-w-0">
+                    <b>{t(c.label)}</b>
+                    <small>{contactValue(c.key, c.href)}</small>
+                  </span>
+                  <span className="hire-contact__go" aria-hidden="true">↗</span>
+                </a>
+              </li>
+            )
+          })}
         </ul>
-        <a href={SITE.cv} download className="btn-ghost mt-6 inline-flex">
+
+        <a href={SITE.cv} download className="btn-primary mt-6 inline-flex">
           {id ? 'Unduh CV' : 'Download CV'}
         </a>
       </div>
@@ -126,8 +162,8 @@ export default function Hire() {
             </p>
             <p className="mt-1 text-sm leading-relaxed text-fg2">
               {id
-                ? 'Terima kasih sudah menghubungi. Aku akan membalasnya dalam dua hari.'
-                : "Thank you for reaching out. I'll get back to you within two days."}
+                ? 'Terima kasih sudah menghubungi. Pesanmu sudah aku terima.'
+                : 'Thank you for reaching out. Your message has been received.'}
             </p>
           </div>
           <button
@@ -139,16 +175,24 @@ export default function Hire() {
           </button>
         </div>
       ) : (
-        <form onSubmit={submit} noValidate className="card grid gap-4 self-start p-6 md:p-7">
+        <form onSubmit={submit} noValidate className="card grid gap-4 self-start p-6 md:p-8">
+          <div>
+            <h2 className="font-display text-xl font-bold">{id ? 'Kirim pesan' : 'Send a message'}</h2>
+            <p className="mt-1 text-sm text-fg2">{id ? 'Semua kolom wajib diisi. Gunakan email aktif supaya bisa dibalas.' : 'All fields are required. Use an active email so I can reply.'}</p>
+          </div>
           {(['name', 'email', 'message'] as const).map((k) => (
-            <label key={k} className="grid gap-1.5 text-sm font-medium capitalize">
-              {id ? ({ name: 'Nama', email: 'Email', message: 'Pesan' }[k]) : k}
+            <label key={k} className="grid gap-1.5 text-sm font-medium">
+              {id ? ({ name: 'Nama', email: 'Email', message: 'Pesan' }[k]) : ({ name: 'Name', email: 'Email', message: 'Message' }[k])}
               {k === 'message'
-                ? <textarea name={k} rows={5} onBlur={blurField(k)} aria-invalid={!!err[k]} aria-describedby={err[k] ? `hire-${k}-error` : undefined} className={`${field} ${err[k] ? 'border-red-500' : 'border-brand/25'}`} />
-                : <input name={k} type={k === 'email' ? 'email' : 'text'} autoComplete={k === 'email' ? 'email' : 'name'} onBlur={blurField(k)} aria-invalid={!!err[k]} aria-describedby={err[k] ? `hire-${k}-error` : undefined} className={`${field} ${err[k] ? 'border-red-500' : 'border-brand/25'}`} />}
+                ? <textarea name={k} rows={6} required onBlur={blurField(k)} aria-invalid={!!err[k]} aria-describedby={err[k] ? `hire-${k}-error` : undefined} className={`${field} ${err[k] ? 'border-red-500' : 'border-[var(--card-line)]'}`} />
+                : <input name={k} type={k === 'email' ? 'email' : 'text'} required autoComplete={k === 'email' ? 'email' : 'name'} onBlur={blurField(k)} aria-invalid={!!err[k]} aria-describedby={err[k] ? `hire-${k}-error` : undefined} className={`${field} ${err[k] ? 'border-red-500' : 'border-[var(--card-line)]'}`} />}
               {err[k] && <span id={`hire-${k}-error`} role="alert" className="text-[13px] text-red-500">{err[k]}</span>}
             </label>
           ))}
+          {/* Honeypot: hidden from people and assistive tech; bots that fill it are dropped by the backend. */}
+          <div aria-hidden="true" className="hire-hp">
+            <label>Company<input name="company" type="text" tabIndex={-1} autoComplete="off" /></label>
+          </div>
           <button
             type="submit"
             disabled={status === 'sending'}
@@ -175,10 +219,10 @@ export default function Hire() {
               <span>{id ? 'Gagal mengirim. Coba lagi atau hubungi lewat kontak di samping.' : 'Failed to send. Try again or reach me via the contacts on the left.'}</span>
             </div>
           )}
-          {status === 'unconfigured' && (
-            <p role="status" className="text-sm text-fg2">
-              {id ? 'Formulir belum terhubung (isi FORMSPREE_ENDPOINT di Hire.tsx).' : 'Form is not connected yet (set FORMSPREE_ENDPOINT in Hire.tsx).'}
-            </p>
+          {status === 'limited' && (
+            <div role="alert" className="hire-error-banner">
+              <span>{id ? 'Terlalu banyak pesan dalam waktu singkat. Coba lagi beberapa menit lagi.' : 'Too many messages in a short time. Please try again in a few minutes.'}</span>
+            </div>
           )}
         </form>
       )}

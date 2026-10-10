@@ -10,3 +10,5 @@ out/
 next-env.d.ts
 /docs/superpowers
 /.opencode
+/.claude
+.vercel

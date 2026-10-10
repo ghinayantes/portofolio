@@ -112,7 +112,7 @@ export default function Header() {
                 <span aria-hidden="true" className={`size-1.5 -translate-y-px border-b-2 border-r-2 border-current transition-transform ${shown === i ? '-rotate-[135deg]' : 'rotate-45'}`} />
               </button>
               {shown === i && (
-                <div className="mt-1 flex flex-col gap-0.5 lg:mt-2 lg:block lg:absolute lg:left-1/2 lg:top-full lg:w-56 lg:-translate-x-1/2 lg:rounded-2xl lg:border lg:border-brand/25 lg:bg-surface lg:p-2 lg:shadow-[0_24px_60px_-20px_rgba(109,40,217,0.4)]">
+                <div className="mt-1 flex flex-col gap-0.5 lg:mt-2 lg:block lg:absolute lg:left-1/2 lg:top-full lg:w-56 lg:-translate-x-1/2 lg:rounded-2xl lg:border lg:border-brand/25 lg:bg-surface lg:p-2 lg:shadow-[var(--shadow-lift)]">
                   {g.items.map((x) => (
                     <NavLink key={x.key} to={'/' + x.key} onClick={closeAll} className="block min-h-12 rounded-xl px-4 py-3 hover:bg-muted active:bg-muted aria-[current=page]:bg-muted lg:min-h-0 lg:px-3.5 lg:py-2.5 lg:active:bg-transparent">
                       <b className="block font-display text-[15px] font-semibold">{t(x.title)}</b>

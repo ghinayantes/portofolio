@@ -177,8 +177,9 @@ export const about: [Pair, Localized][] = [
 ]
 
 export const skills: SkillGroup[] = [
-  { title: pair('Code', 'Pemrograman'), items: ['Python', 'JavaScript', 'TypeScript', 'Java', 'SQL', 'HTML/CSS', 'C'] },
-  { title: pair('Frameworks and tools', 'Framework dan tools'), items: ['React', 'Next.js', 'Tailwind', 'Git', 'Figma'] },
+  { title: pair('Languages', 'Bahasa pemrograman'), items: ['Python', 'JavaScript', 'TypeScript', 'Java', 'C', 'SQL', 'HTML', 'CSS', 'Assembly', 'Prolog'] },
+  { title: pair('Frameworks', 'Framework'), items: ['React', 'Next.js', 'Tailwind', 'JavaFX'] },
+  { title: pair('Tools', 'Tools'), items: ['Git', 'GitHub', 'Figma', 'Maven'] },
   { title: pair('Working with people', 'Kolaborasi'), items: [pair('Event planning', 'Perencanaan acara'), pair('Public speaking', 'Berbicara di depan umum'), pair('Documentation', 'Dokumentasi'), pair('Leadership', 'Kepemimpinan')] },
 ]
 

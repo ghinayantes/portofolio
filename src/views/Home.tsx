@@ -9,6 +9,7 @@ import Explore from '../components/Explore'
 import { FeaturedShowcase } from '../components/FeaturedShowcase'
 import { Section } from '../components/ui'
 import HeroPhoto from '../components/HeroPhoto'
+import { HomeBand, HomeExperience, HomeGallery, HomeHighlights, HomeHistory, HomeNow, HomeProgress, HomeStack, HomeStatement, Scrub } from '../components/HomeSections'
 
 export default function Home() {
   const { t, lang } = useSettings()
@@ -23,6 +24,7 @@ export default function Home() {
   const featured = flagged.length > 0 ? flagged : projects.slice(0, 1)
   return (
     <>
+      <HomeProgress />
       <div className="grid items-center gap-12 py-6 md:grid-cols-[7fr_5fr] md:py-14">
         <div>
           <p className="halo mt-6 text-[clamp(1rem,2vw,1.3rem)] font-semibold text-fg2">{t(SITE.greeting)}</p>
@@ -45,12 +47,23 @@ export default function Home() {
       </div>
 
       <Section title={id ? 'Jelajahi' : 'Explore'}><Explore /></Section>
-      <FeaturedShowcase list={featured} />
-      <div className="mt-16 rounded-3xl border border-white/15 p-8 text-white shadow-[0_24px_80px_-24px_rgba(109,40,217,0.55)] md:p-14" style={{ background: 'linear-gradient(135deg,#150833 0%,#3b1d8f 45%,#6d28d9 75%,#9333ea 100%)' }}>
-        <h2 className="font-display text-[clamp(1.5rem,4vw,2.25rem)] font-extrabold">{id ? 'Ayo kerja bareng' : "Let's work together"}</h2>
-        <p className="mt-2 opacity-90">{id ? 'Punya proyek, magang, atau pertanyaan?' : 'Have a project, internship, or question?'}</p>
-        <Link to="/hire" className="mt-5 inline-flex min-h-11 items-center rounded-full bg-white px-6 font-semibold text-[#1B1A5E]">{id ? 'Kirim pesan' : 'Send a message'}</Link>
-      </div>
+      <HomeBand />
+      <HomeStatement />
+      <HomeHistory />
+      <HomeHighlights />
+      <HomeExperience />
+      <HomeNow />
+      <Scrub><FeaturedShowcase list={featured} /></Scrub>
+      <HomeStack />
+      <HomeBand back />
+      <Scrub from="zoom">
+        <div className="mt-16 rounded-3xl border border-white/15 p-8 text-white md:p-14" style={{ background: 'linear-gradient(135deg,#150833 0%,#3b1d8f 45%,#6d28d9 75%,#9333ea 100%)' }}>
+          <h2 className="font-display text-[clamp(1.5rem,4vw,2.25rem)] font-extrabold">{id ? 'Ayo kerja bareng' : "Let's work together"}</h2>
+          <p className="mt-2 opacity-90">{id ? 'Punya proyek, magang, atau pertanyaan?' : 'Have a project, internship, or question?'}</p>
+          <Link to="/hire" className="mt-5 inline-flex min-h-11 items-center rounded-full bg-white px-6 font-semibold text-[#1B1A5E]">{id ? 'Kirim pesan' : 'Send a message'}</Link>
+        </div>
+      </Scrub>
+      <HomeGallery />
     </>
   )
 }

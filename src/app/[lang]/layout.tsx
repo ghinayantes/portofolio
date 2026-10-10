@@ -14,13 +14,12 @@ import { SettingsProvider } from '../../context/Settings'
 import CloudShader from '../../components/CloudShader'
 import Background from '../../components/Background'
 import Constellations from '../../components/Constellations'
-import Spotlight from '../../components/Spotlight'
 import Header from '../../components/Header'
 import Footer from '../../components/Footer'
 import SmoothScroll from '../../components/SmoothScroll'
 import { SITE } from '../../data/site'
 import { LANGS, isLang } from '../../lib/i18n'
-import { SEO_KEYWORDS, SITE_URL } from '../../lib/seo'
+import { SEO_DESCRIPTION, SEO_KEYWORDS, SEO_TITLE, SITE_URL } from '../../lib/seo'
 
 export const dynamicParams = false
 const THEME_INIT = "try{var t=localStorage.getItem('theme');document.documentElement.dataset.theme=t==='light'?'light':'dark'}catch(e){}"
@@ -28,22 +27,31 @@ export const generateStaticParams = () => LANGS.map((lang) => ({ lang }))
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: { default: `${SITE.name} — Portfolio`, template: `%s — ${SITE.name}` },
-  description: SITE.lead.en,
+  title: { default: SEO_TITLE.en, template: `%s — ${SITE.name}` },
+  description: SEO_DESCRIPTION.en,
   applicationName: `${SITE.name} — Portfolio`,
   authors: [{ name: SITE.name, url: SITE_URL }],
   creator: SITE.name,
   publisher: SITE.name,
   keywords: SEO_KEYWORDS,
-  category: 'portfolio',
+  category: 'technology',
+  formatDetection: { email: false, address: false, telephone: false },
+  appleWebApp: { capable: true, statusBarStyle: 'default', title: SITE.name },
+  // Location hints for regional search (Bandung, West Java).
+  other: { 'geo.region': 'ID-JB', 'geo.placename': 'Bandung', 'geo.position': '-6.8915;107.6106', ICBM: '-6.8915, 107.6106' },
   robots: { index: true, follow: true, googleBot: { index: true, follow: true, 'max-image-preview': 'large', 'max-snippet': -1, 'max-video-preview': -1 } },
-  ...(process.env.GOOGLE_SITE_VERIFICATION ? { verification: { google: process.env.GOOGLE_SITE_VERIFICATION } } : {}),
+  // Search-console ownership codes, read from the environment so none is hard-coded: Google, Bing, Yandex.
+  verification: {
+    ...(process.env.GOOGLE_SITE_VERIFICATION ? { google: process.env.GOOGLE_SITE_VERIFICATION } : {}),
+    ...(process.env.YANDEX_SITE_VERIFICATION ? { yandex: process.env.YANDEX_SITE_VERIFICATION } : {}),
+    ...(process.env.BING_SITE_VERIFICATION ? { other: { 'msvalidate.01': process.env.BING_SITE_VERIFICATION } } : {}),
+  },
   icons: { icon: '/favicon.svg' },
   openGraph: {
     type: 'website',
     siteName: SITE.name,
-    title: `${SITE.name} — Portfolio`,
-    description: SITE.lead.en,
+    title: SEO_TITLE.en,
+    description: SEO_DESCRIPTION.en,
     url: SITE_URL,
     locale: 'en_US',
     images: [
@@ -57,8 +65,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: `${SITE.name} — Portfolio`,
-    description: SITE.lead.en,
+    title: SEO_TITLE.en,
+    description: SEO_DESCRIPTION.en,
     images: ['/og-image.png'],
   },
 }
@@ -85,7 +93,6 @@ export default async function RootLayout({ children, params }: { children: React
               <CloudShader />
               <Background />
               <Constellations />
-              <Spotlight />
               <div className="relative z-10 flex min-h-screen flex-col">
                 <Header />
                 <main id="main-content" className="mx-auto w-full max-w-page flex-1 px-5 pb-28 pt-10 sm:px-8 lg:px-20">{children}</main>

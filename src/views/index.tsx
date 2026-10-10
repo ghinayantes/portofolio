@@ -10,15 +10,14 @@ import type { FilterableProject } from '../lib/project-filters'
 import { useProjectFilters } from '../hooks/useProjectFilters'
 import { ProjectsToolbar, type TechChip } from '../components/projects/ProjectsToolbar'
 import { useSettings } from '../context/Settings'
-import { AwardPreview, AwardRow, Empty, FeedItem, OrgLogo, ProjectCard, SkillMarquee, Ticket, Timeline } from '../components/cards'
+import { AwardPreview, AwardRow, Empty, FeedItem, OrgLogo, ProjectCard, SkillMarquee, Ticket, Timeline, techIcon } from '../components/cards'
 import { Reveal } from '../components/motion'
-import { AboutCard, AboutHighlights } from '../components/AboutCard'
+import { AboutIdentity, AboutNow, currentRoles } from '../components/AboutCard'
 import { Section } from '../components/ui'
 import Hire from './Hire'
 
 const Grid2 = ({ children }: { children: ReactNode }) => <div className="grid gap-6 md:grid-cols-2">{children}</div>
 const Grid3 = ({ children }: { children: ReactNode }) => <div className="grid gap-5 md:grid-cols-3">{children}</div>
-const h3 = 'mb-3.5 font-display text-[17px] font-semibold'
 
 const Cards = ({ list, feature }: { list: C.Project[]; feature?: boolean }) => (
   <div className={`grid ${feature ? 'project-cards-grid project-cards-grid--interactive gap-x-4 gap-y-8 md:grid-cols-2' : 'gap-6 md:grid-cols-2'}`}>
@@ -233,55 +232,80 @@ const Work = () => {
 function About() {
   const { lang } = useSettings()
   const id = lang === 'id'
+  const now = currentRoles(lang)
   return (
-    <div className="grid gap-12 md:grid-cols-2">
-      <Reveal>
-        <div className="max-w-[62ch] space-y-4 text-[17px] text-fg2">
-          <p>{id ? 'Saya adalah mahasiswa Informatika di Institut Teknologi Bandung yang memiliki ketertarikan pada rekayasa perangkat lunak, kecerdasan buatan, dan proses mengubah ide menjadi produk yang bermanfaat.' : "I'm an Informatics student at Institut Teknologi Bandung, interested in software engineering, artificial intelligence, and the process of turning ideas into useful products."}</p>
+    <div className={`about-bento${now.length > 0 ? '' : ' about-bento--solo'}`}>
+      <Reveal className="about-bento__id">
+        <AboutIdentity />
+      </Reveal>
+      <Reveal index={1} className="about-bento__bio">
+        <div className="card about-tile about-bio">
+          <p className="about-bio__lead">{id ? 'Saya adalah mahasiswa Informatika di Institut Teknologi Bandung yang memiliki ketertarikan pada rekayasa perangkat lunak, kecerdasan buatan, dan proses mengubah ide menjadi produk yang bermanfaat.' : "I'm an Informatics student at Institut Teknologi Bandung, interested in software engineering, artificial intelligence, and the process of turning ideas into useful products."}</p>
           <p>{id ? 'Saya senang menganalisis permasalahan, memahami cara kerja suatu sistem secara mendalam, dan mengeksplorasi berbagai pendekatan untuk menemukan solusi yang efektif. Ketertarikan saya pada matematika turut membentuk cara saya berpikir dalam menghadapi permasalahan yang kompleks, sementara studi Informatika memberi saya kesempatan untuk menerapkan pola pikir tersebut melalui pemrograman, algoritma, dan pengembangan perangkat lunak.' : 'I enjoy approaching problems analytically, understanding how things work beneath the surface, and exploring different ways to build effective solutions. My interest in mathematics has shaped how I think through complex problems, while studying informatics allows me to put that way of thinking into practice through programming, algorithms, and software development.'}</p>
           <p>{id ? 'Di luar perkuliahan, saya menghargai kesempatan untuk berkolaborasi, berkontribusi dalam tim, dan terlibat dalam berbagai kegiatan yang mendorong saya untuk belajar lebih jauh. Pengalaman tersebut mengajarkan saya bahwa membangun sesuatu yang bermakna tidak hanya membutuhkan kemampuan teknis, tetapi juga komunikasi yang baik, kemampuan beradaptasi, dan kemauan untuk terus belajar.' : 'Beyond academics, I value opportunities to collaborate with others, contribute to teams, and take part in projects that challenge me to learn beyond the classroom. These experiences have taught me that building something meaningful takes more than technical ability. It also requires communication, adaptability, and a willingness to keep learning.'}</p>
           <p>{id ? 'Saat ini, saya berfokus pada penguatan fondasi rekayasa perangkat lunak sembari mengeksplorasi bagaimana kecerdasan buatan dapat diterapkan untuk menyelesaikan permasalahan nyata. Portfolio ini menjadi ruang untuk mendokumentasikan pengalaman, proyek, dan perjalanan saya dalam terus berkembang sebagai seorang pengembang perangkat lunak.' : "I'm currently focused on strengthening my foundations in software engineering while exploring how AI can be applied to solve real-world problems. This portfolio is a collection of my experiences, projects, and progress as I continue to grow as a developer."}</p>
         </div>
-        <figure className="about-motto">
+      </Reveal>
+      <Reveal className="about-bento__motto">
+        <figure className="card about-tile about-motto">
           <figcaption className="about-motto__label">{id ? 'Moto hidup' : 'Life motto'}</figcaption>
           <blockquote className="about-motto__quote">{C.motto}</blockquote>
         </figure>
-        <AboutHighlights />
       </Reveal>
-      <Reveal index={1}>
-        <AboutCard />
-      </Reveal>
+      {now.length > 0 && (
+        <Reveal index={1} className="about-bento__now">
+          <AboutNow roles={now} />
+        </Reveal>
+      )}
     </div>
   )
 }
 
 function Skills() {
   const { lang } = useSettings()
-  const [code, tools, people] = C.skills
+  const [code, frameworks, tools, people] = C.skills
+  const head = (group: C.SkillGroup) => (
+    <div className="mb-4 flex items-center justify-between gap-3">
+      <h3 className="font-display text-[17px] font-semibold">{localized(group.title, lang)}</h3>
+      <span className="skill-count">{group.items.length}</span>
+    </div>
+  )
   return (
     <>
-      <Grid3>
-        <Reveal>
-          <div className="card term h-full p-6">
-            <div className="win mb-3.5"><span /><span /><span /></div>
-            <p className="mb-3.5 font-mono text-[13px] text-brand">{lang === 'id' ? '~ keahlian --kode' : '~ skills --code'}</p>
-            <div className="flex flex-wrap gap-2">{code.items.map((k) => <span key={localized(k, lang)} className="skill-chip rounded-lg border px-3 py-1 font-mono text-[13px]">{localized(k, lang)}</span>)}</div>
+      <div className="grid gap-5 lg:grid-cols-3">
+        <Reveal className="lg:col-span-2 lg:row-span-2">
+          <div className="card flex h-full flex-col p-6">
+            {head(code)}
+            <ul className="skill-grid flex-1">
+              {code.items.map((k) => {
+                const label = localized(k, lang)
+                return <li key={label} className="skill-tile skill-tile--stack">{techIcon(label)}<span>{label}</span></li>
+              })}
+            </ul>
           </div>
         </Reveal>
-        <Reveal index={1}>
-          <div className="card term h-full p-6">
-            <div className="win mb-3.5"><span /><span /><span /></div>
-            <p className="mb-3.5 font-mono text-[13px] text-brand">{lang === 'id' ? '~ keahlian --tools' : '~ skills --tools'}</p>
-            <div className="grid grid-cols-[repeat(auto-fill,minmax(88px,1fr))] gap-2.5">{tools.items.map((k) => <span key={localized(k, lang)} className="grid aspect-square place-items-center rounded-2xl border border-brand/25 bg-brand/10 p-1.5 text-center text-[13px] font-semibold">{localized(k, lang)}</span>)}</div>
+        {[frameworks, tools].map((group, gi) => (
+          <Reveal key={localized(group.title, lang)} index={gi + 1}>
+            <div className="card h-full p-6">
+              {head(group)}
+              <ul className="grid grid-cols-2 gap-2.5">
+                {group.items.map((k) => {
+                  const label = localized(k, lang)
+                  return <li key={label} className="skill-tile">{techIcon(label)}<span className="min-w-0">{label}</span></li>
+                })}
+              </ul>
+            </div>
+          </Reveal>
+        ))}
+        <Reveal className="lg:col-span-3">
+          <div className="card p-6">
+            {head(people)}
+            <ol className="grid gap-2.5 sm:grid-cols-2 lg:grid-cols-4">
+              {people.items.map((k, i) => <li key={localized(k, lang)} className="skill-tile"><span aria-hidden="true" className="skill-tile__n">{String(i + 1).padStart(2, '0')}</span>{localized(k, lang)}</li>)}
+            </ol>
           </div>
         </Reveal>
-        <Reveal index={2}>
-          <div className="card h-full p-6">
-            <h3 className={h3}>{localized(people.title, lang)}</h3>
-            <div className="grid gap-2.5">{people.items.map((k) => <span key={localized(k, lang)} className="flex items-center justify-between rounded-full border border-brand/25 px-4 py-2.5 text-sm font-medium">{localized(k, lang)}<i className="size-2 rounded-full bg-brand/70" /></span>)}</div>
-          </div>
-        </Reveal>
-      </Grid3>
+      </div>
       <SkillMarquee />
     </>
   )

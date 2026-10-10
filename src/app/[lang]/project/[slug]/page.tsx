@@ -4,7 +4,8 @@ import { LocLink as Link } from '../../../../components/LocLink'
 import { projects, projectSlug } from '../../../../data/content'
 import { localized } from '../../../../data/nav'
 import { getAvailableProjectLinks } from '../../../../lib/project-links'
-import { languageAlternates } from '../../../../lib/seo'
+import { SITE } from '../../../../data/site'
+import { SITE_URL, breadcrumbLd, languageAlternates, socialMeta, jsonLd } from '../../../../lib/seo'
 import { LANGS, isLang } from '../../../../lib/i18n'
 
 type Props = { params: Promise<{ lang: string; slug: string }> }
@@ -24,6 +25,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       canonical: `/${lang}/project/${slug}`,
       languages: languageAlternates(LANGS, `/project/${slug}`),
     },
+    ...socialMeta({
+      lang,
+      path: `/project/${slug}`,
+      title: `${localized(project.title, lang)} — ${SITE.name}`,
+      description: localized(project.desc, lang),
+      siteName: SITE.name,
+      image: project.image,
+      type: 'article',
+    }),
   }
 }
 
@@ -33,8 +43,28 @@ export default async function Page({ params }: Props) {
   const project = projects.find((p) => projectSlug(p) === slug)
   if (!project) notFound()
   const id = lang === 'id'
+  const url = `${SITE_URL}/${lang}/project/${slug}`
+  const ld = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'CreativeWork',
+        '@id': `${url}#project`,
+        url,
+        name: localized(project.title, lang),
+        description: localized(project.desc, lang),
+        inLanguage: lang,
+        ...(project.image ? { image: `${SITE_URL}${project.image}` } : {}),
+        keywords: project.tags.map((g) => localized(g, lang)).join(', '),
+        author: { '@id': `${SITE_URL}/#person` },
+        isPartOf: { '@id': `${SITE_URL}/#website` },
+      },
+      breadcrumbLd(lang, [[id ? 'Beranda' : 'Home', ''], [id ? 'Proyek' : 'Projects', '/project'], [localized(project.title, lang), `/project/${slug}`]]),
+    ],
+  }
   return (
     <div>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(ld) }} />
       <p className="mb-4 text-sm text-fg2">
         <Link to="/" className="hover:text-brand">{id ? 'Beranda' : 'Home'}</Link>
         {' / '}
