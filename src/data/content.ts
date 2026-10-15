@@ -205,5 +205,26 @@ export const work: WorkExperience[] = [
     tech: ['React', 'TypeScript'],
     current: true,
     mono: 'HMIF',
+  },
+
+  {
+    role: pair('Computational Thinking Teaching Assistant', 'Asisten Praktikum Berpikir Komputasional'),
+    company: pair('Institut Teknologi Bandung', 'Institut Teknologi Bandung'),
+    when: pair('Sep 2026 – Present', 'Sep 2026 – Sekarang'),
+    location: pair('Bandung, Indonesia', 'Bandung, Indonesia'),
+    desc: pair(
+      "Serve as a Teaching Assistant for the Computational Thinking practicum at Institut Teknologi Bandung, supporting students in understanding course materials and applying computational thinking concepts to problem-solving exercises. Facilitate online practical sessions, provide guidance while maintaining academic integrity, and evaluate student submissions using standardized assessment criteria.",
+      "Bertugas sebagai Asisten Praktikum Berpikir Komputasional di Institut Teknologi Bandung, membantu mahasiswa memahami materi perkuliahan dan menerapkan konsep berpikir komputasional dalam latihan pemecahan masalah. Memfasilitasi sesi praktikum daring, memberikan bimbingan dengan tetap menjaga integritas akademik, serta mengevaluasi tugas mahasiswa berdasarkan kriteria penilaian yang terstandar."
+    ),
+    highlights: [
+      pair('Guiding students in applying computational thinking concepts to problem-solving exercises without providing direct answers to assignments.', 'Membimbing mahasiswa dalam menerapkan konsep berpikir komputasional untuk menyelesaikan masalah tanpa memberikan jawaban langsung atas tugas.'),
+      pair('Evaluating student assignments objectively using standardized rubrics and providing timely feedback.', 'Menilai tugas mahasiswa secara objektif menggunakan rubrik terstandar dan memberikan umpan balik tepat waktu.'),
+      pair('Monitoring academic integrity and reporting violations in accordance with practicum procedures.', 'Memantau integritas akademik dan melaporkan pelanggaran sesuai prosedur praktikum.'),
+      pair('Collaborating with fellow teaching assistants and the practicum team to ensure consistent assessments and smooth session delivery.', 'Berkolaborasi dengan sesama asisten praktikum dan tim pengelola untuk menjaga konsistensi penilaian dan kelancaran pelaksanaan praktikum.')
+    ],
+    tech: [],
+    current: true,
+    mono: 'ITB',
   }
+
 ]
