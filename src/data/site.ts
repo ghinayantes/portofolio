@@ -39,8 +39,21 @@ export const SITE = {
   /** Home gallery (campus life and activities). Put the image in /public and add one line here; the grid grows on its own. */
   gallery: [
     { src: '/photo.jpg', caption: pair('Portrait of Ghina', 'Potret Ghina') },
+    { src: '/ukmlantik.png', caption: pair('UKM-ITB 2025', 'UKM-ITB 2025'), wide: true },
     { src: '/photo2.jpg', caption: pair('Inaugurate the association', 'Lantik himpunan') },
-  ] as { src: string; caption: Pair }[],
+    { src: '/selfparagon.png', caption: pair('Scholarship', 'Scholarship') },
+    { src: '/bpa.png', caption: pair('Acads', 'Acads') },
+    { src: '/impactdiv.png', caption: pair('IMPACT 6.0', 'IMPACT 6.0') },
+    { src: '/oskm.png', caption: pair('OSKM ITB 2025', 'OSKM ITB 2025') },
+    { src: '/oskm2026.png', caption: pair('OSKM ITB 2026', 'OSKM ITB 2026') },
+    { src: '/mreric.png', caption: pair('Mr. Eric ><', 'Pak Eric ><'), wide: true },
+    { src: '/sekcar.png', caption: ('Sekolah Acara KAT ITB') },
+    { src: '/tec2.png', caption: ('Interupsi!') },
+    { src: '/tec.png', caption: ('TEC Intern') },
+    { src: '/lab.png', caption: ('Lab fisdas') },
+    { src: '/plawid.png', caption: ('PIXEL') },
+    { src: '/steik.png', caption: pair('STEI-K 2025', 'STEI-K 2025'), wide: true },
+  ] as { src: string; caption: Pair; wide?: boolean }[],
   /**
    * Home "History": one or more timelines; with more than one, tabs appear above the strip.
    * Each timeline has a tab `label`, an opening `title`, and `chapters` read left to right (oldest first).

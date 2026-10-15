@@ -622,13 +622,33 @@ export function HomeGallery() {
     if (grid.current) grid.current.style.setProperty('--s', passProgress(grid.current).toFixed(3))
   }, motion)
 
+  // Landscape photos keep their wide shape: mark items whose image is
+  // clearly wider than tall so CSS can span them across two columns.
+  useEffect(() => {
+    const ul = grid.current
+    if (!ul) return
+    const cleanups: (() => void)[] = []
+    const mark = (img: HTMLImageElement) => {
+      if (img.naturalWidth > img.naturalHeight * 1.5) img.closest('li')?.classList.add('is-wide')
+    }
+    ul.querySelectorAll('img').forEach((img) => {
+      if (img.complete && img.naturalWidth > 0) mark(img)
+      else {
+        const onLoad = () => mark(img)
+        img.addEventListener('load', onLoad, { once: true })
+        cleanups.push(() => img.removeEventListener('load', onLoad))
+      }
+    })
+    return () => cleanups.forEach((fn) => fn())
+  }, [])
+
   if (SITE.gallery.length === 0) return null
   return (
     <section className="home-section" aria-labelledby="home-gallery-title">
       <Head n="07" label={id ? 'Galeri' : 'Gallery'} title={id ? 'Kuliah dan kegiatan' : 'Campus life and activities'} titleId="home-gallery-title" />
       <ul ref={grid} className="home-gallery">
         {SITE.gallery.map((g) => (
-          <li key={g.src}>
+          <li key={g.src} className={g.wide ? 'is-wide' : undefined}>
             <figure className="home-shot">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={g.src} alt={localized(g.caption, lang)} loading="lazy" decoding="async" />

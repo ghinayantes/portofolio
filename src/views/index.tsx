@@ -189,39 +189,41 @@ const Work = () => {
       {C.work.map((job, i) => (
         <Reveal key={i} index={i}>
           <article className="work-card">
-            {job.current && (
-              <span className="work-badge">{id ? 'Sekarang' : 'Current'}</span>
-            )}
-            <header className="work-card__header">
-              <div className="work-card__ident">
-                <OrgLogo name={id ? job.company.id : job.company.en} logo={job.logo} mono={job.mono} />
-                <div className="min-w-0">
-                  <h3 className="work-card__role">{id ? job.role.id : job.role.en}</h3>
-                  <p className="work-card__meta">
-                    <span className="work-card__company">{id ? job.company.id : job.company.en}</span>
-                    <span className="work-card__sep" aria-hidden="true">·</span>
-                    <span>{id ? job.when.id : job.when.en}</span>
-                    <span className="work-card__sep" aria-hidden="true">·</span>
-                    <span>{id ? job.location.id : job.location.en}</span>
-                  </p>
-                </div>
+            <div className="work-card__layout">
+              <OrgLogo name={id ? job.company.id : job.company.en} logo={job.logo} mono={job.mono} />
+              <div className="work-card__main min-w-0">
+                {job.current && (
+                  <span className="work-badge">{id ? 'Sekarang' : 'Current'}</span>
+                )}
+                <header className="work-card__header">
+                  <div className="min-w-0">
+                    <h3 className="work-card__role">{id ? job.role.id : job.role.en}</h3>
+                    <p className="work-card__meta">
+                      <span className="work-card__company">{id ? job.company.id : job.company.en}</span>
+                      <span className="work-card__sep" aria-hidden="true">·</span>
+                      <span>{id ? job.when.id : job.when.en}</span>
+                      <span className="work-card__sep" aria-hidden="true">·</span>
+                      <span>{id ? job.location.id : job.location.en}</span>
+                    </p>
+                  </div>
+                </header>
+                <p className="work-card__desc">{id ? job.desc.id : job.desc.en}</p>
+                {job.highlights.length > 0 && (
+                  <ul className="work-card__highlights" aria-label={id ? 'Pencapaian' : 'Highlights'}>
+                    {job.highlights.map((h, j) => (
+                      <li key={j}>{id ? h.id : h.en}</li>
+                    ))}
+                  </ul>
+                )}
+                {job.tech.length > 0 && (
+                  <ul className="work-card__tech" aria-label={id ? 'Teknologi' : 'Tech stack'}>
+                    {job.tech.map((t) => (
+                      <li key={t} className="work-chip">{t}</li>
+                    ))}
+                  </ul>
+                )}
               </div>
-            </header>
-            <p className="work-card__desc">{id ? job.desc.id : job.desc.en}</p>
-            {job.highlights.length > 0 && (
-              <ul className="work-card__highlights" aria-label={id ? 'Pencapaian' : 'Highlights'}>
-                {job.highlights.map((h, j) => (
-                  <li key={j}>{id ? h.id : h.en}</li>
-                ))}
-              </ul>
-            )}
-            {job.tech.length > 0 && (
-              <ul className="work-card__tech" aria-label={id ? 'Teknologi' : 'Tech stack'}>
-                {job.tech.map((t) => (
-                  <li key={t} className="work-chip">{t}</li>
-                ))}
-              </ul>
-            )}
+            </div>
           </article>
         </Reveal>
       ))}
