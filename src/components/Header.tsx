@@ -7,7 +7,7 @@ import { LocLink as Link, NavLink } from './LocLink'
 import { NAV } from '../data/nav'
 import { useSettings } from '../context/Settings'
 
-const link = 'inline-flex min-h-12 w-full items-center rounded-full px-4 text-[15px] font-medium text-fg2 hover:text-fg aria-[current=page]:text-brand lg:min-h-11 lg:w-auto lg:px-3.5'
+const link = 'inline-flex min-h-12 w-full items-center rounded-full px-4 text-[15px] font-medium text-fg2 hover:text-fg aria-[current=page]:text-brand aria-[current=page]:underline aria-[current=page]:decoration-brand aria-[current=page]:decoration-2 aria-[current=page]:underline-offset-8 lg:min-h-11 lg:w-auto lg:px-3.5'
 
 /** Sun/moon morph toggle (Josh Comeau-style): the two glyphs cross-fade while rotating + scaling.
     The icon shows the *destination* theme: sun while dark, moon while light. */
@@ -95,9 +95,9 @@ export default function Header() {
 
   return (
     <header ref={ref} className="sticky top-0 z-30 border-b border-line bg-bg/55 backdrop-blur-md">
-        <div className="mx-auto grid h-17 max-w-page grid-cols-2 items-center gap-3 lg:grid-cols-[1fr_auto_1fr] px-5 sm:px-8 lg:px-20">
+        <div className="mx-auto grid h-19 max-w-page grid-cols-2 items-center gap-3 lg:grid-cols-[1fr_auto_1fr] px-5 sm:px-8 lg:px-20">
           <Link to="/" className="justify-self-start font-display text-2xl font-extrabold">G<span className="text-brand">.</span></Link>
-        <nav data-lenis-prevent aria-label={lang === 'id' ? 'Navigasi utama' : 'Main'} id="main-nav" className={`${menu ? 'flex' : 'hidden'} absolute inset-x-0 top-full max-h-[calc(100vh-4.25rem)] flex-col overflow-auto border-b border-brand/25 bg-bg/90 px-5 pb-5 backdrop-blur-xl lg:static lg:col-start-2 lg:flex lg:max-h-none lg:flex-row lg:items-center lg:justify-center lg:gap-1 lg:overflow-visible lg:border-0 lg:bg-transparent lg:p-0 lg:backdrop-blur-none`}>
+        <nav data-lenis-prevent aria-label={lang === 'id' ? 'Navigasi utama' : 'Main'} id="main-nav" className={`${menu ? 'flex' : 'hidden'} absolute inset-x-0 top-full max-h-[calc(100vh-4.75rem)] flex-col overflow-auto border-b border-brand/25 bg-bg/90 px-5 pb-5 backdrop-blur-xl lg:static lg:col-start-2 lg:flex lg:max-h-none lg:flex-row lg:items-center lg:justify-center lg:gap-1 lg:overflow-visible lg:border-0 lg:bg-transparent lg:p-0 lg:backdrop-blur-none`}>
           <NavLink to="/" end onClick={closeAll} className={link}>{lang === 'id' ? 'Beranda' : 'Home'}</NavLink>
           {NAV.map((g, i) => (
             <div

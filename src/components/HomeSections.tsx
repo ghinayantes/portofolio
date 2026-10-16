@@ -389,6 +389,7 @@ export function HomeHighlights() {
               <span className="home-award__title">{h.title}</span>
               {h.org && <span className="home-award__org">{h.org}</span>}
               <span className="home-award__desc">{h.desc}</span>
+              <span className="home-award__more">{id ? 'Lihat detail' : 'See details'}<span aria-hidden="true"> →</span></span>
             </Link>
           </li>
         ))}

@@ -26,7 +26,7 @@ export const NAV: NavGroup[] = [
     it('design', 'Design', 'Desain', 'UI/UX and visual work', 'Karya UI/UX dan visual'),
     it('writing', 'Writing', 'Tulisan', 'Essays and documentation', 'Esai dan dokumentasi'),
   ] },
-  { title: pair('Other', 'Lainnya'), desc: pair('My background, my journey, and the full site map.', 'Latar belakang, perjalanan, dan peta situs lengkap.'), items: [
+  { title: pair('More', 'Lainnya'), desc: pair('My background, my journey, and the full site map.', 'Latar belakang, perjalanan, dan peta situs lengkap.'), items: [
     it('education', 'Education', 'Pendidikan', 'Schools and coursework', 'Sekolah dan mata kuliah'),
     it('timeline', 'Timeline', 'Linimasa', 'My journey by year', 'Perjalananku per tahun'),
     it('sitemap', 'Sitemap', 'Peta situs', 'Every page in one tree', 'Semua halaman dalam satu pohon'),
