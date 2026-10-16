@@ -58,8 +58,8 @@ export const SEO_KEYWORDS = [...new Set([
 
 /** Home title and description: the full name leads both, since people searching for a person type the name. */
 export const SEO_TITLE: Record<'en' | 'id', string> = {
-  en: 'Ghina Emelia Yantes — Informatics Student at ITB | Portfolio',
-  id: 'Ghina Emelia Yantes — Mahasiswa Informatika ITB | Portofolio',
+  en: 'Ghina Emelia Yantes | Portfolio',
+  id: 'Ghina Emelia Yantes | Portofolio',
 }
 export const SEO_DESCRIPTION: Record<'en' | 'id', string> = {
   en: 'Official portfolio of Ghina Emelia Yantes, an Informatics student at Institut Teknologi Bandung (ITB): projects, experience, awards, skills, and contact.',
