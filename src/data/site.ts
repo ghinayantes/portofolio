@@ -2,7 +2,7 @@ import { pair, type Pair } from './nav'
 
 const contacts = [
        { key: 'email', label: pair('Email me', 'Kirim email'), href: 'mailto:ghnaemeliayantes@gmail.com' },
-       { key: 'linkedin', label: pair('LinkedIn'), href: 'https://www.linkedin.com/in/ghina-emelia-yantes-3162592a7/' },
+       { key: 'linkedin', label: pair('LinkedIn'), href: 'https://www.linkedin.com/in/ghinayantes' },
        { key: 'github', label: pair('GitHub'), href: 'https://github.com/ghinayantes' },
        { key: 'instagram', label: pair('Instagram'), href: 'https://www.instagram.com/ghinayantes' },
        { key: 'whatsapp', label: pair('WhatsApp'), href: 'https://wa.me/6282173733818' },
