@@ -40,11 +40,11 @@ export const metadata: Metadata = {
   // Location hints for regional search (Bandung, West Java).
   other: { 'geo.region': 'ID-JB', 'geo.placename': 'Bandung', 'geo.position': '-6.8915;107.6106', ICBM: '-6.8915, 107.6106' },
   robots: { index: true, follow: true, googleBot: { index: true, follow: true, 'max-image-preview': 'large', 'max-snippet': -1, 'max-video-preview': -1 } },
-  // Search-console ownership codes, read from the environment so none is hard-coded: Google, Bing, Yandex.
+  // Search-console ownership codes: Google and Yandex read from the environment; Bing is hard-coded per owner request.
   verification: {
     ...(process.env.GOOGLE_SITE_VERIFICATION ? { google: process.env.GOOGLE_SITE_VERIFICATION } : {}),
     ...(process.env.YANDEX_SITE_VERIFICATION ? { yandex: process.env.YANDEX_SITE_VERIFICATION } : {}),
-    ...(process.env.BING_SITE_VERIFICATION ? { other: { 'msvalidate.01': process.env.BING_SITE_VERIFICATION } } : {}),
+    other: { 'msvalidate.01': '7C361EA1AAED28223F2B6BFD6FA022A0' },
   },
   icons: { icon: '/favicon.svg' },
   openGraph: {
