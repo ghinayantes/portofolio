@@ -3,6 +3,7 @@
 import { Suspense, useCallback, useEffect, useMemo, useRef, useState, type ReactElement, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 import { FaArrowUpRightFromSquare, FaChevronDown, FaLinkedinIn } from 'react-icons/fa6'
+import CareerTimeline from '../components/CareerTimeline'
 import { LocLink as Link } from '../components/LocLink'
 import * as C from '../data/content'
 import { NAV, localized, pair, type Pair } from '../data/nav'
@@ -516,12 +517,17 @@ export function PageStats({ k }: { k: string }) {
     }
     case 'organization': return <CollectionStats total={C.organizations.length} single={pair('organization', 'organisasi')} plural={pair('organizations', 'organisasi')} />
     case 'education': return <CollectionStats total={C.education.length} single={pair('school', 'sekolah')} plural={pair('schools', 'sekolah')} />
-    case 'timeline': return <CollectionStats total={C.milestones.length} single={pair('milestone', 'tonggak')} plural={pair('milestones', 'tonggak')} />
+    case 'timeline': return <CollectionStats total={C.work.length + C.projects.length + C.awards.length + C.education.length} single={pair('timeline entry', 'entri linimasa')} plural={pair('timeline entries', 'entri linimasa')} />
     case 'design': return <CollectionStats total={C.design.length} single={pair('work', 'karya')} plural={pair('works', 'karya')} />
     case 'writing': return <CollectionStats total={C.writing.length} single={pair('piece', 'tulisan')} plural={pair('pieces', 'tulisan')} />
     case 'hire': return <HireStats />
     default: return null
   }
+}
+
+function CareerTimelinePage() {
+  const { lang } = useSettings()
+  return <CareerTimeline lang={lang} />
 }
 
 /** key (from data/nav.ts) -> page component */
@@ -539,7 +545,7 @@ export const PAGES: Record<string, () => ReactElement> = {
   design: () => <Cards list={C.design} />,
   writing: () => <Cards list={C.writing} />,
   education: () => <Timeline items={C.education} />,
-  timeline: () => <Timeline items={C.milestones} />,
+  timeline: () => <CareerTimelinePage />,
   sitemap: Sitemap,
 }
 

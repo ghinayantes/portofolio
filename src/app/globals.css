@@ -1207,3 +1207,68 @@ article.card > .thumb { border-radius: 8px; }
 @media (prefers-reduced-motion: reduce) { .xidx__list li { opacity: 1; transform: none; transition: none; } .xidx__word, .xidx__arrow { transition: none; } }
 @media (max-width: 639px) { .xidx__arrow { display: none; } }
 .xidx__item small { font-style: normal; }
+
+.unified-timeline { display: grid; gap: 2.25rem; }
+.unified-timeline__filters { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.55rem; }
+.unified-timeline__filter { display: inline-flex; align-items: center; gap: 0.55rem; min-height: 2.7rem; padding: 0.45rem 0.9rem; border: 1px solid var(--card-line); border-radius: 999px; background: var(--card-fill); color: var(--text2); font-size: 0.84rem; font-weight: 550; cursor: pointer; transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease, transform 0.2s ease; }
+.unified-timeline__filter:hover { transform: translateY(-1px); border-color: color-mix(in srgb, var(--brand) 45%, var(--card-line)); color: var(--text); }
+.unified-timeline__filter.is-active { border-color: var(--text); background: var(--text); color: var(--bg); }
+.unified-timeline__filter:focus-visible, .unified-timeline__summary:focus-visible { outline: 3px solid color-mix(in srgb, var(--brand) 55%, transparent); outline-offset: 4px; }
+.unified-timeline__count { display: grid; min-width: 1.35rem; height: 1.35rem; place-items: center; padding: 0 0.25rem; border-radius: 999px; background: color-mix(in srgb, currentColor 12%, transparent); font-family: var(--font-mono); font-size: 0.68rem; }
+.unified-timeline__groups { display: grid; gap: 2.2rem; }
+.unified-timeline__card { width: 100%; min-width: 0; overflow: hidden; border: 1px solid var(--card-line); border-radius: 1.2rem; background: var(--card-fill); box-shadow: var(--shadow-soft); transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease; }
+.unified-timeline__card:hover, .unified-timeline__card.is-expanded { border-color: color-mix(in srgb, var(--brand) 42%, var(--card-line)); box-shadow: var(--shadow-lift); }
+.unified-timeline__summary { display: grid; width: 100%; gap: 0.5rem; padding: 1.15rem 1.25rem; border: 0; background: transparent; color: var(--text); cursor: pointer; text-align: left; }
+.unified-timeline__meta { display: flex; flex-wrap: wrap; align-items: center; gap: 0.55rem; }
+.unified-timeline__date { color: var(--text2); font-family: var(--font-mono); font-size: 0.72rem; }
+.unified-timeline__category { padding: 0.18rem 0.5rem; border: 1px solid color-mix(in srgb, var(--brand) 24%, var(--card-line)); border-radius: 999px; background: color-mix(in srgb, var(--brand) 7%, transparent); color: var(--brand); font-size: 0.68rem; font-weight: 600; }
+.unified-timeline__card[data-category='project'] .unified-timeline__category { border-color: color-mix(in srgb, #0a66c2 28%, var(--card-line)); background: color-mix(in srgb, #0a66c2 8%, transparent); color: #0a66c2; }
+.unified-timeline__card[data-category='award'] .unified-timeline__category { border-color: color-mix(in srgb, #c28a20 34%, var(--card-line)); background: color-mix(in srgb, #c28a20 9%, transparent); color: color-mix(in srgb, #a66b00 78%, var(--text)); }
+.unified-timeline__card[data-category='education'] .unified-timeline__category { border-color: color-mix(in srgb, #25856d 30%, var(--card-line)); background: color-mix(in srgb, #25856d 8%, transparent); color: #25856d; }
+.unified-timeline__title-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.8rem; }
+.unified-timeline__title { font-family: var(--font-display); font-size: clamp(1.12rem, 1.8vw, 1.4rem); font-weight: 600; letter-spacing: -0.02em; line-height: 1.25; text-wrap: balance; }
+.unified-timeline__chevron { flex: none; margin-top: 0.18rem; color: var(--text2); transition: transform 0.25s ease, color 0.25s ease; }
+.unified-timeline__chevron.is-open { transform: rotate(180deg); color: var(--brand); }
+.unified-timeline__organization { color: var(--text2); font-size: 0.82rem; line-height: 1.4; }
+.unified-timeline__details { display: grid; grid-template-rows: 0fr; opacity: 0; transition: grid-template-rows 0.35s ease, opacity 0.25s ease; }
+.unified-timeline__details.is-open { grid-template-rows: 1fr; opacity: 1; }
+.unified-timeline__details-inner { min-height: 0; overflow: hidden; padding: 0 1.25rem; color: var(--text2); font-size: 0.88rem; line-height: 1.6; transition: padding-bottom 0.25s ease; }
+.unified-timeline__details.is-open .unified-timeline__details-inner { padding-bottom: 1.2rem; }
+.unified-timeline__details-inner ul { display: grid; gap: 0.4rem; margin: 0.75rem 0 0; padding-left: 1.15rem; }
+.unified-timeline__tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.85rem; }
+.unified-timeline__tags span { padding: 0.22rem 0.58rem; border: 1px solid var(--card-line); border-radius: 999px; background: color-mix(in srgb, var(--text) 4%, var(--card-fill)); color: var(--text2); font-size: 0.72rem; }
+.unified-timeline__empty { padding: 2rem; border: 1px dashed var(--card-line); border-radius: 1rem; color: var(--text2); text-align: center; }
+@media (max-width: 760px) {
+  .unified-timeline__filters { justify-content: flex-start; overflow-x: auto; flex-wrap: nowrap; padding: 0.2rem 0.25rem 0.65rem; }
+  .unified-timeline__filter { flex: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .unified-timeline__filter, .unified-timeline__card, .unified-timeline__chevron, .unified-timeline__details { transition: none; }
+  .unified-timeline__filter:hover { transform: none; }
+}
+
+.unified-timeline__flow { display: grid; gap: 0.7rem; }
+.unified-timeline__flow-row { position: relative; display: flex; align-items: flex-start; margin: 0; padding: 0 0 3rem; list-style: none; }
+.unified-timeline__flow-row.is-return { flex-direction: row-reverse; }
+.unified-timeline__flow-item { position: relative; display: flex; min-width: 0; flex: 1 1 0; flex-direction: column; align-items: center; padding: 0 0.45rem; }
+.unified-timeline__flow-item:not(.is-turn) .unified-timeline__flow-rail::before { position: absolute; top: 50%; left: 50%; width: 100%; height: 0.375rem; border-radius: 999px; background: color-mix(in srgb, var(--brand) 40%, var(--card-line)); content: ''; }
+.unified-timeline__flow-row.is-return .unified-timeline__flow-item:not(.is-turn) .unified-timeline__flow-rail::before { right: 50%; left: auto; }
+.unified-timeline__flow-rail { position: relative; display: flex; width: 100%; height: 5rem; flex: none; align-items: center; justify-content: center; }
+.unified-timeline__flow-rail > span { position: relative; z-index: 2; display: grid; width: 2.5rem; height: 2.5rem; place-items: center; border: 0.25rem solid var(--brand); border-radius: 50%; background: var(--card-fill); box-shadow: 0 0 15px color-mix(in srgb, var(--brand) 32%, transparent); }
+.unified-timeline__flow-rail > span::after { width: 0.75rem; height: 0.75rem; border-radius: 50%; background: var(--brand); content: ''; animation: timeline-flow-pulse 2s ease-in-out infinite; }
+.unified-timeline__flow-item.is-turn { align-self: stretch; }
+.unified-timeline__flow-item.is-turn::after { position: absolute; z-index: 0; top: 2.5rem; bottom: -5.5rem; left: 50%; width: 0.375rem; border-radius: 999px; background: color-mix(in srgb, var(--brand) 40%, var(--card-line)); content: ''; transform: translateX(-50%); }
+.unified-timeline__flow-item > .reveal { position: relative; z-index: 1; display: flex; width: 100%; flex: none; margin-top: 1rem; }
+@keyframes timeline-flow-pulse { 50% { opacity: 0.35; transform: scale(0.75); } }
+@media (max-width: 767px) {
+  .unified-timeline__flow-row { display: block; padding: 0 0 1.5rem 2.5rem; }
+  .unified-timeline__flow-row.is-return { flex-direction: column; }
+  .unified-timeline__flow-row::before { position: absolute; top: 1.25rem; bottom: -0.5rem; left: 1.2rem; width: 0.3rem; border-radius: 999px; background: color-mix(in srgb, var(--brand) 40%, var(--card-line)); content: ''; }
+  .unified-timeline__flow-item { display: block; padding: 0 0 1.25rem; }
+  .unified-timeline__flow-rail { position: absolute; top: 0; left: -2.5rem; width: 2.5rem; height: 2.5rem; }
+  .unified-timeline__flow-rail > span { width: 1.25rem; height: 1.25rem; border-width: 0.2rem; }
+  .unified-timeline__flow-rail > span::after { width: 0.4rem; height: 0.4rem; }
+  .unified-timeline__flow-item:not(.is-turn) .unified-timeline__flow-rail::before, .unified-timeline__flow-item.is-turn { align-self: stretch; }
+.unified-timeline__flow-item.is-turn::after { display: none; }
+  .unified-timeline--flow .unified-timeline__card { height: auto; }
+}
