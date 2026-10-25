@@ -28,8 +28,8 @@ function drawCloud(ctx: CanvasRenderingContext2D, x: number, y: number, radius: 
   const top = y - h * 0.62
   const fill = ctx.createLinearGradient(0, top, 0, top + h)
   fill.addColorStop(0, `rgba(255,255,255,${0.94 * fade})`)
-  fill.addColorStop(0.46, `rgba(231,244,255,${0.82 * fade})`)
-  fill.addColorStop(1, `rgba(157,193,222,${0.46 * fade})`)
+  fill.addColorStop(0.46, `rgba(243,242,236,${0.86 * fade})`)
+  fill.addColorStop(1, `rgba(98,116,142,${0.22 * fade})`)
   ctx.beginPath()
   ctx.moveTo(left + radius * 0.25, top + h * 0.8)
   ctx.bezierCurveTo(left + radius * 0.05, top + h * 0.65, left + radius * 0.1, top + h * 0.36, left + radius * 0.42, top + h * 0.34)
@@ -39,8 +39,8 @@ function drawCloud(ctx: CanvasRenderingContext2D, x: number, y: number, radius: 
   ctx.closePath()
   ctx.fillStyle = fill
   ctx.fill()
-  ctx.strokeStyle = `rgba(255,255,255,${0.58 * fade})`
-  ctx.lineWidth = Math.max(1, radius * 0.08)
+  ctx.strokeStyle = `rgba(15,23,43,${0.2 * fade})`
+  ctx.lineWidth = 1
   ctx.stroke()
   ctx.beginPath()
   ctx.moveTo(left + radius * 0.55, top + h * 0.38)
@@ -65,12 +65,12 @@ const polygon = (n: number): V2[] => Array.from({ length: n }, (_, i) => [Math.s
 const complete = (n: number): Edge[] => Array.from({ length: n }, (_, i) => Array.from({ length: n - i - 1 }, (_, k) => [i, i + k + 1] as Edge)).flat()
 
 const SHAPES: Shape[] = [
-  { id: 'cube', pts: [], edges: [[0, 1], [1, 2], [2, 3], [3, 0], [4, 5], [5, 6], [6, 7], [7, 4], [0, 4], [1, 5], [2, 6], [3, 7]], x: 0.9, y: 0.17, size: 0.1, tilt: 0, mobile: true },
-  { id: 'tree', pts: [[0, -1], [-0.55, -0.35], [0.55, -0.35], [-0.8, 0.3], [-0.3, 0.3], [0.3, 0.3], [0.8, 0.3]], edges: [[0, 1], [0, 2], [1, 3], [1, 4], [2, 5], [2, 6]], x: 0.07, y: 0.24, size: 0.12, tilt: -0.08 },
-  { id: 'parallelogram', pts: [[-0.9, 0.8], [0.6, 0.5], [-0.3, -0.3], [1.2, -0.6]], edges: [[0, 1], [0, 2], [1, 3], [2, 3], [0, 3]], dashed: [4], x: 0.93, y: 0.6, size: 0.1, tilt: 0.1 },
-  { id: 'k5', pts: polygon(5), edges: complete(5), x: 0.07, y: 0.72, size: 0.1, tilt: 0.2, mobile: true },
-  { id: 'hasse', pts: [[0, 0.95], [-0.55, 0.35], [0.55, 0.35], [-0.55, -0.3], [0.55, -0.3], [0, -0.95]], edges: [[0, 1], [0, 2], [1, 3], [1, 4], [2, 4], [3, 5], [4, 5]], x: 0.84, y: 0.9, size: 0.09, tilt: 0 },
-  { id: 'k33', pts: [[-0.8, -0.8], [-0.8, 0], [-0.8, 0.8], [0.8, -0.8], [0.8, 0], [0.8, 0.8]], edges: [[0, 3], [0, 4], [0, 5], [1, 3], [1, 4], [1, 5], [2, 3], [2, 4], [2, 5]], x: 0.22, y: 0.93, size: 0.08, tilt: -0.15 },
+  { id: 'cube', pts: [], edges: [[0, 1], [1, 2], [2, 3], [3, 0], [4, 5], [5, 6], [6, 7], [7, 4], [0, 4], [1, 5], [2, 6], [3, 7]], x: 0.965, y: 0.2, size: 0.085, tilt: 0, mobile: true },
+  { id: 'tree', pts: [[0, -1], [-0.55, -0.35], [0.55, -0.35], [-0.8, 0.3], [-0.3, 0.3], [0.3, 0.3], [0.8, 0.3]], edges: [[0, 1], [0, 2], [1, 3], [1, 4], [2, 5], [2, 6]], x: 0.03, y: 0.24, size: 0.09, tilt: -0.08 },
+  { id: 'parallelogram', pts: [[-0.9, 0.8], [0.6, 0.5], [-0.3, -0.3], [1.2, -0.6]], edges: [[0, 1], [0, 2], [1, 3], [2, 3], [0, 3]], dashed: [4], x: 0.97, y: 0.52, size: 0.075, tilt: 0.1 },
+  { id: 'k5', pts: polygon(5), edges: complete(5), x: 0.035, y: 0.53, size: 0.075, tilt: 0.2, mobile: true },
+  { id: 'hasse', pts: [[0, 0.95], [-0.55, 0.35], [0.55, 0.35], [-0.55, -0.3], [0.55, -0.3], [0, -0.95]], edges: [[0, 1], [0, 2], [1, 3], [1, 4], [2, 4], [3, 5], [4, 5]], x: 0.965, y: 0.82, size: 0.075, tilt: 0 },
+  { id: 'k33', pts: [[-0.8, -0.8], [-0.8, 0], [-0.8, 0.8], [0.8, -0.8], [0.8, 0], [0.8, 0.8]], edges: [[0, 3], [0, 4], [0, 5], [1, 3], [1, 4], [1, 5], [2, 3], [2, 4], [2, 5]], x: 0.03, y: 0.82, size: 0.065, tilt: -0.15 },
 ]
 
 /** Orthographic-ish projection of a cube rotated by two angles (a rotation-matrix demo). */
@@ -120,8 +120,8 @@ export default function Constellations() {
       return (((hsh % 28) + 28) % 28) - 14
     }
 
-    const DARK_RGB = [200, 210, 255] as const
-    const LIGHT_RGB = [79, 70, 229] as const
+    const DARK_RGB = [248, 250, 252] as const
+    const LIGHT_RGB = [15, 23, 43] as const
 
     const draw = (t: number, fade: number) => {
       const target = root.dataset.theme === 'light' ? 1 : 0
@@ -250,5 +250,5 @@ export default function Constellations() {
     }
   }, [])
 
-  return <canvas ref={ref} aria-hidden className="pointer-events-none fixed inset-0 z-0 h-full w-full" />
+  return <canvas ref={ref} aria-hidden className="constellations pointer-events-none fixed inset-0 z-0 h-full w-full" />
 }

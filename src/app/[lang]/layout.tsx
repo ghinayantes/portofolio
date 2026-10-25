@@ -1,18 +1,15 @@
 import type { Metadata, Viewport } from 'next'
 import type { ReactNode } from 'react'
 import { notFound } from 'next/navigation'
-import '@fontsource/poppins/400.css'
-import '@fontsource/poppins/500.css'
-import '@fontsource/poppins/600.css'
-import '@fontsource/poppins/700.css'
-import '@fontsource/poppins/800.css'
+import '@fontsource/instrument-serif/400.css'
+import '@fontsource/instrument-serif/400-italic.css'
+import '@fontsource-variable/inter/wght.css'
+import '@fontsource-variable/jetbrains-mono/wght.css'
 import 'lenis/dist/lenis.css'
 import '../globals.css'
 import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { SettingsProvider } from '../../context/Settings'
-import CloudShader from '../../components/CloudShader'
-import Background from '../../components/Background'
 import Constellations from '../../components/Constellations'
 import Header from '../../components/Header'
 import Footer from '../../components/Footer'
@@ -73,8 +70,8 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   viewportFit: 'cover',
   themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#e8f5ff' },
-    { media: '(prefers-color-scheme: dark)', color: '#05060F' },
+    { media: '(prefers-color-scheme: light)', color: '#fbfaf6' },
+    { media: '(prefers-color-scheme: dark)', color: '#020618' },
   ],
 }
 
@@ -90,8 +87,6 @@ export default async function RootLayout({ children, params }: { children: React
           <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:bg-brand focus:px-5 focus:py-2.5 focus:font-semibold focus:text-ink">{lang === 'id' ? 'Lewati ke konten utama' : 'Skip to main content'}</a>
           <SettingsProvider lang={lang}>
             <SmoothScroll>
-              <CloudShader />
-              <Background />
               <Constellations />
               <div className="relative z-10 flex min-h-screen flex-col">
                 <Header />

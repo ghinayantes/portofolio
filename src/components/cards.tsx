@@ -68,10 +68,13 @@ export function ProjectCard({ p, i, featured, interactive = false, tilt = true, 
         )}
       </div>
       <div className={`flex flex-1 flex-col ${interactive ? 'gap-2 p-4' : 'gap-2.5 p-5'} ${featured ? (interactive ? 'md:justify-center md:p-7' : 'md:justify-center md:p-9') : ''}`}>
-        {p.status && <span className="text-[13px] font-medium" style={{ color: p.wip ? 'var(--accent)' : 'var(--ok)' }}>{localized(p.status, lang)}</span>}
-        <h3 className={`font-display ${interactive ? 'text-lg' : 'text-xl'} font-semibold`}><LocLink to={`/project/${projectSlug(p)}`} className="hover:text-brand">{localized(p.title, lang)}</LocLink></h3>
+        <div className="flex items-center gap-3">
+          <span className="project-n">{String(i + 1).padStart(2, '0')}</span>
+          {p.status && <span className="font-mono text-[11px] uppercase tracking-[0.15em]" style={{ color: p.wip ? 'var(--accent)' : 'var(--ok)' }}>{localized(p.status, lang)}</span>}
+        </div>
+        <h3 className={`font-display ${interactive ? 'text-2xl' : 'text-[1.75rem]'} leading-tight tracking-tight`}><LocLink to={`/project/${projectSlug(p)}`} className="transition-opacity hover:opacity-70">{localized(p.title, lang)}</LocLink></h3>
         <p className={interactive ? 'text-sm text-fg2' : 'text-[15px] text-fg2'}>{localized(p.desc, lang)}</p>
-        {plainTags.length > 0 && <div className="flex flex-wrap gap-1.5">{plainTags.map((g) => <span key={g} className={`rounded-md border border-brand/25 bg-brand/10 ${interactive ? 'px-2.5 py-1 text-xs' : 'px-3 py-1 text-[13px]'}`}>{g}</span>)}</div>}
+        {plainTags.length > 0 && <div className="flex flex-wrap gap-1.5">{plainTags.map((g) => <span key={g} className="tag">{g}</span>)}</div>}
         {(techTags.length > 0 || availableLinks.length > 0) && (
           <div className="mt-auto flex flex-wrap items-center justify-between gap-x-4 gap-y-2 pt-3">
             <ul className="tech-stack" aria-label={lang === 'id' ? 'Teknologi' : 'Tech stack'}>

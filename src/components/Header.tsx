@@ -7,7 +7,7 @@ import { LocLink as Link, NavLink } from './LocLink'
 import { NAV } from '../data/nav'
 import { useSettings } from '../context/Settings'
 
-const link = 'inline-flex min-h-12 w-full items-center rounded-full px-4 text-[15px] font-medium text-fg2 hover:text-fg aria-[current=page]:text-brand aria-[current=page]:underline aria-[current=page]:decoration-brand aria-[current=page]:decoration-2 aria-[current=page]:underline-offset-8 lg:min-h-11 lg:w-auto lg:px-3.5'
+const link = 'inline-flex min-h-12 w-full items-center rounded-full px-4 text-[15px] font-medium text-fg/60 transition-colors hover:text-fg aria-[current=page]:text-fg lg:min-h-10 lg:w-auto lg:px-3 lg:text-sm'
 
 /** Sun/moon morph toggle (Josh Comeau-style): the two glyphs cross-fade while rotating + scaling.
     The icon shows the *destination* theme: sun while dark, moon while light. */
@@ -94,10 +94,10 @@ export default function Header() {
   }, [])
 
   return (
-    <header ref={ref} className="sticky top-0 z-30 border-b border-line bg-bg/55 backdrop-blur-md">
-        <div className="mx-auto grid h-19 max-w-page grid-cols-2 items-center gap-3 lg:grid-cols-[1fr_auto_1fr] px-5 sm:px-8 lg:px-20">
-          <Link to="/" className="justify-self-start font-display text-2xl font-extrabold">G<span className="text-brand">.</span></Link>
-        <nav data-lenis-prevent aria-label={lang === 'id' ? 'Navigasi utama' : 'Main'} id="main-nav" className={`${menu ? 'flex' : 'hidden'} absolute inset-x-0 top-full max-h-[calc(100vh-4.75rem)] flex-col overflow-auto border-b border-brand/25 bg-bg/90 px-5 pb-5 backdrop-blur-xl lg:static lg:col-start-2 lg:flex lg:max-h-none lg:flex-row lg:items-center lg:justify-center lg:gap-1 lg:overflow-visible lg:border-0 lg:bg-transparent lg:p-0 lg:backdrop-blur-none`}>
+    <header ref={ref} className="pointer-events-none sticky top-0 z-30 px-3 pt-3 sm:px-6">
+        <div className="pointer-events-auto relative mx-auto grid h-15 max-w-5xl grid-cols-2 items-center gap-3 rounded-full border border-fg/[0.08] bg-bg/70 pl-5 pr-2 shadow-sm backdrop-blur-xl backdrop-saturate-150 lg:grid-cols-[auto_1fr_auto] lg:pl-6">
+          <Link to="/" className="justify-self-start font-display text-2xl tracking-tight">G<span className="text-fg2">.</span></Link>
+        <nav data-lenis-prevent aria-label={lang === 'id' ? 'Navigasi utama' : 'Main'} id="main-nav" className={`${menu ? 'flex' : 'hidden'} absolute inset-x-0 top-full mt-2 max-h-[calc(100vh-5.5rem)] flex-col overflow-auto rounded-3xl border border-fg/[0.08] bg-bg/95 p-3 shadow-sm backdrop-blur-xl lg:static lg:mt-0 lg:rounded-none lg:shadow-none lg:col-start-2 lg:flex lg:max-h-none lg:flex-row lg:items-center lg:justify-center lg:gap-1 lg:overflow-visible lg:border-0 lg:bg-transparent lg:p-0 lg:backdrop-blur-none`}>
           <NavLink to="/" end onClick={closeAll} className={link}>{lang === 'id' ? 'Beranda' : 'Home'}</NavLink>
           {NAV.map((g, i) => (
             <div
@@ -112,11 +112,11 @@ export default function Header() {
                 <span aria-hidden="true" className={`size-1.5 -translate-y-px border-b-2 border-r-2 border-current transition-transform ${shown === i ? '-rotate-[135deg]' : 'rotate-45'}`} />
               </button>
               {shown === i && (
-                <div className="mt-1 flex flex-col gap-0.5 lg:mt-2 lg:block lg:absolute lg:left-1/2 lg:top-full lg:w-56 lg:-translate-x-1/2 lg:rounded-2xl lg:border lg:border-brand/25 lg:bg-surface lg:p-2 lg:shadow-[var(--shadow-lift)]">
+                <div className="mt-1 flex flex-col gap-0.5 lg:mt-3 lg:block lg:absolute lg:left-1/2 lg:top-full lg:w-60 lg:-translate-x-1/2 lg:rounded-2xl lg:border lg:border-fg/[0.08] lg:bg-bg/95 lg:p-2 lg:shadow-[var(--shadow-lift)] lg:backdrop-blur-xl">
                   {g.items.map((x) => (
                     <NavLink key={x.key} to={'/' + x.key} onClick={closeAll} className="block min-h-12 rounded-xl px-4 py-3 hover:bg-muted active:bg-muted aria-[current=page]:bg-muted lg:min-h-0 lg:px-3.5 lg:py-2.5 lg:active:bg-transparent">
-                      <b className="block font-display text-[15px] font-semibold">{t(x.title)}</b>
-                      <small className="text-fg2">{t(x.desc)}</small>
+                      <b className="block text-[14px] font-medium">{t(x.title)}</b>
+                      <small className="text-[13px] text-fg2">{t(x.desc)}</small>
                     </NavLink>
                   ))}
                 </div>
@@ -124,10 +124,10 @@ export default function Header() {
             </div>
           ))}
         </nav>
-          <div className="col-start-2 flex items-center justify-self-end gap-2 lg:col-start-3">
+          <div className="col-start-2 flex items-center justify-self-end gap-1.5 lg:col-start-3">
           <button type="button" className="icon-btn grid place-items-center" onClick={toggleLang} aria-label={lang === 'id' ? 'Ganti ke bahasa Inggris' : 'Switch to Indonesian'}>{lang === 'id' ? 'EN' : 'ID'}</button>
           <button type="button" className="icon-btn grid place-items-center" onClick={(e) => toggleTheme(e.clientX, e.clientY)} aria-label={lang === 'id' ? 'Ganti tema' : 'Toggle theme'}><ThemeIcon theme={theme} animate={iconReady} /></button>
-          <Link to="/hire" className="btn-primary hidden sm:inline-flex">{lang === 'id' ? 'Hubungi aku' : 'Hire me'}</Link>
+          <Link to="/hire" className="btn-ghost hidden sm:inline-flex">{lang === 'id' ? 'Yuk ngobrol' : "Let's talk"}<span aria-hidden="true" className="btn-arrow">→</span></Link>
           <button type="button" className="icon-btn grid place-items-center lg:hidden" aria-label={lang === 'id' ? 'Buka menu' : 'Open menu'} aria-expanded={menu} aria-controls="main-nav" onClick={() => setMenu(!menu)}><FaBars aria-hidden="true" className="size-5" /></button>
         </div>
       </div>
