@@ -788,6 +788,9 @@ footer, [data-theme] footer { background: var(--bg); backdrop-filter: none; -web
 .card { border-radius: 14px; }
 article.card > .thumb { border-radius: 8px; }
 .t0, .t1, .t2 { background: var(--panel); }
+[data-theme='light'] .award-preview-swap .thumb.t0 { background: linear-gradient(135deg, #312e81, #4f46e5 60%, #7c3aed); }
+[data-theme='light'] .award-preview-swap .thumb.t1 { background: linear-gradient(135deg, #172554, #1d4ed8 60%, #0891b2); }
+[data-theme='light'] .award-preview-swap .thumb.t2 { background: linear-gradient(135deg, #581c87, #a21caf 60%, #db2777); }
 .win span, .ln i, .ln i:nth-child(1) { background: color-mix(in srgb, var(--text) 14%, transparent); }
 .project-n { font-family: var(--font-mono); font-size: 12px; font-variant-numeric: tabular-nums; color: var(--text2); }
 .project-card-stage::before { background: color-mix(in srgb, var(--text) 18%, transparent); }
