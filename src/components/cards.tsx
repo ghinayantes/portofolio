@@ -235,12 +235,12 @@ export const FeedItem = ({ n, i }: { n: NewsItem; i: number }) => {
 }
 
 /** Institution emblem tile: the logo image when provided, otherwise a monogram. */
-export function OrgLogo({ name, logo, mono }: { name: string; logo?: string; mono?: string }) {
+export function OrgLogo({ name, logo, mono, className, decorative = false }: { name: string; logo?: string; mono?: string; className?: string; decorative?: boolean }) {
   const text = mono ?? name.split(/\s+/).filter((w) => /^[A-Z]/.test(w)).map((w) => w[0]).join('').slice(0, 3)
   return (
-    <span className="org-logo" data-long={text.length > 4 ? 'true' : undefined}>
+    <span className={`org-logo${className ? ` ${className}` : ''}`} data-long={text.length > 4 ? 'true' : undefined} aria-hidden={decorative || undefined}>
       {logo
-        ? <img src={logo} alt={`${name} logo`} loading="lazy" className="org-logo__img" />
+        ? <img src={logo} alt={decorative ? '' : `${name} logo`} loading="lazy" className="org-logo__img" />
         : <span aria-hidden="true" className="org-logo__mono">{text}</span>}
     </span>
   )

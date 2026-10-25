@@ -488,6 +488,9 @@ footer { backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
 .home-rail__item::before { content: ''; position: absolute; z-index: 1; left: calc(-2rem - 4px); top: 0.6rem; width: 9px; height: 9px; border-radius: 50%; border: 1px solid var(--text2); background: var(--bg); }
 .home-rail__item--now::before { border-color: var(--brand); background: var(--brand); }
 .home-rail__row { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.35rem 2rem; }
+.home-exp__watermark.org-logo { position: absolute; z-index: 0; top: 50%; right: clamp(1.25rem, 4vw, 3rem); width: clamp(9rem, 19vw, 15rem); height: clamp(9rem, 19vw, 15rem); border: 0; border-radius: 0; background: transparent; opacity: 0.14; transform: translateY(-50%); pointer-events: none; }
+.home-exp__watermark .org-logo__mono { font-size: clamp(2.5rem, 6vw, 5rem); }
+.home-exp__watermark.org-logo[data-long='true'] .org-logo__mono { font-size: clamp(1.5rem, 3.5vw, 3rem); }
 .home-rail__role { font-family: var(--font-display); font-size: clamp(1.15rem, 2vw, 1.4rem); font-weight: 700; line-height: 1.25; letter-spacing: -0.015em; }
 .home-rail__role--big { font-size: clamp(1.6rem, 2.6vw, 2.35rem); font-weight: 800; letter-spacing: -0.03em; }
 .home-rail__org { margin-top: 0.25rem; font-size: 15px; font-weight: 600; color: var(--link); }
@@ -512,6 +515,7 @@ footer { backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
 .home-xp__panel[data-state='active'] { opacity: 1; transform: none; }
 .home-xp__panel > * { opacity: 0; transform: translate3d(0, 28px, 0); transition: opacity 0.5s ease, transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1); }
 .home-xp__panel[data-state='active'] > * { opacity: 1; transform: none; }
+.home-xp__panel .home-exp__watermark.org-logo { opacity: 0.14; transform: translateY(-50%); }
 .home-xp__panel[data-state='active'] > :nth-child(2) { transition-delay: 0.08s; }
 .home-xp__panel[data-state='active'] > :nth-child(3) { transition-delay: 0.18s; }
 .home-xp__panel[data-state='active'] > :nth-child(4) { transition-delay: 0.28s; }
@@ -540,19 +544,20 @@ footer { backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
 .home-rows__row--back { transform: translate3d(calc((1 - var(--s, 0.5)) * -55%), 0, 0); }
 .home-rows__pill { display: flex; align-items: center; gap: 0.75rem; padding: 0.9rem 1.5rem; border-radius: 999px; border: 1px solid var(--card-line); background: var(--panel); font-family: var(--font-display); font-size: clamp(1rem, 1.6vw, 1.25rem); font-weight: 600; white-space: nowrap; }
 
-/* Gallery: neighbouring photos drift and tilt in opposite directions with --s; the image shifts inside its frame. */
-.home-gallery { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-auto-flow: dense; gap: 1.25rem; padding-block: 2.5rem; }
-.home-gallery > li { min-width: 0; }
-.home-gallery > li { transform: translate3d(0, calc((var(--s, 0.5) - 0.5) * 150px), 0) rotate(calc((var(--s, 0.5) - 0.5) * 7deg)); will-change: transform; }
-.home-gallery > li:nth-child(even) { transform: translate3d(0, calc((0.5 - var(--s, 0.5)) * 150px), 0) rotate(calc((0.5 - var(--s, 0.5)) * 7deg)); }
-.home-shot { position: relative; overflow: hidden; aspect-ratio: 4 / 5; border-radius: 24px; border: 1px solid var(--card-line); background: var(--panel); box-shadow: var(--shadow-soft); }
-/* Landscape photos span two columns in their wide shape; dense flow lets normal photos backfill any gap. */
-.home-gallery > li.is-wide { grid-column: span 2; }
-.home-gallery > li.is-wide .home-shot { aspect-ratio: 16 / 10; }
-.home-shot img { position: absolute; inset: -8% 0; width: 100%; height: 116%; object-fit: cover; transform: translate3d(0, calc((var(--s, 0.5) - 0.5) * -12%), 0); will-change: transform; }
+/* Gallery: square tiles reveal upward in sequence as their images load into view. */
+.home-gallery { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-auto-flow: dense; gap: 0.5rem; padding-block: 2.5rem; }
+.home-gallery > li { min-width: 0; aspect-ratio: 1; }
+.home-gallery > li.is-wide { grid-column: span 2; aspect-ratio: 2 / 1; }
+.home-shot { position: relative; overflow: hidden; width: 100%; height: 100%; aspect-ratio: 1; border-radius: 0; border: 1px solid var(--card-line); background: var(--panel); box-shadow: var(--shadow-soft); clip-path: inset(0); transition: clip-path 750ms cubic-bezier(0.22, 1, 0.36, 1); transition-delay: calc(var(--gallery-order, 0) * 75ms); }
+.home-gallery > li.is-wide .home-shot { aspect-ratio: 2 / 1; }
+.home-gallery[data-motion-ready='true'] > li:not([data-revealed='true']) .home-shot { clip-path: inset(100% 0 0); }
+.home-gallery > li[data-revealed='true'] .home-shot { clip-path: inset(0); }
+.home-shot img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transform: translateY(14%) scale(1.04); transition: transform 850ms cubic-bezier(0.22, 1, 0.36, 1); transition-delay: calc(var(--gallery-order, 0) * 75ms); }
+.home-gallery > li[data-revealed='true'] .home-shot img { transform: translateY(0) scale(1); }
 .home-shot figcaption { position: absolute; left: 0.9rem; bottom: 0.9rem; max-width: calc(100% - 1.8rem); padding: 0.45rem 0.8rem; border-radius: 10px; background: rgb(8 10 32 / 0.72); font-size: 13px; font-weight: 500; color: #fff; }
 @media (max-width: 1103px) { .home-gallery { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-@media (max-width: 639px) { .home-gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem; } .home-gallery > li, .home-gallery > li:nth-child(even) { transform: translate3d(0, calc((var(--s, 0.5) - 0.5) * 30px), 0); } }
+@media (max-width: 639px) { .home-gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.35rem; } }
+@media (prefers-reduced-motion: reduce) { .home-gallery > li .home-shot { clip-path: none !important; transition: none; } .home-gallery > li .home-shot img { transform: none !important; transition: none; } }
 
 /* Skills: larger icons in the stacked language tiles (unlayered so it wins over the size-6 utility); five per row on desktop. */
 .skill-tile--stack svg, .skill-tile--stack .tech-dot__mono { width: 2.25rem; height: 2.25rem; }
