@@ -4,6 +4,7 @@ import { Suspense, useCallback, useEffect, useMemo, useRef, useState, type React
 import { createPortal } from 'react-dom'
 import { FaArrowUpRightFromSquare, FaChevronDown, FaLinkedinIn } from 'react-icons/fa6'
 import CareerTimeline from '../components/CareerTimeline'
+import ResumePortfolio from '../components/ResumePortfolio'
 import { LocLink as Link } from '../components/LocLink'
 import * as C from '../data/content'
 import { NAV, localized, pair, type Pair } from '../data/nav'
@@ -454,18 +455,7 @@ function Skills() {
 }
 
 function Portfolio() {
-  const { lang } = useSettings()
-  return (
-    <div className="-mt-14">
-      <Section title={lang === 'id' ? 'Tentang' : 'About'}><About /></Section>
-      <Section title={lang === 'id' ? 'Pendidikan' : 'Education'}><Timeline items={C.education} /></Section>
-      <Section title={lang === 'id' ? 'Pengalaman kerja' : 'Work'}><Work /></Section>
-      <Section title={lang === 'id' ? 'Proyek' : 'Projects'}><ProjectsExplorer list={C.projects} /></Section>
-      <Section title={lang === 'id' ? 'Organisasi' : 'Organizations'}><Timeline items={C.organizations} logos /></Section>
-      <Section title={lang === 'id' ? 'Penghargaan' : 'Awards'}><Awards /></Section>
-      <Section title={lang === 'id' ? 'Keahlian' : 'Skills'}><Skills /></Section>
-    </div>
-  )
+  return <ResumePortfolio />
 }
 
 /** Sitemap as a discrete-math graph: left/right vertex columns joined by a center trunk. */

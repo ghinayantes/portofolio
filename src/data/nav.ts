@@ -10,7 +10,7 @@ const it = (key: string, en: string, id: string, den: string, did: string): NavI
 export const NAV: NavGroup[] = [
   { title: pair('Profile', 'Profil'), desc: pair('Who I am, what I know, and what I have earned.', 'Siapa aku, apa yang kukuasai, dan apa yang sudah kuraih.'), items: [
     it('about', 'About', 'Tentang', 'Who I am', 'Siapa aku'),
-    it('portfolio', 'Portfolio', 'Portofolio', 'Everything on one page', 'Semua dalam satu halaman'),
+    it('portfolio', 'Portfolio', 'Portofolio', 'A concise resume of my experience and work', 'Ringkasan profesional tentang pengalaman dan karya saya'),
     it('skills', 'Skills', 'Keahlian', 'Languages, tools, soft skills', 'Bahasa pemrograman, tools, dan soft skill'),
     it('certificate', 'Certificates', 'Sertifikat', 'Courses and credentials', 'Kursus dan kredensial'),
     it('news', 'News', 'Kabar', 'Updates and notes', 'Pembaruan dan catatan'),

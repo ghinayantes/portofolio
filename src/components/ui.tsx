@@ -14,6 +14,7 @@ export const Section = ({ title, children }: { title: string; children: ReactNod
 
 export function PageShell({ item, gi, children, compact, stats }: { item: NavItem; gi: number; children: ReactNode; compact?: boolean; stats?: ReactNode }) {
   const { t, lang } = useSettings()
+  if (item.key === 'portfolio') return <>{children}</>
   if (compact) {
     return (
       <div>
