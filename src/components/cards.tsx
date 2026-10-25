@@ -142,14 +142,15 @@ export function AwardRow({ a, selected, onSelect }: { a: Award; selected: boolea
       data-active={selected}
       onMouseEnter={onSelect}
       onFocus={onSelect}
-      className="group cursor-default border-t border-line px-1 py-5 transition-colors last:border-b data-[active=true]:bg-fg/5"
+      className="award-row group cursor-default border-t border-line px-1 py-5 transition-colors last:border-b data-[active=true]:bg-fg/5"
     >
-      <p className="text-[13px] font-semibold text-fg2">{a.date ? localized(a.date, lang) : localized(a.meta, lang)}</p>
-      <h3 className="mt-1 font-display text-xl font-semibold transition-colors group-data-[active=true]:text-brand">{localized(a.title, lang)}</h3>
+      <p className="award-row__date">{a.date ? localized(a.date, lang) : localized(a.meta, lang)}</p>
+      <h3 className="award-row__title">{localized(a.title, lang)}</h3>
       <p className="mt-1.5 flex flex-wrap items-center gap-2">
-        {a.category && <span className="rounded-full border border-brand/30 bg-brand/10 px-3 py-0.5 text-xs font-semibold text-fg2">{localized(a.category, lang)}</span>}
+        {a.category && <span className="award-row__category">{localized(a.category, lang)}</span>}
         {a.org && <span className="text-sm text-fg2">{localized(a.org, lang)}</span>}
       </p>
+      <span className="award-row__arrow" aria-hidden="true">↗</span>
       <ul className="mt-3 space-y-1.5 md:hidden">
         {bullets.map((b) => <li key={localized(b, lang)} className="flex gap-2 text-[15px] text-fg2"><span aria-hidden="true" className="text-brand">•</span>{localized(b, lang)}</li>)}
       </ul>
@@ -157,7 +158,7 @@ export function AwardRow({ a, selected, onSelect }: { a: Award; selected: boolea
   )
 }
 
-/** Sticky hover preview for the award list (desktop). Gradient header with big year, full detail below. */
+/** Sticky hover preview for the award list (desktop). */
 export function AwardPreview({ a, i }: { a: Award | null; i: number }) {
   const { lang } = useSettings()
   if (!a) {
@@ -165,18 +166,23 @@ export function AwardPreview({ a, i }: { a: Award | null; i: number }) {
   }
   const bullets = a.bullets && a.bullets.length > 0 ? a.bullets : [a.desc]
   return (
-    <div key={localized(a.title, 'en')} className="award-preview-swap card overflow-hidden !p-0">
-      <div className={`thumb t${i % 3} relative flex min-h-36 flex-col justify-end overflow-hidden p-5 text-white`}>
-        <span aria-hidden="true" className="pointer-events-none absolute right-4 top-1 font-display text-7xl font-extrabold text-white/25">{localized(a.meta, lang)}</span>
-        <p className="relative text-[13px] font-semibold text-white/80">{a.date ? localized(a.date, lang) : localized(a.meta, lang)}</p>
-        <h3 className="relative mt-1 font-display text-2xl font-bold tracking-tight">{localized(a.title, lang)}</h3>
+    <div key={localized(a.title, 'en')} className="award-preview-swap award-preview-card card overflow-hidden !p-0">
+      <div className={`award-preview-hero award-preview-hero--${i % 3}`}>
+        <div className="award-preview-hero__top">
+          <span>{a.category ? localized(a.category, lang) : lang === 'id' ? 'Penghargaan' : 'Award'}</span>
+          <span>{String(i + 1).padStart(2, '0')}</span>
+        </div>
+        <span aria-hidden="true" className="award-preview-hero__year">{localized(a.meta, lang)}</span>
+        <div className="award-preview-hero__title">
+          <p>{a.date ? localized(a.date, lang) : localized(a.meta, lang)}</p>
+          <h3>{localized(a.title, lang)}</h3>
+        </div>
       </div>
-      <div className="p-6">
+      <div className="award-preview-card__body">
         <p className="flex flex-wrap items-center gap-2">
-        {a.category && <span className="rounded-full border border-brand/30 bg-brand/10 px-3 py-0.5 text-xs font-semibold text-fg2">{localized(a.category, lang)}</span>}
-        {a.org && <span className="text-sm font-semibold text-brand">{localized(a.org, lang)}</span>}
+          {a.org && <span className="text-sm font-semibold text-fg">{localized(a.org, lang)}</span>}
         </p>
-        <ul className="mt-4 space-y-2 border-t border-line pt-4">
+        <ul className="award-preview-card__bullets">
           {bullets.map((b) => <li key={localized(b, lang)} className="flex gap-2 text-[15px] text-fg2"><span aria-hidden="true" className="text-brand">•</span>{localized(b, lang)}</li>)}
         </ul>
       </div>
@@ -184,28 +190,30 @@ export function AwardPreview({ a, i }: { a: Award | null; i: number }) {
   )
 }
 
-/** Certificate image card: certificate image (or gradient + medal fallback) above, issuer + title + desc below. */
+/** Editorial certificate row with a large document preview and adjacent details. */
 export function Ticket({ n, i }: { n: Certificate; i: number }) {
   const { lang } = useSettings()
   const [issuer, year] = localized(n.meta, lang).split(', ')
   return (
-    <div className="card overflow-hidden !p-0">
+    <article className={`cert-gallery__row${i % 2 ? ' is-reversed' : ''}`}>
       {n.image ? (
-        <div className="cert-img card-media">
-          <img src={n.image} alt={localized(n.title, lang)} loading="lazy" className="h-full w-full object-cover transition-transform duration-300 hover:scale-105" />
-        </div>
+        <a href={n.image} target="_blank" rel="noopener noreferrer" className="cert-gallery__preview" aria-label={`${localized(n.title, lang)} — ${lang === 'id' ? 'Buka gambar sertifikat' : 'Open certificate image'}`}>
+          <img src={n.image} alt={localized(n.title, lang)} loading="lazy" />
+          <span>{lang === 'id' ? 'Lihat sertifikat ↗' : 'View certificate ↗'}</span>
+        </a>
       ) : (
-        <div className={`thumb t${i % 3} card-media`} aria-hidden="true">
+        <div className={`cert-gallery__preview thumb t${i % 3}`} aria-hidden="true">
           <div className="win"><span /><span /><span /></div>
           <div className="ln"><i /><i /><i /></div>
         </div>
       )}
-      <div className="p-6">
-        <p className="text-xs font-semibold text-fg2">{issuer}{year ? ` · ${year}` : ''}</p>
-        <h3 className="mt-1 font-display text-base font-semibold">{localized(n.title, lang)}</h3>
-        <p className="mt-1 text-[13px] text-fg2">{localized(n.desc, lang)}</p>
+      <div className="cert-gallery__content">
+        <p className="cert-gallery__index">{String(i + 1).padStart(2, '0')}</p>
+        <p className="cert-gallery__issuer">{issuer}{year ? ` · ${year}` : ''}</p>
+        <h3>{localized(n.title, lang)}</h3>
+        <p className="cert-gallery__description">{localized(n.desc, lang)}</p>
       </div>
-    </div>
+    </article>
   )
 }
 

@@ -1,6 +1,7 @@
 'use client'
 
-import { Suspense, useCallback, useMemo, useState, type ReactElement, type ReactNode } from 'react'
+import { Suspense, useCallback, useEffect, useMemo, useState, type ReactElement, type ReactNode } from 'react'
+import { createPortal } from 'react-dom'
 import { LocLink as Link } from '../components/LocLink'
 import * as C from '../data/content'
 import { NAV, localized, pair, type Pair } from '../data/nav'
@@ -143,11 +144,68 @@ function ProjectPage() {
     </Suspense>
   )
 }
+type AwardView = 'original' | 'timeline' | 'bento' | 'grid' | 'smooth'
+
+const AWARD_VIEWS: { id: AwardView; label: { en: string; id: string } }[] = [
+  { id: 'original', label: { en: 'Index', id: 'Indeks' } },
+  { id: 'timeline', label: { en: 'Trace', id: 'Jejak' } },
+  { id: 'bento', label: { en: 'Mosaic', id: 'Mosaik' } },
+  { id: 'grid', label: { en: 'Grid', id: 'Kisi' } },
+  { id: 'smooth', label: { en: 'Flow', id: 'Alur' } },
+]
+
+function AwardModeIcon({ mode }: { mode: AwardView }) {
+  const common = { fill: 'none', stroke: 'currentColor', strokeWidth: 1.5, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const }
+  if (mode === 'original') return <svg viewBox="0 0 20 20" aria-hidden="true" {...common}><rect x="2.5" y="3" width="15" height="5" rx="1" /><rect x="2.5" y="11" width="15" height="6" rx="1" /></svg>
+  if (mode === 'timeline') return <svg viewBox="0 0 20 20" aria-hidden="true" {...common}><path d="M5 3v14" /><circle cx="5" cy="5" r="1.5" /><circle cx="5" cy="14" r="1.5" /><path d="M9 5h8M9 14h8" /></svg>
+  if (mode === 'bento') return <svg viewBox="0 0 20 20" aria-hidden="true" {...common}><rect x="2.5" y="3" width="8" height="7" rx="1" /><rect x="12.5" y="3" width="5" height="4" rx="1" /><rect x="12.5" y="9" width="5" height="8" rx="1" /><rect x="2.5" y="12" width="8" height="5" rx="1" /></svg>
+  if (mode === 'grid') return <svg viewBox="0 0 20 20" aria-hidden="true" {...common}><rect x="2.5" y="3" width="6.5" height="6" rx="1" /><rect x="11" y="3" width="6.5" height="6" rx="1" /><rect x="2.5" y="11" width="6.5" height="6" rx="1" /><rect x="11" y="11" width="6.5" height="6" rx="1" /></svg>
+  return <svg viewBox="0 0 20 20" aria-hidden="true" {...common}><path d="M3 5h14M3 10h11M3 15h8" /><circle cx="16" cy="10" r="1" /><circle cx="13" cy="15" r="1" /></svg>
+}
+
+function AwardViewSwitcher({ view, onChange, isIndonesian }: { view: AwardView; onChange: (next: AwardView) => void; isIndonesian: boolean }) {
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => setMounted(true), [])
+  if (!mounted) return null
+  return (
+    createPortal(
+      <div className="award-view-switcher" role="group" aria-label={isIndonesian ? 'Opsi tampilan penghargaan' : 'Award display options'}>
+        <div className="award-view-switcher__identity" aria-hidden="true"><span>G</span><small>{isIndonesian ? <>PENGHARGAAN<br />TAMPILAN</> : <>AWARD<br />VIEWS</>}</small></div>
+        <span className="award-view-switcher__divider" aria-hidden="true" />
+        {AWARD_VIEWS.map(({ id: viewId, label }) => {
+          const name = isIndonesian ? label.id : label.en
+          return <button key={viewId} type="button" title={name} aria-label={isIndonesian ? `Tampilan ${name}` : `${name} view`} aria-pressed={view === viewId} onClick={() => onChange(viewId)}>
+            <AwardModeIcon mode={viewId} /><span>{name}</span>
+          </button>
+        })}
+      </div>,
+      document.body,
+    )
+  )
+}
+
+function AwardModeCard({ award, index, className = '' }: { award: C.Award; index: number; className?: string }) {
+  const { lang } = useSettings()
+  const bullets = award.bullets && award.bullets.length > 0 ? award.bullets : [award.desc]
+  return (
+    <article data-award-index={String(index + 1).padStart(2, '0')} className={`award-mode-card ${className}`}>
+      <div className="award-mode-card__meta">
+        <span>{award.date ? localized(award.date, lang) : localized(award.meta, lang)}</span>
+        {award.category && <span className="award-row__category">{localized(award.category, lang)}</span>}
+      </div>
+      <h3>{localized(award.title, lang)}</h3>
+      {award.org && <p className="award-mode-card__org">{localized(award.org, lang)}</p>}
+      <ul>{bullets.map((bullet) => <li key={`${index}-${localized(bullet, lang)}`}>{localized(bullet, lang)}</li>)}</ul>
+    </article>
+  )
+}
+
 /** Awards grouped by year with a sticky hover preview (desktop); inline bullets on mobile. */
 function Awards() {
   const { lang } = useSettings()
   const id = lang === 'id'
   const [sel, setSel] = useState(0)
+  const [view, setView] = useState<AwardView>('original')
   const groups = useMemo(() => {
     const years: string[] = []
     const byYear = new Map<string, { award: C.Award; index: number }[]>()
@@ -161,25 +219,39 @@ function Awards() {
   if (C.awards.length === 0) return <Empty text={pair('No awards yet.', 'Belum ada penghargaan.')} />
   const currentIndex = Math.min(sel, C.awards.length - 1)
   const current = C.awards[currentIndex] ?? null
-  return (
-    <div className="grid gap-10 lg:grid-cols-[1.5fr_1fr]">
-      <div>
-        {groups.map((g) => (
-          <section key={g.year} aria-label={g.year} className="mb-10 last:mb-0">
-            <h2 className="mb-2 font-display text-[clamp(1.4rem,3vw,1.75rem)] font-extrabold tracking-tight">{g.year}</h2>
-            {g.items.map(({ award, index }) => (
-              <AwardRow key={index} a={award} selected={index === sel} onSelect={() => setSel(index)} />
-            ))}
-          </section>
-        ))}
-      </div>
-      <aside className="hidden lg:block" aria-hidden="true">
-        <div className="sticky top-24">
-          <p className="mb-3 text-sm font-semibold text-fg2">{id ? 'Pratinjau' : 'Preview'}</p>
-          <AwardPreview a={current} i={currentIndex} />
-        </div>
-      </aside>
+  const alternateViews = view === 'timeline' ? (
+    <div className="award-mode-timeline">
+      {groups.map((group) => <section key={group.year} className="award-mode-timeline__year"><h2>{group.year}</h2><div>{group.items.map(({ award, index }) => <AwardModeCard key={index} award={award} index={index} className="award-mode-card--timeline" />)}</div></section>)}
     </div>
+  ) : view === 'bento' ? (
+    <div className="award-mode-bento">{C.awards.map((award, index) => <AwardModeCard key={index} award={award} index={index} className={index === 0 ? 'award-mode-card--feature' : ''} />)}</div>
+  ) : view === 'grid' ? (
+    <div className="award-mode-grid">{C.awards.map((award, index) => <AwardModeCard key={index} award={award} index={index} />)}</div>
+  ) : (
+    <div className="award-mode-smooth">{C.awards.map((award, index) => <Reveal key={`${view}-${index}`} index={index}><AwardModeCard award={award} index={index} /></Reveal>)}</div>
+  )
+  return (
+    <>
+      {view === 'original' ? (
+        <div className="grid gap-10 md:grid-cols-[1.5fr_1fr] md:gap-12">
+          <div>
+            {groups.map((g) => (
+              <section key={g.year} aria-label={g.year} className="mb-10 last:mb-0">
+                <div className="award-year-heading"><h2>{g.year}</h2><span aria-hidden="true" /></div>
+                {g.items.map(({ award, index }) => <AwardRow key={index} a={award} selected={index === sel} onSelect={() => setSel(index)} />)}
+              </section>
+            ))}
+          </div>
+          <aside className="hidden md:block" aria-hidden="true">
+            <div className="sticky top-32">
+              <p className="mb-3 text-sm font-semibold text-fg2">{id ? 'Pratinjau' : 'Preview'}</p>
+              <AwardPreview a={current} i={currentIndex} />
+            </div>
+          </aside>
+        </div>
+      ) : alternateViews}
+      <AwardViewSwitcher view={view} onChange={setView} isIndonesian={id} />
+    </>
   )
 }
 const Work = () => {
@@ -391,7 +463,7 @@ export const PAGES: Record<string, () => ReactElement> = {
   about: About,
   portfolio: Portfolio,
   skills: Skills,
-  certificate: () => <Grid3>{C.certificates.map((n, i) => <Ticket key={i} n={n} i={i} />)}</Grid3>,
+  certificate: () => <div className="cert-gallery">{C.certificates.map((n, i) => <Reveal key={i} index={i}><Ticket n={n} i={i} /></Reveal>)}</div>,
   news: () => <div className="grid max-w-3xl gap-5">{C.news.map((n, i) => <FeedItem key={i} n={n} i={i} />)}</div>,
   work: Work,
   project: ProjectPage,
