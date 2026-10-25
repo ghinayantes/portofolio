@@ -1,6 +1,6 @@
 'use client'
 
-import { Suspense, useCallback, useEffect, useMemo, useState, type ReactElement, type ReactNode } from 'react'
+import { Suspense, useCallback, useEffect, useMemo, useRef, useState, type ReactElement, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 import { LocLink as Link } from '../components/LocLink'
 import * as C from '../data/content'
@@ -163,13 +163,13 @@ function AwardModeIcon({ mode }: { mode: AwardView }) {
   return <svg viewBox="0 0 20 20" aria-hidden="true" {...common}><path d="M3 5h14M3 10h11M3 15h8" /><circle cx="16" cy="10" r="1" /><circle cx="13" cy="15" r="1" /></svg>
 }
 
-function AwardViewSwitcher({ view, onChange, isIndonesian }: { view: AwardView; onChange: (next: AwardView) => void; isIndonesian: boolean }) {
+function AwardViewSwitcher({ view, onChange, isIndonesian, visible }: { view: AwardView; onChange: (next: AwardView) => void; isIndonesian: boolean; visible: boolean }) {
   const [mounted, setMounted] = useState(false)
   useEffect(() => setMounted(true), [])
   if (!mounted) return null
   return (
     createPortal(
-      <div className="award-view-switcher" role="group" aria-label={isIndonesian ? 'Opsi tampilan penghargaan' : 'Award display options'}>
+      <div className="award-view-switcher" data-visible={visible} aria-hidden={!visible} inert={!visible} role="group" aria-label={isIndonesian ? 'Opsi tampilan penghargaan' : 'Award display options'}>
         <div className="award-view-switcher__identity" aria-hidden="true"><span>G</span><small>{isIndonesian ? <>PENGHARGAAN<br />TAMPILAN</> : <>AWARD<br />VIEWS</>}</small></div>
         <span className="award-view-switcher__divider" aria-hidden="true" />
         {AWARD_VIEWS.map(({ id: viewId, label }) => {
@@ -204,8 +204,17 @@ function AwardModeCard({ award, index, className = '' }: { award: C.Award; index
 function Awards() {
   const { lang } = useSettings()
   const id = lang === 'id'
+  const sectionRef = useRef<HTMLDivElement>(null)
+  const [sectionVisible, setSectionVisible] = useState(false)
   const [sel, setSel] = useState(0)
   const [view, setView] = useState<AwardView>('original')
+  useEffect(() => {
+    const section = sectionRef.current
+    if (!section) return
+    const observer = new IntersectionObserver(([entry]) => setSectionVisible(entry.isIntersecting))
+    observer.observe(section)
+    return () => observer.disconnect()
+  }, [])
   const groups = useMemo(() => {
     const years: string[] = []
     const byYear = new Map<string, { award: C.Award; index: number }[]>()
@@ -232,6 +241,7 @@ function Awards() {
   )
   return (
     <>
+      <div ref={sectionRef} className="award-section-content">
       {view === 'original' ? (
         <div className="grid gap-10 md:grid-cols-[1.5fr_1fr] md:gap-12">
           <div>
@@ -250,7 +260,8 @@ function Awards() {
           </aside>
         </div>
       ) : alternateViews}
-      <AwardViewSwitcher view={view} onChange={setView} isIndonesian={id} />
+      </div>
+      <AwardViewSwitcher view={view} onChange={setView} isIndonesian={id} visible={sectionVisible} />
     </>
   )
 }
