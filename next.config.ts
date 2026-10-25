@@ -6,6 +6,7 @@ const isDev = process.env.NODE_ENV === 'development'
  * Content Security Policy. Scripts, styles, images, and fonts load from this site only; the two external hosts are
  * Vercel Analytics/Speed Insights and the Formspree fallback used by the contact form. Inline scripts stay allowed
  * because Next.js hydration, the theme bootstrap, and JSON-LD are inline; React needs eval in development only.
+ * Framing is same-origin only: the sitemap graph previews this site's own pages in an iframe; other sites still cannot embed it.
  */
 const csp = [
   "default-src 'self'",
@@ -14,8 +15,8 @@ const csp = [
   "img-src 'self' data: blob:",
   "font-src 'self' data:",
   `connect-src 'self' https://formspree.io https://va.vercel-scripts.com https://vitals.vercel-insights.com${isDev ? ' ws: wss:' : ''}`,
-  "frame-src 'none'",
-  "frame-ancestors 'none'",
+  "frame-src 'self'",
+  "frame-ancestors 'self'",
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'self'",
@@ -26,7 +27,7 @@ const securityHeaders = [
   { key: 'Content-Security-Policy', value: csp },
   { key: 'Strict-Transport-Security', value: 'max-age=63072000; includeSubDomains; preload' },
   { key: 'X-Content-Type-Options', value: 'nosniff' },
-  { key: 'X-Frame-Options', value: 'DENY' },
+  { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
   { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
   { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=(), payment=(), usb=(), browsing-topics=()' },
   { key: 'Cross-Origin-Opener-Policy', value: 'same-origin' },

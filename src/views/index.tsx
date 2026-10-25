@@ -15,6 +15,7 @@ import { Reveal } from '../components/motion'
 import { AboutIdentity, AboutNow, currentRoles } from '../components/AboutCard'
 import { Section } from '../components/ui'
 import Hire from './Hire'
+import SitemapGraph from '../components/SitemapGraph'
 
 const Grid2 = ({ children }: { children: ReactNode }) => <div className="grid gap-6 md:grid-cols-2">{children}</div>
 const Grid3 = ({ children }: { children: ReactNode }) => <div className="grid gap-5 md:grid-cols-3">{children}</div>
@@ -332,30 +333,19 @@ function Portfolio() {
 function Sitemap() {
   const { t, lang } = useSettings()
   const id = lang === 'id'
-  const half = Math.ceil(NAV.length / 2)
-  const cols = [NAV.slice(0, half), NAV.slice(half)]
   return (
-    <div className="sitemap-graph mx-auto max-w-5xl">
-      <div className="flex flex-col items-center">
-        <Link to="/" className="sitemap-root font-display text-lg font-bold">{id ? 'Beranda' : 'Home'}</Link>
-      </div>
-      <div className="sitemap-cols">
-        {cols.map((col, ci) => (
-          <div key={ci}>
-            {col.map((g, i) => (
-              <section key={i} aria-label={t(g.title)} className="sitemap-group">
-                <h3><span>{t(g.title)}</span><i>{g.items.length}</i></h3>
-                <ul>
-                  {g.items.map((x) => (
-                    <li key={x.key}><Link to={'/' + x.key}>{t(x.title)}</Link></li>
-                  ))}
-                </ul>
-              </section>
-            ))}
-          </div>
+    <>
+      <SitemapGraph />
+      {/* Plain tree of the same links for screen readers and keyboard users who prefer a list. */}
+      <nav className="sr-only" aria-label={id ? 'Peta situs' : 'Sitemap'}>
+        <Link to="/">{id ? 'Beranda' : 'Home'}</Link>
+        {NAV.map((g, i) => (
+          <section key={i} aria-label={t(g.title)}>
+            <ul>{g.items.map((x) => <li key={x.key}><Link to={'/' + x.key}>{t(x.title)}</Link></li>)}</ul>
+          </section>
         ))}
-      </div>
-    </div>
+      </nav>
+    </>
   )
 }
 
