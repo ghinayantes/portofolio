@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState, type CSSProperties, type PointerEvent, type ReactNode } from 'react'
 import { LocLink as Link } from './LocLink'
 import { Reveal } from './motion'
-import { TECH_TILES, splitRole, techIcon } from './cards'
+import { OrgLogo, TECH_TILES, splitRole, techIcon } from './cards'
 import { currentRoles } from './AboutCard'
 import { awards, certificates, motto, organizations, projectSlug, projects, skills, work } from '../data/content'
 import { localized } from '../data/nav'
@@ -407,7 +407,7 @@ export function HomeHighlights() {
   )
 }
 
-type Role = { key: string; role: string; org: string; when: string; desc: string; tech: string[]; current: boolean; to: string }
+type Role = { key: string; role: string; org: string; when: string; desc: string; tech: string[]; current: boolean; to: string; logo?: string; mono?: string }
 
 function RoleBody({ r, lang, big = false }: { r: Role; lang: 'en' | 'id'; big?: boolean }) {
   return (
@@ -425,6 +425,7 @@ function RoleBody({ r, lang, big = false }: { r: Role; lang: 'en' | 'id'; big?: 
           {r.tech.map((t) => <li key={t} className="home-chip">{tagLabel(t, lang)}</li>)}
         </ul>
       )}
+      <OrgLogo name={r.org || r.role} logo={r.logo} mono={r.mono} className="home-exp__watermark" decorative />
     </>
   )
 }
@@ -453,11 +454,13 @@ export function HomeExperience() {
     tech: w.tech,
     current: Boolean(w.current),
     to: '/work',
+    logo: w.logo,
+    mono: w.mono,
   }))
   // An organization entry whose institution is already a work entry repeats it; keep only the work one.
   const orgs: Role[] = organizations.map((o, i) => {
     const { role, org } = splitRole(localized(o.title, lang))
-    return { key: `o${i}`, role, org: org ?? '', when: localized(o.when, lang), desc: localized(o.desc, lang), tech: [], current: Boolean(o.current), to: '/organization' }
+    return { key: `o${i}`, role, org: org ?? '', when: localized(o.when, lang), desc: localized(o.desc, lang), tech: [], current: Boolean(o.current), to: '/organization', logo: o.logo, mono: o.mono }
   }).filter((o) => !jobs.some((j) => o.org !== '' && j.org.toLowerCase().includes(o.org.toLowerCase())))
   const roles = [...jobs, ...orgs].slice(0, 4)
 
@@ -621,35 +624,65 @@ export function HomeStack() {
   )
 }
 
-/** Home gallery: campus and activity photos (SITE.gallery). Neighbouring photos drift and tilt in opposite directions with the scroll. */
+/** Home gallery: square campus and activity tiles revealed bottom-to-top as they enter view. */
 export function HomeGallery() {
   const { lang } = useSettings()
   const id = lang === 'id'
   const grid = useRef<HTMLUListElement>(null)
-  const motion = useMedia(MOTION_QUERY)
 
-  useScrollFrame(() => {
-    if (grid.current) grid.current.style.setProperty('--s', passProgress(grid.current).toFixed(3))
-  }, motion)
-
-  // Landscape photos keep their wide shape: mark items whose image is
-  // clearly wider than tall so CSS can span them across two columns.
   useEffect(() => {
     const ul = grid.current
     if (!ul) return
+    const items = Array.from(ul.querySelectorAll('li'))
     const cleanups: (() => void)[] = []
-    const mark = (img: HTMLImageElement) => {
-      if (img.naturalWidth > img.naturalHeight * 1.5) img.closest('li')?.classList.add('is-wide')
+    const markLoaded = (img: HTMLImageElement) => {
+      const item = img.closest('li')
+      if (!item) return
+      if (img.naturalWidth > img.naturalHeight * 1.5) item.classList.add('is-wide')
+      item.dataset.imageLoaded = 'true'
+      if (item.dataset.inView === 'true') item.dataset.revealed = 'true'
     }
-    ul.querySelectorAll('img').forEach((img) => {
-      if (img.complete && img.naturalWidth > 0) mark(img)
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return
+        const item = entry.target
+        if (!(item instanceof HTMLLIElement)) return
+        item.dataset.inView = 'true'
+        if (item.dataset.imageLoaded === 'true') item.dataset.revealed = 'true'
+      })
+    })
+    const section = ul.closest('section')
+    const sectionObserver = section ? new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) return
+        items.forEach((item) => {
+          delete item.dataset.inView
+          delete item.dataset.revealed
+        })
+      })
+    }) : null
+    if (section) sectionObserver?.observe(section)
+    ul.dataset.motionReady = 'true'
+    items.forEach((item) => {
+      observer.observe(item)
+      const img = item.querySelector('img')
+      if (!img) return
+      if (img.complete) markLoaded(img)
       else {
-        const onLoad = () => mark(img)
+        const onLoad = () => markLoaded(img)
         img.addEventListener('load', onLoad, { once: true })
-        cleanups.push(() => img.removeEventListener('load', onLoad))
+        img.addEventListener('error', onLoad, { once: true })
+        cleanups.push(() => {
+          img.removeEventListener('load', onLoad)
+          img.removeEventListener('error', onLoad)
+        })
       }
     })
-    return () => cleanups.forEach((fn) => fn())
+    return () => {
+      observer.disconnect()
+      sectionObserver?.disconnect()
+      cleanups.forEach((cleanup) => cleanup())
+    }
   }, [])
 
   if (SITE.gallery.length === 0) return null
@@ -657,8 +690,8 @@ export function HomeGallery() {
     <section className="home-section" aria-labelledby="home-gallery-title">
       <Head n="07" label={id ? 'Galeri' : 'Gallery'} title={id ? 'Kuliah dan kegiatan' : 'Campus life and activities'} titleId="home-gallery-title" />
       <ul ref={grid} className="home-gallery">
-        {SITE.gallery.map((g) => (
-          <li key={g.src} className={g.wide ? 'is-wide' : undefined}>
+        {SITE.gallery.map((g, i) => (
+          <li key={g.src} className={g.wide ? 'is-wide' : undefined} style={{ '--gallery-order': i } as CSSProperties}>
             <figure className="home-shot">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={g.src} alt={localized(g.caption, lang)} loading="lazy" decoding="async" />
