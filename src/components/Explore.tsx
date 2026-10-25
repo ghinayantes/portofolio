@@ -1,7 +1,7 @@
 'use client'
 
 import { LocLink as Link } from './LocLink'
-import { Scrub } from './HomeSections'
+import { Scrub } from './home'
 import { NAV, localized } from '../data/nav'
 import { projects } from '../data/content'
 import { useSettings } from '../context/Settings'

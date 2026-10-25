@@ -11,7 +11,7 @@ import FloatingCta from '../components/FloatingCta'
 import { Section } from '../components/ui'
 import HeroPhoto from '../components/HeroPhoto'
 import HeroRings from '../components/HeroRings'
-import { HomeBand, HomeExperience, HomeGallery, HomeHighlights, HomeHistory, HomeNow, HomeProgress, HomeStack, HomeStatement, Scrub } from '../components/HomeSections'
+import { HomeBand, HomeExperience, HomeGallery, HomeHighlights, HomeHistory, HomeNow, HomeProgress, HomeStack, HomeStatement, Scrub } from '../components/home'
 import { FaDownload, FaGithub } from 'react-icons/fa6'
 
 export default function Home() {

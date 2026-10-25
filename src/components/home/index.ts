@@ -1,0 +1,11 @@
+/** Home page sections, one file each; shared scroll helpers live in ./shared. */
+export { Scrub } from './shared'
+export { HomeProgress } from './HomeProgress'
+export { HomeBand } from './HomeBand'
+export { HomeStatement } from './HomeStatement'
+export { HomeHistory } from './HomeHistory'
+export { HomeHighlights } from './HomeHighlights'
+export { HomeExperience } from './HomeExperience'
+export { HomeNow } from './HomeNow'
+export { HomeStack } from './HomeStack'
+export { HomeGallery } from './HomeGallery'

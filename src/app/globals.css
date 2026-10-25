@@ -447,7 +447,7 @@ footer { backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
 .home-lines { position: relative; isolation: isolate; }
 .home-lines::before { position: absolute; z-index: 0; inset: 0; content: ''; pointer-events: none; background-image: linear-gradient(90deg, transparent calc(20% - 0.5px), color-mix(in srgb, var(--text) 10%, transparent) 20%, transparent calc(20% + 0.5px)), linear-gradient(90deg, transparent calc(40% - 0.5px), color-mix(in srgb, var(--text) 10%, transparent) 40%, transparent calc(40% + 0.5px)), linear-gradient(90deg, transparent calc(60% - 0.5px), color-mix(in srgb, var(--text) 10%, transparent) 60%, transparent calc(60% + 0.5px)), linear-gradient(90deg, transparent calc(80% - 0.5px), color-mix(in srgb, var(--text) 10%, transparent) 80%, transparent calc(80% + 0.5px)); }
 .home-lines > * { position: relative; z-index: 1; }
-/* Scroll-scrubbed entrances (HomeSections.tsx sets --v from the scroll position; without JS or with reduced motion it stays at 1). */
+/* Scroll-scrubbed entrances (components/home sets --v from the scroll position; without JS or with reduced motion it stays at 1). */
 .scrub { height: 100%; opacity: calc(0.05 + 0.95 * var(--v, 1)); will-change: transform, opacity; }
 .scrub--up { transform: translate3d(0, calc((1 - var(--v, 1)) * 96px), 0) scale(calc(0.95 + 0.05 * var(--v, 1))); }
 .scrub--left { transform: translate3d(calc((1 - var(--v, 1)) * -18vw), 0, 0) rotate(calc((1 - var(--v, 1)) * -4deg)); }
@@ -482,7 +482,7 @@ footer { backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
 .home-figures dt { margin-top: 0.6rem; max-width: 16ch; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text2); }
 .home-figures--row { margin: 0; }
 
-/* Experience rail: the line fills with --p (set on scroll by HomeSections.tsx). */
+/* Experience rail: the line fills with --p (set on scroll by components/home/HomeExperience.tsx). */
 .home-rail { position: relative; max-width: 60rem; padding-left: 2rem; --p: 0; }
 .home-rail::before, .home-rail::after { content: ''; position: absolute; left: 0; top: 0.5rem; bottom: 0; width: 1px; background: var(--card-line); }
 .home-rail::after { width: 2px; left: -0.5px; background: var(--brand); transform: scaleY(var(--p)); transform-origin: top; }
@@ -1025,7 +1025,7 @@ article.card > .thumb { border-radius: 8px; }
 @media (max-width: 479px) { .floating-cta p > span { display: none; } }
 @media (prefers-reduced-motion: reduce) { .floating-cta { transition: none; } }
 
-/* ── Home History (HomeSections.tsx): zig-zag journey across the full width ── */
+/* ── Home History (home/HomeHistory.tsx): zig-zag journey across the full width ── */
 .home-journey__head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 1.5rem 3rem; }
 .home-journey__lead { margin-top: 1rem; max-width: 52ch; font-size: clamp(1rem, 1.25vw, 1.125rem); line-height: 1.65; color: var(--text2); }
 .home-journey__tabs { display: inline-flex; gap: 0.25rem; padding: 0.25rem; border-radius: 999px; border: 1px solid var(--card-line); background: var(--panel); }
@@ -1061,7 +1061,7 @@ article.card > .thumb { border-radius: 8px; }
 .home-journey__step.is-active .home-journey__node, .home-journey__step.is-past .home-journey__node { border-color: var(--text); background: var(--text); }
 .home-journey__step.is-active .home-journey__node { transform: scale(1.35); box-shadow: 0 0 0 6px color-mix(in srgb, var(--text) 10%, transparent); }
 
-/* ── Home Highlights (HomeSections.tsx): full-width list of large rows with a cursor-following detail card ── */
+/* ── Home Highlights (home/HomeHighlights.tsx): full-width list of large rows with a cursor-following detail card ── */
 .home-awards { position: relative; --x: 50%; --y: 50%; --dx: 1.5rem; }
 .home-awards__meta { display: flex; justify-content: flex-end; gap: 1.5rem; padding-bottom: 1rem; font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text2); }
 .home-awards__list { list-style: none; border-top: 1px solid var(--card-line); }
@@ -1102,7 +1102,7 @@ article.card > .thumb { border-radius: 8px; }
 .home-awards__card-cta { margin-top: 0.9rem; font-size: 13px; font-weight: 600; }
 @media (prefers-reduced-motion: reduce) { .home-awards__card, .home-awards__title, .home-awards__detail, .home-journey__step > *, .home-journey__media img { transition: none; transform: none; } }
 
-/* ── Home statement (HomeSections.tsx): full-bleed dark block, word light-up, three approach steps, motto pill ── */
+/* ── Home statement (home/HomeStatement.tsx): full-bleed dark block, word light-up, three approach steps, motto pill ── */
 .home-say { margin-inline: calc(50% - 50vw); padding: clamp(4.5rem, 9vw, 7rem) clamp(1.25rem, 5vw, 5rem); border-radius: clamp(1.75rem, 4vw, 3rem); background: radial-gradient(60% 45% at 50% 0%, rgb(148 163 184 / 0.16), transparent 70%), #020618; color: var(--text); --bg: #020618; --surface: #0f172b; --text: #f8fafc; --text2: #90a1b9; --brand: #f8fafc; --link: #f8fafc; --card-line: rgb(255 255 255 / 0.1); }
 [data-theme='dark'] .home-say { background: radial-gradient(60% 45% at 50% 0%, rgb(148 163 184 / 0.14), transparent 70%), #0b1224; box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.06); }
 .home-say--on { padding-block: 0; }
@@ -1129,7 +1129,7 @@ article.card > .thumb { border-radius: 8px; }
   .home-say__line { display: none; }
 }
 
-/* ── Home Experience, pinned (HomeSections.tsx): larger type, frameless panel, oversized outline number ── */
+/* ── Home Experience, pinned (home/HomeExperience.tsx): larger type, frameless panel, oversized outline number ── */
 .home-xp__stage { grid-template-columns: minmax(19rem, 30rem) minmax(0, 1fr); gap: clamp(2.5rem, 6vw, 6rem); }
 .home-xp__nav { margin: 2.25rem 0 1.5rem; }
 .home-xp__nav li { gap: 1.1rem; padding: 1.05rem 0 1.05rem 1rem; border-top: 0; border-left: 2px solid var(--card-line); font-size: clamp(1.05rem, 1.35vw, 1.25rem); letter-spacing: -0.01em; opacity: 0.4; transition: opacity 0.35s ease, color 0.35s ease, border-color 0.35s ease; }
