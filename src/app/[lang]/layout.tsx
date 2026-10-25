@@ -19,7 +19,7 @@ import { LANGS, isLang } from '../../lib/i18n'
 import { SEO_DESCRIPTION, SEO_KEYWORDS, SEO_TITLE, SITE_URL } from '../../lib/seo'
 
 export const dynamicParams = false
-const THEME_INIT = "try{var t=localStorage.getItem('theme');document.documentElement.dataset.theme=t==='dark'?'dark':'light'}catch(e){}"
+const THEME_INIT = "try{var t=localStorage.getItem('theme');var d=t==='dark'?'dark':'light';document.documentElement.dataset.theme=d;var i=document.querySelector('link[rel~=icon]');if(i)i.href=d==='light'?'/favicon-light.svg':'/favicon.svg'}catch(e){}"
 export const generateStaticParams = () => LANGS.map((lang) => ({ lang }))
 
 export const metadata: Metadata = {
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
     ...(process.env.YANDEX_SITE_VERIFICATION ? { yandex: process.env.YANDEX_SITE_VERIFICATION } : {}),
     other: { 'msvalidate.01': '7C361EA1AAED28223F2B6BFD6FA022A0' },
   },
-  icons: { icon: '/favicon.svg' },
+  icons: { icon: '/favicon-light.svg' },
   openGraph: {
     type: 'website',
     siteName: SITE.name,

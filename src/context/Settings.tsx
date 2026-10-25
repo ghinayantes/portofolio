@@ -38,6 +38,11 @@ export function SettingsProvider({ lang, children }: { lang: Lang; children: Rea
     meta.removeAttribute('media')
   }, [theme])
 
+  useEffect(() => {
+    const icon = document.querySelector<HTMLLinkElement>("link[rel~='icon']")
+    if (icon) icon.href = theme === 'light' ? '/favicon-light.svg' : '/favicon.svg'
+  }, [theme])
+
   const value = useMemo<Ctx>(() => ({
     theme,
     lang,
