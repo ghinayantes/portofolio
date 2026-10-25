@@ -653,7 +653,11 @@ footer { backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
 }
 
 /* ── Work experience page ──────────────────────────────────────────── */
-.work-list { display: grid; gap: 1.5rem; max-width: 52rem; }
+.work-list { position: relative; display: grid; gap: 1.25rem; max-width: none; padding-left: 2.35rem; }
+.work-list::before { position: absolute; top: 1.8rem; bottom: 1.8rem; left: 0.55rem; width: 2px; border-radius: 999px; background: linear-gradient(180deg, color-mix(in srgb, var(--brand) 72%, transparent), color-mix(in srgb, var(--brand) 12%, transparent)); content: ''; }
+.work-timeline-item { position: relative; min-width: 0; }
+.work-timeline-item::before { position: absolute; z-index: 2; top: 2.2rem; left: -2.13rem; width: 12px; height: 12px; border: 3px solid var(--bg); border-radius: 50%; background: var(--text2); box-shadow: 0 0 0 1px var(--card-line); content: ''; transition: background 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease; }
+.work-timeline-item.is-active::before { transform: scale(1.15); background: var(--brand); box-shadow: 0 0 0 4px color-mix(in srgb, var(--brand) 16%, transparent); }
 .work-card {
   position: relative;
   border-radius: 1.5rem;
@@ -667,6 +671,16 @@ footer { backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
   border-color: color-mix(in srgb, var(--brand) 40%, var(--border));
   box-shadow: var(--shadow-lift);
 }
+.work-card__summary { display: block; width: 100%; padding: 0; border: 0; background: transparent; color: inherit; cursor: pointer; text-align: left; }
+.work-card__summary:focus-visible { border-radius: 0.5rem; outline: 3px solid color-mix(in srgb, var(--brand) 55%, transparent); outline-offset: 5px; }
+.work-card__summary .work-card__layout { grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; }
+.work-card__chevron { flex: none; color: var(--text2); transition: transform 0.3s ease, color 0.3s ease; }
+.work-card__chevron.is-open { transform: rotate(180deg); color: var(--brand); }
+.work-card__details { display: grid; grid-template-rows: 0fr; opacity: 0; transition: grid-template-rows 0.4s ease, opacity 0.25s ease; }
+.work-card__details.is-open { grid-template-rows: 1fr; opacity: 1; }
+.work-card__details-inner { min-height: 0; overflow: hidden; padding-top: 0; transition: padding-top 0.3s ease; }
+.work-card__details.is-open .work-card__details-inner { padding-top: 0.85rem; }
+.work-card__details-inner > .work-card__desc { margin-top: 0; }
 /* Left accent bar */
 .work-card::before {
   content: '';
@@ -951,6 +965,24 @@ article.card > .thumb { border-radius: 8px; }
 .home-shot figcaption { background: rgb(2 6 24 / 0.6); }
 .project-page-desc { font-family: var(--font-display); font-style: italic; font-size: clamp(1.35rem, 2.4vw, 1.75rem); }
 .work-card__role { font-size: clamp(1.5rem, 2.4vw, 1.9rem); font-weight: 400; }
+.work-page-content { display: grid; gap: 1.5rem; width: 100%; max-width: 70rem; margin-inline: auto; }
+.linkedin-profile-card { display: flex; align-items: center; justify-content: space-between; gap: 1.25rem; padding: 1.25rem 1.5rem; border: 1px solid var(--card-line); border-radius: 1.25rem; background: var(--card-fill); box-shadow: var(--shadow-soft); color: var(--text); text-decoration: none; transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease; }
+.linkedin-profile-card:hover { transform: translateY(-3px); border-color: color-mix(in srgb, #0a66c2 45%, var(--card-line)); box-shadow: var(--shadow-lift); }
+.linkedin-profile-card:focus-visible { outline: 3px solid color-mix(in srgb, #0a66c2 60%, transparent); outline-offset: 4px; }
+.linkedin-post-section { display: grid; justify-items: center; gap: 0.85rem; padding: 1.25rem; border: 1px solid var(--card-line); border-radius: 1.25rem; background: var(--card-fill); box-shadow: var(--shadow-soft); }
+.linkedin-post-section__title { justify-self: start; width: 100%; font-family: var(--font-display); font-size: 1.15rem; font-weight: 600; text-align: center; }
+.linkedin-post-frame { display: block; width: min(100%, 31.5rem); height: 627px; border: 0; border-radius: 0.75rem; background: var(--surface); }
+.linkedin-profile-card__identity { display: flex; align-items: center; gap: 1rem; min-width: 0; }
+.linkedin-profile-card__icon { display: grid; width: 4.75rem; height: 4.75rem; flex: none; place-items: center; border: 2px solid color-mix(in srgb, #0a66c2 25%, var(--card-line)); border-radius: 50%; background: color-mix(in srgb, #0a66c2 9%, var(--card-fill)); color: #0a66c2; font-size: 1.7rem; }
+.linkedin-profile-card__copy { min-width: 0; }
+.linkedin-profile-card__copy h3 { margin-top: 0.35rem; font-family: var(--font-display); font-size: 1.2rem; font-weight: 600; line-height: 1.25; }
+.linkedin-profile-card__copy p { margin-top: 0.2rem; color: var(--text2); font-size: 0.875rem; }
+.linkedin-profile-card__action { display: inline-flex; flex: none; align-items: center; gap: 0.5rem; padding: 0.65rem 0.9rem; border: 1px solid color-mix(in srgb, #0a66c2 24%, var(--card-line)); border-radius: 999px; color: #0a66c2; font-size: 0.82rem; font-weight: 600; transition: background 0.2s ease, color 0.2s ease; }
+.linkedin-profile-card:hover .linkedin-profile-card__action { background: #0a66c2; color: white; }
+@media (max-width: 520px) { .linkedin-profile-card { align-items: flex-start; flex-direction: column; } .linkedin-profile-card__action { align-self: flex-end; } }
+@media (prefers-reduced-motion: reduce) { .linkedin-profile-card, .linkedin-profile-card__action { transition: none; } .linkedin-profile-card:hover { transform: none; } }
+@media (max-width: 640px) { .work-list { gap: 1rem; padding-left: 1.65rem; } .work-list::before { left: 0.35rem; } .work-timeline-item::before { top: 1.55rem; left: -1.53rem; } .work-card__summary .work-card__layout { grid-template-columns: 3.25rem minmax(0, 1fr) auto; gap: 0.85rem; } }
+@media (prefers-reduced-motion: reduce) { .work-timeline-item::before, .work-card__chevron, .work-card__details, .work-card__details-inner { transition: none; } .work-timeline-item.is-active::before { transform: none; } }
 /* Constellations (Constellations.tsx): shapes peek in from the side margins and fade out before the content column (--edge = where content starts). */
 .constellations { --edge: calc(max(0px, (100vw - 90rem) / 2) + 1.25rem); -webkit-mask-image: linear-gradient(90deg, #000, transparent var(--edge), transparent calc(100% - var(--edge)), #000); mask-image: linear-gradient(90deg, #000, transparent var(--edge), transparent calc(100% - var(--edge)), #000); }
 @media (min-width: 640px) { .constellations { --edge: calc(max(0px, (100vw - 90rem) / 2) + 2rem); } }

@@ -6,7 +6,7 @@ const isDev = process.env.NODE_ENV === 'development'
  * Content Security Policy. Scripts, styles, images, and fonts load from this site only; the two external hosts are
  * Vercel Analytics/Speed Insights and the Formspree fallback used by the contact form. Inline scripts stay allowed
  * because Next.js hydration, the theme bootstrap, and JSON-LD are inline; React needs eval in development only.
- * Framing is same-origin only: the sitemap graph previews this site's own pages in an iframe; other sites still cannot embed it.
+ * This site can frame its sitemap previews and the requested public LinkedIn post; other sites still cannot embed it.
  */
 const csp = [
   "default-src 'self'",
@@ -15,7 +15,7 @@ const csp = [
   "img-src 'self' data: blob:",
   "font-src 'self' data:",
   `connect-src 'self' https://formspree.io https://va.vercel-scripts.com https://vitals.vercel-insights.com${isDev ? ' ws: wss:' : ''}`,
-  "frame-src 'self'",
+  "frame-src 'self' https://www.linkedin.com",
   "frame-ancestors 'self'",
   "object-src 'none'",
   "base-uri 'self'",

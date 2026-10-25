@@ -2,9 +2,11 @@
 
 import { Suspense, useCallback, useEffect, useMemo, useRef, useState, type ReactElement, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
+import { FaArrowUpRightFromSquare, FaChevronDown, FaLinkedinIn } from 'react-icons/fa6'
 import { LocLink as Link } from '../components/LocLink'
 import * as C from '../data/content'
 import { NAV, localized, pair, type Pair } from '../data/nav'
+import { SITE } from '../data/site'
 import type { Lang } from '../lib/i18n'
 import { tagLabel } from '../lib/project-tags'
 import type { FilterableProject } from '../lib/project-filters'
@@ -268,49 +270,102 @@ function Awards() {
 const Work = () => {
   const { lang } = useSettings()
   const id = lang === 'id'
+  const linkedin = SITE.contacts.find((contact) => contact.key === 'linkedin')
+  const currentWorkIndex = C.work.findIndex((job) => job.current)
+  const [openWorkIndex, setOpenWorkIndex] = useState<number | null>(() => currentWorkIndex >= 0 ? currentWorkIndex : null)
   return (
-    <div className="work-list">
-      {C.work.map((job, i) => (
-        <Reveal key={i} index={i}>
-          <article className="work-card">
-            <div className="work-card__layout">
-              <OrgLogo name={id ? job.company.id : job.company.en} logo={job.logo} mono={job.mono} />
-              <div className="work-card__main min-w-0">
-                {job.current && (
-                  <span className="work-badge">{id ? 'Sekarang' : 'Current'}</span>
-                )}
-                <header className="work-card__header">
-                  <div className="min-w-0">
-                    <h3 className="work-card__role">{id ? job.role.id : job.role.en}</h3>
-                    <p className="work-card__meta">
-                      <span className="work-card__company">{id ? job.company.id : job.company.en}</span>
-                      <span className="work-card__sep" aria-hidden="true">·</span>
-                      <span>{id ? job.when.id : job.when.en}</span>
-                      <span className="work-card__sep" aria-hidden="true">·</span>
-                      <span>{id ? job.location.id : job.location.en}</span>
-                    </p>
+    <div className="work-page-content">
+      <div className="work-list">
+        {C.work.map((job, i) => {
+          const expanded = openWorkIndex === i
+          const detailsId = `work-details-${i}`
+          return (
+            <Reveal key={i} index={i} className={`work-timeline-item${expanded ? ' is-active' : ''}`}>
+              <article className={`work-card${expanded ? ' work-card--expanded' : ''}`}>
+                <button
+                  type="button"
+                  className="work-card__summary"
+                  aria-expanded={expanded}
+                  aria-controls={detailsId}
+                  onClick={() => setOpenWorkIndex((openIndex) => openIndex === i ? null : i)}
+                >
+                  <div className="work-card__layout">
+                    <OrgLogo name={id ? job.company.id : job.company.en} logo={job.logo} mono={job.mono} />
+                    <div className="work-card__main min-w-0">
+                      {job.current && (
+                        <span className="work-badge">{id ? job.when.id : job.when.en}</span>
+                      )}
+                      <header className="work-card__header">
+                        <div className="min-w-0">
+                          <h3 className="work-card__role">{id ? job.role.id : job.role.en}</h3>
+                          <p className="work-card__meta">
+                            <span className="work-card__company">{id ? job.company.id : job.company.en}</span>
+                            {!job.current && (
+                              <>
+                                <span className="work-card__sep" aria-hidden="true">·</span>
+                                <span>{id ? job.when.id : job.when.en}</span>
+                              </>
+                            )}
+                            <span className="work-card__sep" aria-hidden="true">·</span>
+                            <span>{id ? job.location.id : job.location.en}</span>
+                          </p>
+                        </div>
+                      </header>
+                    </div>
+                    <FaChevronDown className={`work-card__chevron${expanded ? ' is-open' : ''}`} aria-hidden="true" />
                   </div>
-                </header>
-                <p className="work-card__desc">{id ? job.desc.id : job.desc.en}</p>
-                {job.highlights.length > 0 && (
-                  <ul className="work-card__highlights" aria-label={id ? 'Pencapaian' : 'Highlights'}>
-                    {job.highlights.map((h, j) => (
-                      <li key={j}>{id ? h.id : h.en}</li>
-                    ))}
-                  </ul>
-                )}
-                {job.tech.length > 0 && (
-                  <ul className="work-card__tech" aria-label={id ? 'Teknologi' : 'Tech stack'}>
-                    {job.tech.map((t) => (
-                      <li key={t} className="work-chip">{t}</li>
-                    ))}
-                  </ul>
-                )}
-              </div>
+                </button>
+                <div id={detailsId} className={`work-card__details${expanded ? ' is-open' : ''}`} aria-hidden={!expanded}>
+                  <div className="work-card__details-inner">
+                    <p className="work-card__desc">{id ? job.desc.id : job.desc.en}</p>
+                    {job.highlights.length > 0 && (
+                      <ul className="work-card__highlights" aria-label={id ? 'Pencapaian' : 'Highlights'}>
+                        {job.highlights.map((h, j) => (
+                          <li key={j}>{id ? h.id : h.en}</li>
+                        ))}
+                      </ul>
+                    )}
+                    {job.tech.length > 0 && (
+                      <ul className="work-card__tech" aria-label={id ? 'Teknologi' : 'Tech stack'}>
+                        {job.tech.map((t) => (
+                          <li key={t} className="work-chip">{t}</li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                </div>
+              </article>
+            </Reveal>
+          )
+        })}
+      </div>
+      <section className="linkedin-post-section" aria-labelledby="linkedin-post-title">
+        <h3 className="linkedin-post-section__title" id="linkedin-post-title">LinkedIn</h3>
+        <iframe
+          className="linkedin-post-frame"
+          src="https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7433071606698106880?collapsed=1"
+          height={627}
+          title={id ? 'Postingan LinkedIn Ghina Emelia Yantes' : 'Ghina Emelia Yantes LinkedIn post'}
+          frameBorder={0}
+          allowFullScreen
+          loading="lazy"
+        />
+      </section>
+      {linkedin && (
+        <a className="linkedin-profile-card" href={linkedin.href} target="_blank" rel="noreferrer">
+          <div className="linkedin-profile-card__identity">
+            <span className="linkedin-profile-card__icon" aria-hidden="true"><FaLinkedinIn /></span>
+            <div className="linkedin-profile-card__copy">
+              <h3>{SITE.name}</h3>
+              <p>{id ? 'Mahasiswa Informatika di ITB' : 'Informatics student at ITB'}</p>
             </div>
-          </article>
-        </Reveal>
-      ))}
+          </div>
+          <span className="linkedin-profile-card__action">
+            {id ? 'Lihat profil' : 'View profile'}
+            <FaArrowUpRightFromSquare aria-hidden="true" />
+          </span>
+        </a>
+      )}
     </div>
   )
 }
