@@ -487,7 +487,7 @@ export function HomeExperience() {
 
   if (pinned) {
     return (
-      <section ref={section} className="home-section home-xp home-xp--on" style={{ height: `calc(100vh - ${PIN_TOP}px + ${roles.length * 60}vh)` }} aria-labelledby="home-exp-title">
+      <section ref={section} className="home-section home-xp home-xp--on home-lines" style={{ height: `calc(100vh - ${PIN_TOP}px + ${roles.length * 60}vh)` }} aria-labelledby="home-exp-title">
         <div ref={stage} className="home-xp__stage">
           <div>
             {head}
@@ -518,7 +518,7 @@ export function HomeExperience() {
   }
 
   return (
-    <section className="home-section" aria-labelledby="home-exp-title">
+    <section className="home-section home-lines" aria-labelledby="home-exp-title">
       <Scrub>
         <div className="home-head"><div>{head}</div>{more}</div>
       </Scrub>
@@ -599,7 +599,7 @@ export function HomeStack() {
   }, motion)
 
   return (
-    <section className="home-section" aria-labelledby="home-stack-title">
+    <section className="home-section home-lines" aria-labelledby="home-stack-title">
       <Head n="06" label={id ? 'Teknologi' : 'Stack'} title={id ? 'Alat yang saya gunakan' : 'Tools I build with'} titleId="home-stack-title" to="/skills" cta={id ? 'Semua keahlian' : 'All skills'} />
       <Scrub>
         <dl className="home-figures home-figures--row">

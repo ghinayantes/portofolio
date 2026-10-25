@@ -444,6 +444,9 @@ footer { backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
 
 /* ── Home story sections (highlights, experience, stack) ──────────── */
 .home-section { margin-top: clamp(5rem, 10vw, 8rem); }
+.home-lines { position: relative; isolation: isolate; }
+.home-lines::before { position: absolute; z-index: 0; inset: 0; content: ''; pointer-events: none; background-image: linear-gradient(90deg, transparent calc(20% - 0.5px), color-mix(in srgb, var(--text) 10%, transparent) 20%, transparent calc(20% + 0.5px)), linear-gradient(90deg, transparent calc(40% - 0.5px), color-mix(in srgb, var(--text) 10%, transparent) 40%, transparent calc(40% + 0.5px)), linear-gradient(90deg, transparent calc(60% - 0.5px), color-mix(in srgb, var(--text) 10%, transparent) 60%, transparent calc(60% + 0.5px)), linear-gradient(90deg, transparent calc(80% - 0.5px), color-mix(in srgb, var(--text) 10%, transparent) 80%, transparent calc(80% + 0.5px)); }
+.home-lines > * { position: relative; z-index: 1; }
 /* Scroll-scrubbed entrances (HomeSections.tsx sets --v from the scroll position; without JS or with reduced motion it stays at 1). */
 .scrub { height: 100%; opacity: calc(0.05 + 0.95 * var(--v, 1)); will-change: transform, opacity; }
 .scrub--up { transform: translate3d(0, calc((1 - var(--v, 1)) * 96px), 0) scale(calc(0.95 + 0.05 * var(--v, 1))); }
