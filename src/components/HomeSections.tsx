@@ -67,7 +67,7 @@ type ScrubFrom = 'up' | 'left' | 'right' | 'zoom'
  * Scroll-scrubbed entrance: the content fades and travels with the scroll position itself (not a one-shot reveal),
  * so it moves back when scrolling up. `from` picks the direction; 'zoom' grows the block instead of sliding it.
  */
-export function Scrub({ children, className = '', from = 'up' }: { children: ReactNode; className?: string; from?: ScrubFrom }) {
+export function Scrub({ children, className = '', from = 'up', range = 0.5 }: { children: ReactNode; className?: string; from?: ScrubFrom; range?: number }) {
   const ref = useRef<HTMLDivElement>(null)
   const settled = useRef(false)
   const on = useMedia(MOTION_QUERY)
@@ -78,7 +78,7 @@ export function Scrub({ children, className = '', from = 'up' }: { children: Rea
     // Anything already on screen before the first scroll is part of the first view: show it settled and leave it alone.
     if (scrollY < 8 && top < innerHeight) settled.current = true
     // Measured on the untransformed wrapper so the moving child never feeds back into the progress.
-    el.style.setProperty('--v', settled.current ? '1' : clamp01((innerHeight - top) / (innerHeight * 0.5)).toFixed(3))
+    el.style.setProperty('--v', settled.current ? '1' : clamp01((innerHeight - top) / (innerHeight * range)).toFixed(3))
   }, on)
   return <div ref={ref} className={className}><div className={`scrub scrub--${from}`}>{children}</div></div>
 }
