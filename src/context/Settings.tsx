@@ -14,7 +14,7 @@ const SettingsCtx = createContext<Ctx | null>(null)
 
 /** Language comes from the URL (/en, /id). Theme is a data-theme attribute set before paint by the script in layout.tsx. */
 export function SettingsProvider({ lang, children }: { lang: Lang; children: ReactNode }) {
-  const [theme, setThemeState] = useState<Theme>('dark')
+  const [theme, setThemeState] = useState<Theme>('light')
   const pathname = usePathname()
   // timer for the theme-animating window (see toggleTheme below)
   const animTimer = useRef<number | undefined>(undefined)

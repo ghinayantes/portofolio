@@ -19,7 +19,7 @@ import { LANGS, isLang } from '../../lib/i18n'
 import { SEO_DESCRIPTION, SEO_KEYWORDS, SEO_TITLE, SITE_URL } from '../../lib/seo'
 
 export const dynamicParams = false
-const THEME_INIT = "try{var t=localStorage.getItem('theme');document.documentElement.dataset.theme=t==='light'?'light':'dark'}catch(e){}"
+const THEME_INIT = "try{var t=localStorage.getItem('theme');document.documentElement.dataset.theme=t==='dark'?'dark':'light'}catch(e){}"
 export const generateStaticParams = () => LANGS.map((lang) => ({ lang }))
 
 export const metadata: Metadata = {
@@ -79,7 +79,7 @@ export default async function RootLayout({ children, params }: { children: React
   const { lang } = await params
   if (!isLang(lang)) notFound()
   return (
-    <html lang={lang} data-theme="dark" data-scroll-behavior="smooth" suppressHydrationWarning>
+    <html lang={lang} data-theme="light" data-scroll-behavior="smooth" suppressHydrationWarning>
       <head>
          <script dangerouslySetInnerHTML={{ __html: THEME_INIT }} />
        </head>
