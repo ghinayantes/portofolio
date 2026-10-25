@@ -95,28 +95,22 @@ function LinearMapIcon() {
 }
 
 /**
- * Hero photo with three interactions:
- *  - click the photo   -> 3D flip to the next photo (1/3 indicator)
+ * Hero photo with two interactions:
  *  - click the plane   -> contact icons fan out; the plane shears (a linear transformation)
  *  - soft speech bubble with rotating messages next to the plane
  */
 export default function HeroPhoto() {
   const { t, lang } = useSettings()
   const id = lang === 'id'
-  const photos = SITE.photos
-  const count = photos.length
-  const [i, setI] = useState(0)
-  const [flip, setFlip] = useState(false)
+  const photo = SITE.photos[0]
   const [open, setOpen] = useState(false)
   const [msg, setMsg] = useState(0)
   const [show, setShow] = useState(false)
   const [dismissed, setDismissed] = useState(false)
   const root = useRef<HTMLDivElement>(null)
-  const timers = useRef<number[]>([])
   const hold = useRef(false) // pointer / focus is on the bubble: keep it open
   const last = useRef(-1)
 
-  useEffect(() => () => timers.current.forEach(clearTimeout), [])
   useEffect(() => { try { if (sessionStorage.getItem(DISMISS_KEY)) setDismissed(true) } catch { /* ignore */ } }, [])
 
   // close the dial on outside click / Escape
@@ -153,17 +147,7 @@ export default function HeroPhoto() {
     return () => ids.forEach(clearTimeout)
   }, [open, dismissed])
 
-  const flipNext = () => {
-    if (count < 2 || flip) return
-    setFlip(true)
-    timers.current.push(window.setTimeout(() => setI((x) => (x + 1) % count), 260)) // swap while the card is edge-on
-    timers.current.push(window.setTimeout(() => setFlip(false), 540))
-  }
   const dismiss = () => { setShow(false); setDismissed(true); try { sessionStorage.setItem(DISMISS_KEY, '1') } catch { /* ignore */ } }
-
-  const photoLabel = count > 1
-    ? (id ? `Ganti foto (${i + 1} dari ${count})` : `Next photo (${i + 1} of ${count})`)
-    : count === 1 ? t(photos[0].alt) : 'Photo'
 
   const visible = show && !open
   const m = SITE.hello[msg]
@@ -171,31 +155,16 @@ export default function HeroPhoto() {
   const tab = visible ? 0 : -1
 
   return (
-    <div ref={root} className="photo relative order-first mx-auto aspect-square w-full mb-4 max-w-60 sm:max-w-72 md:order-none md:mb-0 md:max-w-110">
-      <button
-        type="button"
-        onClick={flipNext}
-        disabled={count < 2}
-        aria-label={photoLabel}
-        className={`blob absolute inset-0 z-10 block ${count > 1 ? 'cursor-pointer' : 'cursor-default'} ${flip ? 'flip-anim' : ''}`}
-      >
-        {count === 0 ? (
-          <span className="grid h-full place-items-center font-display text-[8rem] font-extrabold text-line">G</span>
-        ) : photos.map((p, k) => (
+    <div ref={root} className="photo relative order-first mx-auto aspect-square w-full mb-4 max-w-72 sm:max-w-80 md:order-none md:mb-0 md:max-w-[32rem]">
+      <div className="blob absolute inset-0 z-10 block">
+        {photo ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img key={p.src} src={p.src} alt={k === i ? t(p.alt) : ''} aria-hidden={k !== i} draggable={false}
-            loading={k === 0 ? 'eager' : 'lazy'}
-            decoding={k === 0 ? 'sync' : 'async'}
-            fetchPriority={k === 0 ? 'high' : 'low'}
-            style={{ objectPosition: p.pos }} className={`absolute inset-0 h-full w-full object-cover ${k === i ? 'opacity-100' : 'opacity-0'}`} />
-        ))}
-      </button>
-
-      {count > 1 && (
-        <span aria-hidden className="pointer-events-none absolute left-[14.64%] top-[14.64%] z-20 -translate-x-1/2 -translate-y-1/2 whitespace-nowrap rounded-full border border-white/20 bg-black/40 px-3 py-1 text-xs font-semibold tabular-nums text-white backdrop-blur-md">
-          ↻ {i + 1} / {count}
-        </span>
-      )}
+          <img src={photo.src} alt={t(photo.alt)} draggable={false} loading="eager" decoding="sync" fetchPriority="high"
+            style={{ objectPosition: photo.pos }} className="absolute inset-0 h-full w-full object-cover" />
+        ) : (
+          <span className="grid h-full place-items-center font-display text-[8rem] font-extrabold text-line">G</span>
+        )}
+      </div>
 
       {m && (
         <div
@@ -208,7 +177,7 @@ export default function HeroPhoto() {
           onBlur={() => { hold.current = false }}
         >
           {m.to ? <Link to={m.to} tabIndex={tab} className="block pr-1">{body}</Link>
-            : m.action ? <button type="button" tabIndex={tab} className="block text-left" onClick={() => { if (m.action === 'flip') flipNext(); else setOpen(true); setShow(false) }}>{body}</button>
+            : m.action ? <button type="button" tabIndex={tab} className="block text-left" onClick={() => { setOpen(true); setShow(false) }}>{body}</button>
             : <p className="pr-1">{body}</p>}
           <button type="button" tabIndex={tab} onClick={dismiss} aria-label={id ? 'Tutup pesan' : 'Dismiss message'}
             className="absolute -left-2 -top-2 grid size-5 place-items-center rounded-full border border-line bg-surface text-[11px] leading-none text-fg2 hover:text-fg">×</button>

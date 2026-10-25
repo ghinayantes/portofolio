@@ -8,14 +8,13 @@ const contacts = [
        { key: 'whatsapp', label: pair('WhatsApp'), href: 'https://wa.me/6282173733818' },
      ]
 
-export type Hello = { text: Pair; cta?: Pair; to?: string; action?: 'flip' | 'dial' }
+export type Hello = { text: Pair; cta?: Pair; to?: string; action?: 'dial' }
 
-/** Soft pop-up messages next to the contact button. `to` = internal page, `action` = flip the photo / open contacts. */
+/** Soft pop-up messages next to the contact button. `to` = internal page, `action` = open contacts. */
 const hello: Hello[] = [
   { text: pair('Hi, glad you stopped by!', 'Hai, senang kamu mampir!') },
   { text: pair('Curious what I have been building?', 'Penasaran apa yang sedang kubangun?'), cta: pair('See projects', 'Lihat proyek'), to: '/project' },
   { text: pair('Looking for an intern?', 'Lagi cari mahasiswa magang?'), cta: pair("Let's talk", 'Ngobrol yuk'), to: '/hire' },
-  { text: pair('There are more photos. Tap mine!', 'Ada foto lain lho. Klik fotoku!'), cta: pair('Flip it', 'Putar'), action: 'flip' },
   { text: pair('Wondering about my stack?', 'Penasaran stack yang kupakai?'), cta: pair('See skills', 'Lihat skill'), to: '/skills' },
   { text: pair('I like graphs, matrices, and data structures.', 'Aku suka graf, matriks, dan struktur data.') },
   { text: pair('Want to know me better?', 'Mau kenalan lebih jauh?'), cta: pair('About me', 'Tentang aku'), to: '/about' },
