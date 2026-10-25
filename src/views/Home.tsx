@@ -12,6 +12,7 @@ import { Section } from '../components/ui'
 import HeroPhoto from '../components/HeroPhoto'
 import HeroRings from '../components/HeroRings'
 import { HomeBand, HomeExperience, HomeGallery, HomeHighlights, HomeHistory, HomeNow, HomeProgress, HomeStack, HomeStatement, Scrub } from '../components/HomeSections'
+import { FaDownload, FaGithub } from 'react-icons/fa6'
 
 export default function Home() {
   const { t, lang } = useSettings()
@@ -61,11 +62,19 @@ export default function Home() {
       <HomeStack />
       <HomeBand back />
       <Scrub from="zoom">
-        <div id="home-cta" className="mt-24 border-t border-line py-20 text-center md:py-28">
-          <h2 className="mx-auto max-w-[16ch] font-display text-[clamp(2.5rem,7vw,5rem)] leading-[1.05] tracking-tight">{id ? 'Ayo kerja bareng' : "Let's work together"}</h2>
-          <p className="mx-auto mt-5 max-w-md text-fg2">{id ? 'Punya proyek, magang, atau pertanyaan?' : 'Have a project, internship, or question?'}</p>
-          <div className="mt-9 flex flex-wrap justify-center gap-3">
-            <Link to="/hire" className="btn-primary">{id ? 'Kirim pesan' : 'Send a message'}<span aria-hidden="true" className="btn-arrow">→</span></Link>
+        <div id="home-cta" className="home-cta relative isolate mt-24 flex min-h-[100svh] flex-col justify-center overflow-hidden border-t border-line py-28 text-center md:py-40">
+          <HeroRings className="hero-rings home-cta-rings" count={4} />
+          <div className="home-cta-glow" aria-hidden="true" />
+          <div className="relative z-10">
+            <h2 className="mx-auto max-w-[16ch] font-display text-[clamp(2.5rem,7vw,5rem)] leading-[1.05] tracking-tight">{id ? 'Ayo kerja bareng' : "Let's work together"}</h2>
+            <p className="mx-auto mt-5 max-w-md text-fg2">{id ? 'Punya proyek, magang, atau pertanyaan?' : 'Have a project, internship, or question?'}</p>
+            <div className="mt-9 flex flex-col items-center gap-3">
+              <Link to="/hire" className="btn-primary">{id ? 'Kirim pesan' : 'Send a message'}<span aria-hidden="true" className="btn-arrow">→</span></Link>
+              <div className="flex flex-wrap justify-center gap-3">
+                <a href={SITE.contacts.find((contact) => contact.key === 'github')?.href} target="_blank" rel="noopener noreferrer" className="btn-ghost"><FaGithub aria-hidden="true" />GitHub</a>
+                <a href={SITE.cv} download className="btn-ghost"><FaDownload aria-hidden="true" />{id ? 'Unduh CV' : 'Download CV'}</a>
+              </div>
+            </div>
           </div>
         </div>
       </Scrub>

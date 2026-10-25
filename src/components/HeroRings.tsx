@@ -7,7 +7,12 @@ import { useEffect, useRef } from 'react'
  * With a mouse they drift away from the cursor, inner rings further than outer ones (eased, so the motion settles softly);
  * without a hover pointer they breathe slowly instead (CSS). Reduced motion keeps them still.
  */
-export default function HeroRings() {
+type HeroRingsProps = {
+  className?: string
+  count?: number
+}
+
+export default function HeroRings({ className = 'hero-rings', count = 3 }: HeroRingsProps) {
   const ref = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -34,5 +39,5 @@ export default function HeroRings() {
     return () => { removeEventListener('pointermove', move); cancelAnimationFrame(raf) }
   }, [])
 
-  return <div ref={ref} className="hero-rings" aria-hidden="true"><span /><span /><span /></div>
+  return <div ref={ref} className={className} aria-hidden="true">{Array.from({ length: count }, (_, index) => <span key={index} />)}</div>
 }
