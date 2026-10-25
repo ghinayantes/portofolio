@@ -4,6 +4,7 @@ import { Suspense, useCallback, useEffect, useMemo, useRef, useState, type React
 import { createPortal } from 'react-dom'
 import { FaArrowUpRightFromSquare, FaChevronDown, FaLinkedinIn } from 'react-icons/fa6'
 import CareerTimeline from '../components/CareerTimeline'
+import EducationPage from '../components/EducationPage'
 import ResumePortfolio from '../components/ResumePortfolio'
 import { LocLink as Link } from '../components/LocLink'
 import * as C from '../data/content'
@@ -534,7 +535,7 @@ export const PAGES: Record<string, () => ReactElement> = {
   hire: Hire,
   design: () => <Cards list={C.design} />,
   writing: () => <Cards list={C.writing} />,
-  education: () => <Timeline items={C.education} />,
+  education: EducationPage,
   timeline: () => <CareerTimelinePage />,
   sitemap: Sitemap,
 }
