@@ -7,8 +7,10 @@ import { useSettings } from '../context/Settings'
 import { useTypewriter } from '../hooks/useTypewriter'
 import Explore from '../components/Explore'
 import { FeaturedShowcase } from '../components/FeaturedShowcase'
+import FloatingCta from '../components/FloatingCta'
 import { Section } from '../components/ui'
 import HeroPhoto from '../components/HeroPhoto'
+import HeroRings from '../components/HeroRings'
 import { HomeBand, HomeExperience, HomeGallery, HomeHighlights, HomeHistory, HomeNow, HomeProgress, HomeStack, HomeStatement, Scrub } from '../components/HomeSections'
 
 export default function Home() {
@@ -25,25 +27,27 @@ export default function Home() {
   return (
     <>
       <HomeProgress />
-      <div className="grid items-center gap-12 py-6 md:grid-cols-[7fr_5fr] md:py-14">
+      <div className="grid min-h-[78vh] items-center gap-12 py-6 md:grid-cols-[7fr_5fr] md:py-14">
         <div>
-          <p className="halo mt-6 text-[clamp(1rem,2vw,1.3rem)] font-semibold text-fg2">{t(SITE.greeting)}</p>
-          <h1 className="shine name-outline pb-1 font-display text-name font-extrabold leading-[1.05] tracking-[-.045em]">{SITE.name}</h1>
-          <i className="gl gl-left" />
-          <p className="halo font-display text-[clamp(1.4rem,3.2vw,2.2rem)] font-bold">
-            <span aria-hidden>{id ? 'Aku seorang ' : 'I am a '}<span className="shine-brand">{typed}</span><i className="caret" /></span>
+          <p className="mono-label mt-6">{t(SITE.greeting)}</p>
+          <h1 className="mt-4 font-display text-[clamp(3.25rem,8vw,5.75rem)] leading-[1.02] tracking-tight">{SITE.name}</h1>
+          <p className="mt-5 font-display text-[clamp(1.6rem,3.4vw,2.4rem)] italic text-fg2">
+            <span aria-hidden>{id ? 'Aku seorang ' : 'I am a '}<span>{typed}</span><i className="caret" /></span>
             <span className="sr-only">{t(SITE.role)}</span>
           </p>
-          <p className="halo mb-7 mt-4 max-w-[58ch] text-lg text-fg2">{t(SITE.lead)}</p>
+          <p className="mb-10 mt-6 max-w-md text-base font-medium leading-relaxed text-fg/80 sm:text-lg">{t(SITE.lead)}</p>
           <div className="flex flex-wrap gap-3">
-            <Link to="/project" className="btn-primary">{id ? 'Lihat proyek' : 'View projects'}</Link>
-            <Link to="/hire" className="btn-ghost">{id ? 'Hubungi aku' : 'Hire me'}</Link>
+            <Link to="/project" className="btn-primary">{id ? 'Lihat proyek' : 'View projects'}<span aria-hidden="true" className="btn-arrow">→</span></Link>
+            <Link to="/hire" className="btn-ghost">{id ? 'Yuk ngobrol' : "Let's talk"}</Link>
           </div>
-          <div className="mt-10 flex flex-wrap gap-x-10 gap-y-6">
-            {stats.map(([n, label]) => <div key={label}><b className="shine block font-display text-3xl font-extrabold">{n}</b><span className="text-sm text-fg2">{label}</span></div>)}
+          <div className="mt-12 flex flex-wrap gap-x-10 gap-y-6 border-t border-line pt-6">
+            {stats.map(([n, label]) => <div key={label}><b className="block font-display text-4xl font-normal">{n}</b><span className="mono-label !text-[11px]">{label}</span></div>)}
           </div>
         </div>
-        <HeroPhoto />
+        <div className="relative order-first md:order-none">
+          <HeroRings />
+          <HeroPhoto />
+        </div>
       </div>
 
       <Section title={id ? 'Jelajahi' : 'Explore'}><Explore /></Section>
@@ -57,13 +61,16 @@ export default function Home() {
       <HomeStack />
       <HomeBand back />
       <Scrub from="zoom">
-        <div className="mt-16 rounded-3xl border border-white/15 p-8 text-white md:p-14" style={{ background: 'linear-gradient(135deg,#150833 0%,#3b1d8f 45%,#6d28d9 75%,#9333ea 100%)' }}>
-          <h2 className="font-display text-[clamp(1.5rem,4vw,2.25rem)] font-extrabold">{id ? 'Ayo kerja bareng' : "Let's work together"}</h2>
-          <p className="mt-2 opacity-90">{id ? 'Punya proyek, magang, atau pertanyaan?' : 'Have a project, internship, or question?'}</p>
-          <Link to="/hire" className="mt-5 inline-flex min-h-11 items-center rounded-full bg-white px-6 font-semibold text-[#1B1A5E]">{id ? 'Kirim pesan' : 'Send a message'}</Link>
+        <div id="home-cta" className="mt-24 border-t border-line py-20 text-center md:py-28">
+          <h2 className="mx-auto max-w-[16ch] font-display text-[clamp(2.5rem,7vw,5rem)] leading-[1.05] tracking-tight">{id ? 'Ayo kerja bareng' : "Let's work together"}</h2>
+          <p className="mx-auto mt-5 max-w-md text-fg2">{id ? 'Punya proyek, magang, atau pertanyaan?' : 'Have a project, internship, or question?'}</p>
+          <div className="mt-9 flex flex-wrap justify-center gap-3">
+            <Link to="/hire" className="btn-primary">{id ? 'Kirim pesan' : 'Send a message'}<span aria-hidden="true" className="btn-arrow">→</span></Link>
+          </div>
         </div>
       </Scrub>
       <HomeGallery />
+      <FloatingCta />
     </>
   )
 }

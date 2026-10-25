@@ -1,21 +1,12 @@
 'use client'
 
-import type { IconType } from 'react-icons'
-import {
-  FaBriefcase, FaCertificate, FaClockRotateLeft, FaCode, FaDiagramProject, FaEnvelopeOpenText, FaFeatherPointed,
-  FaGraduationCap, FaLayerGroup, FaNewspaper, FaPenRuler, FaPeopleGroup, FaSitemap, FaTrophy, FaUser,
-} from 'react-icons/fa6'
 import { LocLink as Link } from './LocLink'
 import { Scrub } from './HomeSections'
 import { NAV, localized } from '../data/nav'
 import { projects } from '../data/content'
 import { useSettings } from '../context/Settings'
+import { useEffect, useRef, useState, type CSSProperties, type PointerEvent } from 'react'
 
-const ICONS: Record<string, IconType> = {
-  about: FaUser, portfolio: FaLayerGroup, skills: FaCode, certificate: FaCertificate, news: FaNewspaper,
-  work: FaBriefcase, project: FaDiagramProject, organization: FaPeopleGroup, award: FaTrophy, hire: FaEnvelopeOpenText,
-  design: FaPenRuler, writing: FaFeatherPointed, education: FaGraduationCap, timeline: FaClockRotateLeft, sitemap: FaSitemap,
-}
 /**
  * Home "Explore": two feature tiles (Projects, Hire me) on top, then an index of every page: one row per group, its pages laid out beside the group name.
  * Styles: .explore-* in globals.css.
@@ -63,34 +54,87 @@ export default function Explore() {
         )}
       </div>
 
-      <Scrub>
-        <nav aria-label={id ? 'Semua halaman' : 'All pages'} className="card explore-dir">
-          {NAV.map((g, gi) => {
-            return (
-              <section key={gi} className="explore-col">
-                <div className="explore-col__side">
-                  <h3 className="explore-col__head">{t(g.title)}</h3>
-                  <p className="explore-col__desc">{t(g.desc)}</p>
-                </div>
-                <ul>
-                  {g.items.map((x) => {
-                    const Icon = ICONS[x.key]
-                    return (
-                      <li key={x.key}>
-                        <Link to={'/' + x.key} className="explore-row">
-                          <span className="explore-row__icon" aria-hidden>{Icon && <Icon />}</span>
-                          <span className="explore-row__text"><b>{t(x.title)}</b><small>{localized(x.desc, lang)}</small></span>
-                          <span className="explore-row__go" aria-hidden>→</span>
-                        </Link>
-                      </li>
-                    )
-                  })}
-                </ul>
-              </section>
-            )
-          })}
-        </nav>
-      </Scrub>
+      <Scrub><ExploreIndex /></Scrub>
     </div>
+  )
+}
+
+/**
+ * Home "Explore" index: every page as large words grouped under their section, no boxes.
+ * The words alternate upright and italic and rise in one after another when the index scrolls into view.
+ * With a mouse, a soft light follows the cursor across the row and the hovered page shows a live preview card (an iframe of
+ * that page) beside the cursor while the other pages dim; on touch screens it is a plain list of links.
+ */
+function ExploreIndex() {
+  const { t, lang } = useSettings()
+  const id = lang === 'id'
+  const wrap = useRef<HTMLElement>(null)
+  const [hover, setHover] = useState<{ key: string; title: string; desc: string } | null>(null)
+  const [src, setSrc] = useState<string | null>(null)
+  const timer = useRef<number | undefined>(undefined)
+  const [shown, setShown] = useState(false)
+
+  useEffect(() => {
+    const el = wrap.current
+    if (!el) return
+    const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setShown(true); io.disconnect() } }, { threshold: 0.15 })
+    io.observe(el)
+    return () => io.disconnect()
+  }, [])
+
+  const follow = (e: PointerEvent<HTMLElement>) => {
+    if (e.pointerType !== 'mouse' || !wrap.current) return
+    const r = wrap.current.getBoundingClientRect()
+    const x = e.clientX - r.left
+    wrap.current.style.setProperty('--x', `${x}px`)
+    wrap.current.style.setProperty('--y', `${e.clientY - r.top}px`)
+    // Near the right edge the card sits to the left of the cursor so it stays on the page.
+    wrap.current.style.setProperty('--dx', x > r.width - 420 ? 'calc(-100% - 1.5rem)' : '1.5rem')
+    // Light inside the row under the cursor.
+    const row = (e.target as HTMLElement).closest<HTMLElement>('.xidx__group')
+    if (row) {
+      const b = row.getBoundingClientRect()
+      row.style.setProperty('--lx', `${e.clientX - b.left}px`)
+      row.style.setProperty('--ly', `${e.clientY - b.top}px`)
+    }
+  }
+  const enter = (key: string, title: string, desc: string) => (e: PointerEvent<HTMLAnchorElement>) => {
+    if (e.pointerType !== 'mouse') return
+    setHover({ key, title, desc })
+    // Load the preview only once the cursor rests on a word, so sweeping across the list does not load every page.
+    window.clearTimeout(timer.current)
+    timer.current = window.setTimeout(() => setSrc(`/${lang}/${key}`), 140)
+  }
+
+  return (
+    <nav ref={wrap} aria-label={id ? 'Semua halaman' : 'All pages'} className={`xidx${shown ? ' is-in' : ''}`} onPointerMove={follow} onPointerLeave={() => { window.clearTimeout(timer.current); setHover(null) }}>
+      {NAV.map((g, gi) => {
+        const before = NAV.slice(0, gi).reduce((n, x) => n + x.items.length, 0)
+        return (
+          <section key={gi} className="xidx__group">
+            <div className="xidx__head">
+              <h3>{t(g.title)}</h3>
+              <p>{t(g.desc)}</p>
+            </div>
+            <ul className="xidx__list">
+              {g.items.map((x, k) => (
+                <li key={x.key} style={{ '--i': before + k } as CSSProperties}>
+                  <Link to={'/' + x.key} className={`xidx__item${k % 2 ? ' xidx__item--alt' : ''}${hover?.key === x.key ? ' is-on' : ''}`} onPointerEnter={enter(x.key, t(x.title), localized(x.desc, lang))}>
+                    <span className="xidx__word">{t(x.title)}</span>
+                    <span className="xidx__arrow" aria-hidden="true">↗</span>
+                    <small>{localized(x.desc, lang)}</small>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )
+      })}
+      <div className="xidx__card" data-show={hover !== null} aria-hidden="true">
+        <div className="xidx__bar"><i /><i /><i /><span>{hover ? `/${hover.key}` : ''}</span></div>
+        <div className="xidx__shot">{src && <iframe key={src} src={src} title="" tabIndex={-1} loading="lazy" />}</div>
+        {hover && <p className="xidx__meta"><b>{hover.title}</b>{hover.desc}</p>}
+      </div>
+    </nav>
   )
 }

@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type CSSProperties, type PointerEvent, type ReactNode } from 'react'
 import { LocLink as Link } from './LocLink'
 import { Reveal } from './motion'
 import { TECH_TILES, splitRole, techIcon } from './cards'
@@ -10,6 +10,8 @@ import { localized } from '../data/nav'
 import { SITE } from '../data/site'
 import { tagLabel } from '../lib/project-tags'
 import { useSettings } from '../context/Settings'
+import { FaCode, FaLayerGroup, FaMagnifyingGlass } from 'react-icons/fa6'
+import type { IconType } from 'react-icons'
 
 /** Header offset (sticky navbar) used by the pinned stages. Keep in sync with the 72px values under "Home story sections" in globals.css. */
 const PIN_TOP = 72
@@ -160,13 +162,24 @@ function Head({ n, label, title, titleId, to, cta }: { n: string; label: string;
   )
 }
 
-/** Home statement: one sentence pinned to the screen whose words light up as the page scrolls, then the motto. */
+/** The three parts of the statement as steps (same wording as SITE.statement), shown under it on the home page. */
+const APPROACH: { icon: IconType; title: { en: string; id: string }; text: { en: string; id: string } }[] = [
+  { icon: FaMagnifyingGlass, title: { en: 'Analyze', id: 'Analisis' }, text: { en: 'Approaching problems analytically.', id: 'Menganalisis permasalahan.' } },
+  { icon: FaLayerGroup, title: { en: 'Understand', id: 'Pahami' }, text: { en: 'Understanding how things work beneath the surface.', id: 'Memahami cara kerja suatu sistem secara mendalam.' } },
+  { icon: FaCode, title: { en: 'Build', id: 'Bangun' }, text: { en: 'Exploring different ways to build effective solutions.', id: 'Mengeksplorasi berbagai pendekatan untuk menemukan solusi yang efektif.' } },
+]
+
+/**
+ * Home statement: a full-bleed dark block pinned to the screen.
+ * The sentence lights up word by word as the page scrolls, then its three parts arrive as steps one after another, then the motto.
+ */
 export function HomeStatement() {
   const { lang } = useSettings()
   const id = lang === 'id'
   const section = useRef<HTMLElement>(null)
   const stage = useRef<HTMLDivElement>(null)
   const text = useRef<HTMLParagraphElement>(null)
+  const steps = useRef<HTMLOListElement>(null)
   const foot = useRef<HTMLParagraphElement>(null)
   const pinned = useMedia(TALL_QUERY)
   const words = localized(SITE.statement, lang).split(' ')
@@ -174,144 +187,140 @@ export function HomeStatement() {
   useScrollFrame(() => {
     if (!section.current || !stage.current || !text.current) return
     const p = pinProgress(section.current, stage.current)
+    // 0 → 0.55: words light up; 0.55 → 0.85: steps arrive one by one; 0.85 → 1: motto.
     const spans = text.current.children
-    const head = p * (spans.length + 4)
-    for (let i = 0; i < spans.length; i++) (spans[i] as HTMLElement).style.opacity = (0.16 + 0.84 * clamp01(head - i)).toFixed(3)
-    text.current.style.transform = `scale(${(0.94 + 0.06 * clamp01(p * 1.4)).toFixed(4)})`
+    const head = (p / 0.55) * (spans.length + 2)
+    for (let i = 0; i < spans.length; i++) (spans[i] as HTMLElement).style.opacity = (0.18 + 0.82 * clamp01(head - i)).toFixed(3)
+    if (steps.current) {
+      Array.from(steps.current.children).forEach((el, i) => {
+        const k = clamp01((p - 0.55 - i * 0.09) / 0.1)
+        ;(el as HTMLElement).style.opacity = k.toFixed(3)
+        ;(el as HTMLElement).style.transform = `translate3d(0, ${((1 - k) * 36).toFixed(1)}px, 0)`
+      })
+    }
     if (foot.current) {
-      const k = clamp01((p - 0.82) / 0.14)
+      const k = clamp01((p - 0.85) / 0.1)
       foot.current.style.opacity = k.toFixed(3)
-      foot.current.style.transform = `translate3d(0, ${((1 - k) * 28).toFixed(1)}px, 0)`
+      foot.current.style.transform = `translate3d(0, ${((1 - k) * 24).toFixed(1)}px, 0)`
     }
   }, pinned)
 
   return (
     <section ref={section} className={`home-section home-say${pinned ? ' home-say--on' : ''}`} aria-label={id ? 'Tentang cara kerja saya' : 'How I work'}>
       <div ref={stage} className="home-say__stage">
-        <p className="home-eyebrow"><span aria-hidden="true">01</span>{id ? 'Pendekatan' : 'Approach'}</p>
+        <p className="home-say__pill"><span aria-hidden="true">01</span>{id ? 'Pendekatan' : 'Approach'}</p>
         <p ref={text} className="home-say__text">
           {words.map((w, i) => <span key={i}>{w}{i < words.length - 1 ? ' ' : ''}</span>)}
         </p>
+        <ol ref={steps} className="home-say__steps">
+          {APPROACH.map(({ icon: Icon, title, text: line }, i) => (
+            <li key={title.en}>
+              <span className="home-say__icon"><Icon aria-hidden="true" /></span>
+              <span className="home-say__n">{String(i + 1).padStart(2, '0')}</span>
+              <b>{title[lang]}</b>
+              <span className="home-say__line">{line[lang]}</span>
+            </li>
+          ))}
+        </ol>
         <p ref={foot} className="home-say__motto"><span>{id ? 'Moto hidup' : 'Life motto'}</span>{motto}</p>
       </div>
     </section>
   )
 }
 
+/** First four-digit year in a "when" label ("2022 – 2025" → "2022"), used as the oversized outline numeral. */
+const firstYear = (when: string) => when.match(/\d{4}/)?.[0] ?? when
+
 /**
- * Home "History": a full-width strip of story chapters and tall photos.
- * On desktop the strip is pinned under the header and travels sideways one pixel per pixel scrolled, so the story is read by scrolling;
- * on small screens or with reduced motion it is a normal swipeable row.
+ * Home "History": the story as a zig-zag across the full width.
+ * Chapters alternate sides of a centre rail; the empty side carries the chapter year as an oversized outline numeral that drifts with the scroll.
+ * The rail fills as the page scrolls and the chapter being read lights up while the others dim. With reduced motion everything is shown plainly.
  */
 export function HomeHistory() {
   const { lang } = useSettings()
   const id = lang === 'id'
-  const section = useRef<HTMLElement>(null)
-  const clip = useRef<HTMLDivElement>(null)
-  const track = useRef<HTMLOListElement>(null)
-  const bar = useRef<HTMLElement>(null)
-  const pinned = useMedia(DESKTOP_QUERY)
-  const [travel, setTravel] = useState(0)
+  const list = useRef<HTMLOListElement>(null)
+  const fill = useRef<HTMLElement>(null)
+  const motion = useMedia(MOTION_QUERY)
   const [tab, setTab] = useState(0)
+  const [active, setActive] = useState(0)
   const story = SITE.histories[Math.min(tab, SITE.histories.length - 1)]
 
-  useEffect(() => {
-    if (!pinned) return
-    const measure = () => {
-      if (!clip.current || !track.current) return
-      setTravel(Math.max(0, track.current.scrollWidth - clip.current.clientWidth))
-    }
-    measure()
-    const ro = new ResizeObserver(measure)
-    if (clip.current) ro.observe(clip.current)
-    if (track.current) ro.observe(track.current)
-    return () => ro.disconnect()
-  }, [pinned, lang, tab])
-
   useScrollFrame(() => {
-    if (!section.current || !track.current) return
-    const p = travel > 0 ? clamp01((PIN_TOP - section.current.getBoundingClientRect().top) / travel) : 0
-    track.current.style.transform = `translate3d(${-p * travel}px, 0, 0)`
-    if (bar.current) bar.current.style.transform = `scaleX(${p})`
-  }, pinned)
-
-  /** Switches timeline and returns to its opening, so the new story is read from the start. */
-  const pick = (i: number) => {
-    setTab(i)
-    if (pinned && section.current) scrollTo({ top: section.current.getBoundingClientRect().top + scrollY - PIN_TOP })
-    else clip.current?.scrollTo({ left: 0 })
-  }
+    if (!list.current) return
+    const r = list.current.getBoundingClientRect()
+    const line = innerHeight * 0.55
+    if (fill.current) fill.current.style.transform = `scaleY(${clamp01((line - r.top) / r.height).toFixed(4)})`
+    const steps = Array.from(list.current.querySelectorAll<HTMLElement>('.home-journey__step'))
+    let k = 0
+    steps.forEach((el, i) => {
+      const b = el.getBoundingClientRect()
+      if (b.top < line) k = i
+      el.style.setProperty('--s', passProgress(el).toFixed(3))
+    })
+    setActive((prev) => (prev === k ? prev : k))
+  }, motion)
 
   if (!story) return null
   return (
-    <section
-      ref={section}
-      className={`home-section home-story${pinned ? ' home-story--on' : ''}`}
-      style={pinned ? { height: `calc(100vh - ${PIN_TOP}px + ${travel}px)` } : undefined}
-      aria-labelledby="home-story-title"
-    >
-      <div className="home-story__stage">
-        <div className="home-story__bar">
-          <p className="home-eyebrow"><span aria-hidden="true">02</span>{id ? 'Perjalanan' : 'History'}</p>
+    <section className={`home-section home-journey${motion ? ' home-journey--on' : ''}`} aria-labelledby="home-story-title">
+      <Scrub>
+        <div className="home-journey__head">
+          <div>
+            <p className="home-eyebrow"><span aria-hidden="true">02</span>{id ? 'Perjalanan' : 'History'}</p>
+            <h2 id="home-story-title" className="home-title">{localized(story.title, lang)}</h2>
+            <p className="home-journey__lead">{localized(SITE.lead, lang)}</p>
+          </div>
           {SITE.histories.length > 1 && (
-            <div className="home-story__tabs" role="group" aria-label={id ? 'Pilih linimasa' : 'Choose a timeline'}>
+            <div className="home-journey__tabs" role="group" aria-label={id ? 'Pilih linimasa' : 'Choose a timeline'}>
               {SITE.histories.map((h, i) => (
-                <button key={i} type="button" aria-pressed={i === tab} onClick={() => pick(i)}>{localized(h.label, lang)}</button>
+                <button key={i} type="button" aria-pressed={i === tab} onClick={() => setTab(i)}>{localized(h.label, lang)}</button>
               ))}
             </div>
           )}
-          {pinned && (
-            <p className="home-story__hint" aria-hidden="true">
-              <span>{id ? 'Bergerak mengikuti scroll' : 'Moving with scroll'}</span>
-              <i><b ref={bar} /></i>
-            </p>
-          )}
         </div>
-        <div ref={clip} className="home-story__clip" tabIndex={pinned ? undefined : 0}>
-          <ol ref={track} className="home-story__track">
-            <li className="home-story__intro">
-              <h2 id="home-story-title">{localized(story.title, lang)}</h2>
-              <p>{localized(SITE.lead, lang)}</p>
+      </Scrub>
+
+      <ol ref={list} className="home-journey__list">
+        <li className="home-journey__rail" aria-hidden="true"><b ref={fill} /></li>
+        {story.chapters.map((h, i) => {
+          const when = localized(h.when, lang)
+          return (
+            <li key={`${tab}-${i}`} className={`home-journey__step${i % 2 ? ' home-journey__step--right' : ''}${i === active ? ' is-active' : ''}${i < active ? ' is-past' : ''}`}>
+              <span className="home-journey__node" aria-hidden="true" />
+              <span className="home-journey__year" aria-hidden="true">{firstYear(when)}</span>
+              <div className="home-journey__body">
+                {h.photo && (
+                  <figure className="home-journey__media">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={h.photo.src} alt={localized(h.photo.caption, lang)} loading="lazy" decoding="async" />
+                  </figure>
+                )}
+                <p className="home-journey__when"><span>{String(i + 1).padStart(2, '0')}</span>{when}</p>
+                <h3>{localized(h.title, lang)}</h3>
+                <p className="home-journey__text">{localized(h.text, lang)}</p>
+              </div>
             </li>
-            {story.chapters.map((h, i) => (
-              <li key={`${tab}-${i}`} className="home-story__chapter">
-                {/* Chapters without a photo yet show a labelled placeholder of the same size. */}
-                <figure className={h.photo ? 'home-story__shot' : `home-story__shot home-story__shot--empty t${i % 3}`}>
-                  {h.photo ? (
-                    <>
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={h.photo.src} alt={localized(h.photo.caption, lang)} decoding="async" />
-                      <figcaption>{localized(h.photo.caption, lang)}</figcaption>
-                    </>
-                  ) : (
-                    <figcaption>{id ? 'Foto pengganti' : 'Placeholder photo'}</figcaption>
-                  )}
-                </figure>
-                <div className="home-story__copy">
-                  <p className="home-story__when">{localized(h.when, lang)}</p>
-                  <h3>{localized(h.title, lang)}</h3>
-                  <p className="home-story__text">{localized(h.text, lang)}</p>
-                </div>
-              </li>
-            ))}
-          </ol>
-        </div>
-      </div>
+          )
+        })}
+      </ol>
     </section>
   )
 }
 
-type Highlight = { key: string; kind: string; year: string; title: string; org: string; desc: string; to: string }
+type Highlight = { key: string; kind: string; year: string; title: string; org: string; desc: string; bullets: string[]; to: string }
 
 /**
- * Home "Highlights": awards and certificates as a deck of large cards.
- * Each card rides up with the scroll, straightens as it lands, and sticks; the cards beneath shrink back and dim as the next one covers them.
+ * Home "Highlights": awards and certificates as a full-width list of large rows.
+ * On pointer devices a detail card follows the cursor over the hovered row while the other rows dim;
+ * clicking a row (the only way on touch screens) opens its details inline.
  */
 export function HomeHighlights() {
   const { lang } = useSettings()
   const id = lang === 'id'
-  const list = useRef<HTMLOListElement>(null)
-  const motion = useMedia(MOTION_QUERY)
+  const wrap = useRef<HTMLDivElement>(null)
+  const [hover, setHover] = useState<number | null>(null)
+  const [open, setOpen] = useState<number | null>(null)
 
   const items: Highlight[] = [
     ...awards.slice(0, 4).map((a, i) => ({
@@ -321,6 +330,7 @@ export function HomeHighlights() {
       title: localized(a.title, lang),
       org: a.org ? localized(a.org, lang) : '',
       desc: localized(a.desc, lang),
+      bullets: (a.bullets ?? []).map((b) => localized(b, lang)),
       to: '/award',
     })),
     ...certificates.slice(0, 3).map((c, i) => {
@@ -333,67 +343,66 @@ export function HomeHighlights() {
         title: localized(c.title, lang),
         org: cut > 0 ? meta.slice(0, cut) : meta,
         desc: localized(c.desc, lang),
+        bullets: [],
         to: '/certificate',
       }
     }),
   ]
+  const shown = hover === null ? null : items[hover]
 
-  useScrollFrame(() => {
-    if (!list.current) return
-    // The sticky <li> wrappers are measured; only the card inside each one is transformed, so nothing feeds back.
-    const rows = Array.from(list.current.children) as HTMLElement[]
-    const rects = rows.map((r) => r.getBoundingClientRect())
-    let depth = 0
-    for (let i = rows.length - 1; i >= 0; i--) {
-      // How far the next card has slid over this one (0 = clear, 1 = fully covered).
-      if (i < rows.length - 1) depth += clamp01(1 - (rects[i + 1].top - rects[i].top) / rects[i].height)
-      const stick = PIN_TOP + 32 + i * 14
-      const arrive = clamp01((rects[i].top - stick) / (innerHeight * 0.6))
-      rows[i].style.setProperty('--depth', Math.min(depth, 4).toFixed(3))
-      rows[i].style.setProperty('--arrive', arrive.toFixed(3))
-    }
-  }, motion)
-
-  const stats: [number, string][] = [
-    [awards.length, id ? 'Penghargaan dan beasiswa' : 'Awards and scholarships'],
-    [certificates.length, id ? 'Sertifikat' : 'Certificates'],
-  ]
+  /** Moves the floating card with the mouse, relative to the list. */
+  const follow = (e: PointerEvent<HTMLDivElement>) => {
+    if (e.pointerType !== 'mouse' || !wrap.current) return
+    const r = wrap.current.getBoundingClientRect()
+    const x = e.clientX - r.left
+    wrap.current.style.setProperty('--x', `${x}px`)
+    wrap.current.style.setProperty('--y', `${e.clientY - r.top}px`)
+    // Near the right edge the card flips to the left of the cursor so it never leaves the page.
+    wrap.current.style.setProperty('--dx', x > r.width - 400 ? 'calc(-100% - 1.5rem)' : '1.5rem')
+  }
 
   return (
-    <section className="home-section home-deck" aria-labelledby="home-highlights-title">
-      <div className="home-deck__intro">
-        <Scrub>
-          <p className="home-eyebrow"><span aria-hidden="true">03</span>{id ? 'Sorotan' : 'Highlights'}</p>
-          <h2 id="home-highlights-title" className="home-title"><Words text={id ? 'Pencapaian yang membentuk saya' : 'Milestones that shaped me'} /></h2>
-          <dl className="home-figures">
-            {stats.map(([n, label]) => (
-              <div key={label}>
-                <dt>{label}</dt>
-                <dd><Count n={n} /></dd>
-              </div>
-            ))}
-          </dl>
-          <Link to="/award" className="home-more">{id ? 'Semua penghargaan' : 'All awards'}<span aria-hidden="true">→</span></Link>
-        </Scrub>
+    <section className="home-section" aria-labelledby="home-highlights-title">
+      <Head n="03" label={id ? 'Sorotan' : 'Highlights'} title={id ? 'Pencapaian yang membentuk saya' : 'Milestones that shaped me'} titleId="home-highlights-title" to="/award" cta={id ? 'Semua penghargaan' : 'All awards'} />
+      <div ref={wrap} className="home-awards" onPointerMove={follow} onPointerLeave={() => setHover(null)}>
+        <p className="home-awards__meta">
+          <span>{id ? 'Penghargaan' : 'Awards'} · <Count n={awards.length} /></span>
+          <span>{id ? 'Sertifikat' : 'Certificates'} · <Count n={certificates.length} /></span>
+        </p>
+        <ul className="home-awards__list">
+          {items.map((h, i) => (
+            <li key={h.key} className={`home-awards__row${open === i ? ' is-open' : ''}`} onPointerEnter={(e) => { if (e.pointerType === 'mouse') setHover(i) }}>
+              <Reveal index={i}>
+                <button type="button" aria-expanded={open === i} onClick={() => setOpen(open === i ? null : i)} className="home-awards__head">
+                  <span className="home-awards__year">{h.year}</span>
+                  <span className="home-awards__title">{h.title}</span>
+                  <span className="home-awards__kind">{h.kind}</span>
+                  <span className="home-awards__plus" aria-hidden="true" />
+                </button>
+                <div className="home-awards__detail">
+                  <div>
+                    {h.org && <p className="home-awards__org">{h.org}</p>}
+                    {h.bullets.length > 0
+                      ? <ul className="home-awards__bullets">{h.bullets.map((b) => <li key={b}>{b}</li>)}</ul>
+                      : <p className="home-awards__desc">{h.desc}</p>}
+                    <Link to={h.to} className="home-more">{id ? 'Lihat detail' : 'See details'}<span aria-hidden="true">→</span></Link>
+                  </div>
+                </div>
+              </Reveal>
+            </li>
+          ))}
+        </ul>
+        <div className="home-awards__card" data-show={shown !== null && open === null} aria-hidden="true">
+          {shown && (
+            <>
+              <p className="home-awards__card-meta"><span>{shown.kind}</span><span>{shown.year}</span></p>
+              {shown.org && <p className="home-awards__card-org">{shown.org}</p>}
+              <p className="home-awards__card-desc">{shown.desc}</p>
+              <p className="home-awards__card-cta">{id ? 'Klik untuk detail' : 'Click for details'} →</p>
+            </>
+          )}
+        </div>
       </div>
-
-      <ol ref={list} className="home-deck__list">
-        {items.map((h, i) => (
-          <li key={h.key} className="home-deck__item" style={{ '--i': i, '--dir': i % 2 ? -1 : 1 } as CSSProperties}>
-            <Link to={h.to} className="card home-award">
-              <span className="home-award__top">
-                <span className="home-award__kind">{h.kind}</span>
-                <span>{h.year}</span>
-              </span>
-              <span className="home-award__n" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
-              <span className="home-award__title">{h.title}</span>
-              {h.org && <span className="home-award__org">{h.org}</span>}
-              <span className="home-award__desc">{h.desc}</span>
-              <span className="home-award__more">{id ? 'Lihat detail' : 'See details'}<span aria-hidden="true"> →</span></span>
-            </Link>
-          </li>
-        ))}
-      </ol>
     </section>
   )
 }
