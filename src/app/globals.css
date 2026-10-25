@@ -759,11 +759,30 @@ html { font-synthesis-weight: none; }
 
 /* Hero: concentric hairline rings behind the photo. */
 .hero-rings { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+.page-rings { position: fixed; inset: 0; z-index: 0; overflow: hidden; opacity: 0.6; }
+.page-grid { position: fixed; inset: 0; z-index: 0; pointer-events: none; background-image: linear-gradient(to right, color-mix(in srgb, var(--text) 7%, transparent) 1px, transparent 1px), linear-gradient(to bottom, color-mix(in srgb, var(--text) 7%, transparent) 1px, transparent 1px); background-size: 56px 56px; mask-image: radial-gradient(ellipse at center, #000 25%, transparent 78%); }
+.page-grid--vertical { width: 100vw; height: 100vh; height: 100dvh; background-image: none; mask-image: none; -webkit-mask-image: none; }
+.page-grid--vertical span { position: absolute; width: 1px; background: color-mix(in srgb, var(--text) 16%, transparent); }
+.page-grid--vertical span:nth-child(1) { left: 7%; top: 4%; height: 20%; }
+.page-grid--vertical span:nth-child(2) { left: 7%; top: 38%; height: 27%; }
+.page-grid--vertical span:nth-child(3) { left: 18%; top: 17%; height: 54%; }
+.page-grid--vertical span:nth-child(4) { left: 31%; top: 0; height: 30%; }
+.page-grid--vertical span:nth-child(5) { left: 31%; top: 56%; height: 31%; }
+.page-grid--vertical span:nth-child(6) { left: 45%; top: 12%; height: 23%; }
+.page-grid--vertical span:nth-child(7) { left: 56%; top: 43%; height: 50%; }
+.page-grid--vertical span:nth-child(8) { left: 69%; top: 5%; height: 28%; }
+.page-grid--vertical span:nth-child(9) { left: 69%; top: 54%; height: 24%; }
+.page-grid--vertical span:nth-child(10) { left: 81%; top: 24%; height: 41%; }
+.page-grid--vertical span:nth-child(11) { left: 93%; top: 9%; height: 21%; }
+.page-grid--vertical span:nth-child(12) { left: 93%; top: 61%; height: 30%; }
 .hero-rings span { position: absolute; left: 50%; top: 50%; aspect-ratio: 1; border-radius: 50%; border: 1px solid; transform: translate(-50%, -50%); }
 .hero-rings span:nth-child(1) { width: 175%; border-color: color-mix(in srgb, var(--text) 8%, transparent); }
 .hero-rings span:nth-child(2) { width: 135%; border-color: color-mix(in srgb, var(--text) 12%, transparent); }
 .hero-rings span:nth-child(3) { width: 100%; border-color: color-mix(in srgb, var(--text) 18%, transparent); }
+.page-rings span:nth-child(4) { width: 68%; border-color: color-mix(in srgb, var(--text) 23%, transparent); }
+.page-rings span:nth-child(5) { width: 38%; border-color: color-mix(in srgb, var(--text) 28%, transparent); }
 @media (max-width: 767px) { .hero-rings span:nth-child(1) { width: 112%; } .hero-rings span:nth-child(2) { width: 90%; } .hero-rings span:nth-child(3) { width: 70%; } }
+@media (max-width: 767px) { .page-rings span:nth-child(4) { width: 52%; } .page-rings span:nth-child(5) { width: 32%; } }
 /* Ring motion (HeroRings.tsx): --mx/--my follow the mouse (-1 → 1); --f makes inner rings travel further. */
 .hero-rings { --mx: 0; --my: 0; }
 .hero-rings span { translate: calc(var(--mx) * var(--f) * -6px) calc(var(--my) * var(--f) * -6px); }

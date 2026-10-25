@@ -11,6 +11,7 @@ import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { SettingsProvider } from '../../context/Settings'
 import Constellations from '../../components/Constellations'
+import PageRings from '../../components/PageRings'
 import Header from '../../components/Header'
 import Footer from '../../components/Footer'
 import SmoothScroll from '../../components/SmoothScroll'
@@ -85,6 +86,7 @@ export default async function RootLayout({ children, params }: { children: React
        </head>
       <body>
           <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:bg-brand focus:px-5 focus:py-2.5 focus:font-semibold focus:text-ink">{lang === 'id' ? 'Lewati ke konten utama' : 'Skip to main content'}</a>
+          <PageRings />
           <SettingsProvider lang={lang}>
             <SmoothScroll>
               <Constellations />
