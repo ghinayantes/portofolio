@@ -1,6 +1,7 @@
 'use client'
 
 import { useRef, useState } from 'react'
+import Image from 'next/image'
 import { localized } from '../../data/nav'
 import { SITE } from '../../data/site'
 import { useSettings } from '../../context/Settings'
@@ -70,8 +71,7 @@ export function HomeHistory() {
               <div className="home-journey__body">
                 {h.photo && (
                   <figure className="home-journey__media">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={h.photo.src} alt={localized(h.photo.caption, lang)} loading="lazy" decoding="async" />
+                    <Image src={h.photo.src} alt={localized(h.photo.caption, lang)} fill sizes="(max-width: 767px) 90vw, 50vw" loading="lazy" decoding="async" />
                   </figure>
                 )}
                 <p className="home-journey__when"><span>{String(i + 1).padStart(2, '0')}</span>{when}</p>

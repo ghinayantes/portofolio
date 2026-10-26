@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import { LocLink as Link } from '../../../../components/LocLink'
 import { projects, projectSlug } from '../../../../data/content'
@@ -9,6 +10,16 @@ import { SITE_URL, breadcrumbLd, languageAlternates, socialMeta, jsonLd } from '
 import { LANGS, isLang } from '../../../../lib/i18n'
 
 type Props = { params: Promise<{ lang: string; slug: string }> }
+
+const projectImageSizes: Record<string, readonly [number, number]> = {
+  '/portfolio.jpg': [2940, 1678],
+  '/algeo.jpg': [1600, 970],
+  '/alproshell.jpg': [1590, 916],
+  '/uni-card.jpg': [1398, 820],
+  '/hashing.jpg': [1600, 882],
+  '/canteen.jpg': [1600, 808],
+  '/elevator.jpg': [1600, 1245],
+}
 
 export const dynamicParams = false
 export const generateStaticParams = () =>
@@ -42,6 +53,7 @@ export default async function Page({ params }: Props) {
   const lang = isLang(langParam) ? langParam : 'en'
   const project = projects.find((p) => projectSlug(p) === slug)
   if (!project) notFound()
+  const imageSize = project.image ? projectImageSizes[project.image] : undefined
   const id = lang === 'id'
   const url = `${SITE_URL}/${lang}/project/${slug}`
   const ld = {
@@ -86,7 +98,10 @@ export default async function Page({ params }: Props) {
       </div>
       <div className="mx-auto mt-10 max-w-3xl">
         {project.image && (
-          <img src={project.image} alt={`${localized(project.title, lang)} project preview`} className="w-full rounded-2xl border border-line object-cover" />
+          imageSize
+            ? <Image src={project.image} alt={`${localized(project.title, lang)} project preview`} width={imageSize[0]} height={imageSize[1]} sizes="(max-width: 768px) 100vw, 768px" loading="lazy" className="w-full rounded-2xl border border-line object-cover" />
+            // eslint-disable-next-line @next/next/no-img-element
+            : <img src={project.image} alt={`${localized(project.title, lang)} project preview`} className="w-full rounded-2xl border border-line object-cover" />
         )}
         <div className="mt-6 flex flex-wrap gap-1.5">
           {project.tags.map((g) => (

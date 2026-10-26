@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import { about, organizations, work } from '../data/content'
 import { splitRole } from './cards'
 import { LocLink } from './LocLink'
@@ -35,7 +36,7 @@ export function AboutIdentity() {
     <div className="card about-id">
       {photo && (
         <figure className="about-id__portrait">
-          <img src={photo.src} alt={localized(photo.alt, lang)} className="about-id__img" />
+          <Image src={photo.src} alt={localized(photo.alt, lang)} fill sizes="(max-width: 767px) 100vw, 20rem" className="about-id__img" />
         </figure>
       )}
 

@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, type CSSProperties } from 'react'
+import Image from 'next/image'
 import { localized } from '../../data/nav'
 import { SITE } from '../../data/site'
 import { useSettings } from '../../context/Settings'
@@ -75,8 +76,11 @@ export function HomeGallery() {
         {SITE.gallery.map((g, i) => (
           <li key={g.src} className={g.wide ? 'is-wide' : undefined} style={{ '--gallery-order': i } as CSSProperties}>
             <figure className="home-shot">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={g.src} alt={localized(g.caption, lang)} loading="lazy" decoding="async" />
+              <Image src={g.src} alt={localized(g.caption, lang)} fill
+                sizes={g.wide
+                  ? '(max-width: 639px) 100vw, (max-width: 1103px) 66vw, 50vw'
+                  : '(max-width: 639px) 50vw, (max-width: 1103px) 33vw, 25vw'}
+                loading="lazy" decoding="async" />
               <figcaption>{localized(g.caption, lang)}</figcaption>
             </figure>
           </li>

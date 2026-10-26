@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import { LocLink as Link } from '../LocLink'
 import { techIcon } from '../cards'
 import { currentRoles } from '../AboutCard'
@@ -39,8 +40,7 @@ export function HomeNow() {
                 </span>
                 {p.image && (
                   <span className="home-now__shot">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={p.image} alt="" loading="lazy" decoding="async" />
+                    <Image src={p.image} alt="" fill sizes="(max-width: 767px) 90vw, 40vw" loading="lazy" decoding="async" />
                   </span>
                 )}
               </Link>

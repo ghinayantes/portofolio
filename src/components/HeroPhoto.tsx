@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState, type CSSProperties } from 'react'
+import Image from 'next/image'
 import { FaEnvelope, FaGithub, FaInstagram, FaLinkedinIn, FaWhatsapp } from 'react-icons/fa6'
 import type { IconType } from 'react-icons'
 import { SITE } from '../data/site'
@@ -159,7 +160,7 @@ export default function HeroPhoto() {
       <div className="blob absolute inset-0 z-10 block">
         {photo ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={photo.src} alt={t(photo.alt)} draggable={false} loading="eager" decoding="sync" fetchPriority="high"
+          <Image src={photo.src} alt={t(photo.alt)} fill sizes="(max-width: 639px) 18rem, (max-width: 767px) 20rem, 32rem" draggable={false} loading="eager" fetchPriority="high"
             style={{ objectPosition: photo.pos }} className="absolute inset-0 h-full w-full object-cover" />
         ) : (
           <span className="grid h-full place-items-center font-display text-[8rem] font-extrabold text-line">G</span>

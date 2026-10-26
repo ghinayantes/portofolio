@@ -1,9 +1,10 @@
 'use client'
 
+import Image from 'next/image'
 import { LocLink as Link } from './LocLink'
 import { Scrub } from './home'
 import { NAV, localized } from '../data/nav'
-import { projects } from '../data/content'
+import { projects, type Project } from '../data/content'
 import { useSettings } from '../context/Settings'
 import { useEffect, useRef, useState, type CSSProperties, type PointerEvent } from 'react'
 
@@ -17,7 +18,7 @@ export default function Explore() {
   const all = NAV.flatMap((g) => g.items)
   const proj = all.find((x) => x.key === 'project')
   const hire = all.find((x) => x.key === 'hire')
-  const shots = projects.filter((p) => p.image).slice(0, 3)
+  const shots = projects.filter((p): p is Project & { image: string } => Boolean(p.image)).slice(0, 3)
 
   return (
     <div className="grid gap-5">
@@ -33,8 +34,7 @@ export default function Explore() {
               </div>
               <div className="explore-shots" aria-hidden>
                 {shots.map((p, k) => (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img key={k} src={p.image} alt="" loading="lazy" decoding="async" className={`explore-shot explore-shot--${k}`} />
+                  <Image key={k} src={p.image} alt="" width={800} height={500} sizes="(max-width: 767px) 34vw, 280px" loading="lazy" decoding="async" className={`explore-shot explore-shot--${k}`} />
                 ))}
               </div>
             </Link>

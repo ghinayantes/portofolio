@@ -1,4 +1,5 @@
 import { projectSlug, type Award, type Certificate, type Entry, type NewsItem, type Note, type Project } from '../data/content'
+import Image from 'next/image'
 import { useEffect, useRef, useState, type PointerEvent, type ReactNode } from 'react'
 import { LocLink } from './LocLink'
 import { localized, type Localized } from '../data/nav'
@@ -59,7 +60,7 @@ export function ProjectCard({ p, i, featured, interactive = false, tilt = true, 
     <article className={`card ${interactive ? 'project-card' : ''} flex flex-col ${featured ? 'md:flex-row' : ''}`}>
       <div className={`thumb t${i % 3} ${featured ? 'min-h-48 md:min-h-[280px] md:flex-[1.2]' : 'aspect-[16/10]'}`}>
         {p.image ? (
-          <img src={p.image} alt={`${localized(p.title, lang)} project preview`} className="absolute inset-0 h-full w-full object-cover" />
+          <Image src={p.image} alt={`${localized(p.title, lang)} project preview`} fill sizes={featured ? '(max-width: 767px) 100vw, 28vw' : '(max-width: 767px) 100vw, 50vw'} loading={i === 0 ? 'eager' : 'lazy'} fetchPriority={i === 0 ? 'high' : undefined} className="absolute inset-0 h-full w-full object-cover" />
         ) : (
           <>
             <div className="win"><span /><span /><span /></div>
@@ -198,7 +199,7 @@ export function Ticket({ n, i }: { n: Certificate; i: number }) {
     <article className={`cert-gallery__row${i % 2 ? ' is-reversed' : ''}`}>
       {n.image ? (
         <a href={n.image} target="_blank" rel="noopener noreferrer" className="cert-gallery__preview" aria-label={`${localized(n.title, lang)} — ${lang === 'id' ? 'Buka gambar sertifikat' : 'Open certificate image'}`}>
-          <img src={n.image} alt={localized(n.title, lang)} loading="lazy" />
+          <Image src={n.image} alt={localized(n.title, lang)} fill sizes="(max-width: 767px) 100vw, 50vw" loading="lazy" />
           <span>{lang === 'id' ? 'Lihat sertifikat ↗' : 'View certificate ↗'}</span>
         </a>
       ) : (
@@ -224,7 +225,7 @@ export const FeedItem = ({ n, i }: { n: NewsItem; i: number }) => {
     <article className="card overflow-hidden !p-0 sm:grid sm:grid-cols-[2fr_3fr]">
       <div className="news-img relative min-h-44 overflow-hidden sm:min-h-full">
         {n.image ? (
-          <img src={n.image} alt={localized(n.title, lang)} loading="lazy" className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 hover:scale-105" />
+          <Image src={n.image} alt={localized(n.title, lang)} fill sizes="(max-width: 639px) 100vw, 40vw" loading="lazy" className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 hover:scale-105" />
         ) : (
           <div className={`thumb t${i % 3} absolute inset-0`} aria-hidden="true" />
         )}
@@ -248,7 +249,7 @@ export function OrgLogo({ name, logo, mono, className, decorative = false }: { n
   return (
     <span className={`org-logo${className ? ` ${className}` : ''}`} data-long={text.length > 4 ? 'true' : undefined} aria-hidden={decorative || undefined}>
       {logo
-        ? <img src={logo} alt={decorative ? '' : `${name} logo`} loading="lazy" className="org-logo__img" />
+        ? <Image src={logo} alt={decorative ? '' : `${name} logo`} width={128} height={128} sizes="4rem" loading="lazy" className="org-logo__img" />
         : <span aria-hidden="true" className="org-logo__mono">{text}</span>}
     </span>
   )

@@ -1,6 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useMemo, useState, type AnimationEvent, type ReactElement } from 'react'
+import Image from 'next/image'
 import { FaChevronLeft, FaChevronRight, FaGithub, FaGlobe } from 'react-icons/fa6'
 import { LocLink as Link } from './LocLink'
 import { localized } from '../data/nav'
@@ -89,7 +90,7 @@ function ShowcaseSlide({ project, lang, dir, state, onLeft }: {
       </div>
       <div className="showcase-visual">
         {imageSrc ? (
-          <img src={imageSrc} alt={`${localized(project.title, lang)} project preview`} loading="lazy" />
+          <Image src={imageSrc} alt={`${localized(project.title, lang)} project preview`} width={1200} height={900} sizes="(max-width: 1023px) 100vw, 50vw" loading="lazy" />
         ) : (
           <div className="thumb t0 showcase-fallback" aria-hidden="true">
             <div className="win"><span /><span /><span /></div>
