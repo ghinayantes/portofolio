@@ -2,7 +2,7 @@
 
 import { LocLink as Link } from '../components/LocLink'
 import { SITE } from '../data/site'
-import { awards, organizations, projects } from '../data/content'
+import { projects } from '../data/content'
 import { useSettings } from '../context/Settings'
 import { useTypewriter } from '../hooks/useTypewriter'
 import Explore from '../components/Explore'
@@ -11,18 +11,13 @@ import FloatingCta from '../components/FloatingCta'
 import { Section } from '../components/ui'
 import HeroPhoto from '../components/HeroPhoto'
 import HeroRings from '../components/HeroRings'
-import { HomeBand, HomeExperience, HomeGallery, HomeHighlights, HomeHistory, HomeNow, HomeProgress, HomeStack, HomeStatement, Scrub } from '../components/home'
+import { HeroAffiliations, HomeBand, HomeExperience, HomeGallery, HomeHighlights, HomeHistory, HomeNow, HomeProgress, HomeStack, HomeStatement, Scrub } from '../components/home'
 import { FaDownload, FaGithub } from 'react-icons/fa6'
 
 export default function Home() {
   const { t, lang } = useSettings()
   const id = lang === 'id'
   const typed = useTypewriter(SITE.roles[lang])
-  const stats: [number, string][] = [
-    [projects.length, id ? 'Proyek' : 'Projects'],
-    [organizations.length, id ? 'Organisasi' : 'Organizations'],
-    [awards.length, id ? 'Penghargaan' : 'Awards'],
-  ]
   const flagged = projects.filter((p) => p.featured)
   const featured = flagged.length > 0 ? flagged : projects.slice(0, 1)
   return (
@@ -41,9 +36,7 @@ export default function Home() {
             <Link to="/project" className="btn-primary">{id ? 'Lihat proyek' : 'View projects'}<span aria-hidden="true" className="btn-arrow">→</span></Link>
             <Link to="/hire" className="btn-ghost">{id ? 'Yuk ngobrol' : "Let's talk"}</Link>
           </div>
-          <div className="mt-12 flex flex-wrap gap-x-10 gap-y-6 border-t border-line pt-6">
-            {stats.map(([n, label]) => <div key={label}><b className="block font-display text-4xl font-normal">{n}</b><span className="mono-label !text-[11px]">{label}</span></div>)}
-          </div>
+          <HeroAffiliations />
         </div>
         <div className="relative order-first md:order-none">
           <HeroRings />

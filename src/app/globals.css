@@ -799,6 +799,28 @@ html { font-synthesis-weight: none; }
 }
 @keyframes ring-breathe { 0%, 100% { scale: 1; opacity: 1; } 50% { scale: 1.035; opacity: 0.6; } }
 
+/* Hero affiliations (home/HeroAffiliations.tsx): greyed-out logos that come to full colour on hover; .is-loop scrolls them when they overflow. */
+.hero-orgs .mono-label { display: flex; align-items: baseline; gap: 0.75rem; min-height: 1.25rem; }
+.hero-orgs__name { color: var(--text); opacity: 0; translate: 0 4px; transition: opacity 0.25s ease, translate 0.25s ease; }
+.hero-orgs__name::before { content: '— '; color: var(--text2); }
+.hero-orgs__name[data-show] { opacity: 1; translate: 0 0; }
+/* contain: inline-size keeps the logo row from widening the hero column (it would otherwise stretch the grid track on phones). */
+.hero-orgs__track { margin-top: 1.1rem; overflow: hidden; contain: inline-size; }
+.hero-orgs__reel { display: flex; width: max-content; }
+.hero-orgs__row { display: flex; align-items: center; gap: 1.5rem; min-height: 3.25rem; padding-right: 1.5rem; }
+.hero-orgs__logo { position: relative; display: grid; place-items: center; width: 3rem; height: 3rem; transition: scale 0.3s ease; }
+.hero-orgs__logo.is-fit { display: block; overflow: hidden; }
+.hero-orgs__logo.is-fit img { position: absolute; max-width: none; object-fit: fill; }
+.hero-orgs__logo img { width: 100%; height: 100%; object-fit: contain; filter: grayscale(1); opacity: 0.55; transition: filter 0.3s ease, opacity 0.3s ease; }
+[data-theme='dark'] .hero-orgs__logo img { filter: grayscale(1) brightness(1.6); opacity: 0.6; }
+.hero-orgs__logo:hover img, .hero-orgs__logo:focus-visible img, [data-theme='dark'] .hero-orgs__logo:hover img, [data-theme='dark'] .hero-orgs__logo:focus-visible img { filter: none; opacity: 1; }
+.hero-orgs__logo:hover, .hero-orgs__logo:focus-visible { scale: 1.08; }
+.hero-orgs__track.is-loop { mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
+.hero-orgs__track.is-loop .hero-orgs__reel { animation: orgs-loop 32s linear infinite; }
+.hero-orgs__track.is-loop:hover .hero-orgs__reel, .hero-orgs__track.is-loop:focus-within .hero-orgs__reel { animation-play-state: paused; }
+@keyframes orgs-loop { to { translate: -50% 0; } }
+@media (prefers-reduced-motion: reduce) { .hero-orgs__reel { width: auto; } .hero-orgs__row { flex-wrap: wrap; row-gap: 1rem; padding-right: 0; } }
+
 /* CTA: layered concentric rings that fade softly at the edges. */
 .home-cta-rings { position: absolute; inset: 0; z-index: 0; display: flex; align-items: center; justify-content: center; overflow: hidden; pointer-events: none; -webkit-mask-image: radial-gradient(circle at center, #000 0%, transparent 100%); mask-image: radial-gradient(circle at center, #000 0%, transparent 100%); }
 .home-cta-rings span { position: absolute; aspect-ratio: 1; border: 1px solid var(--text); border-radius: 50%; }

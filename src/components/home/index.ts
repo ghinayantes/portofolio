@@ -1,5 +1,6 @@
 /** Home page sections, one file each; shared scroll helpers live in ./shared. */
 export { Scrub } from './shared'
+export { HeroAffiliations } from './HeroAffiliations'
 export { HomeProgress } from './HomeProgress'
 export { HomeBand } from './HomeBand'
 export { HomeStatement } from './HomeStatement'
