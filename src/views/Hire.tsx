@@ -120,8 +120,8 @@ export default function Hire() {
   return (
     <div className="hire-grid">
       <div>
-        <p className="hire-lead">{id ? 'Punya peran atau proyek?' : 'Have a role or a project?'} <span>{id ? 'Mari bicara.' : "Let's talk."}</span></p>
-        <p className="mt-5 max-w-[46ch] text-[17px] leading-relaxed text-fg2">{id ? 'Terbuka untuk magang dan proyek di bidang rekayasa perangkat lunak, pengembangan web, dan UI/UX. Tulis lewat formulir, atau pilih kontak yang paling nyaman.' : 'Open to internships and project work in software engineering, web development, and UI/UX. Write through the form, or pick whichever contact suits you.'}</p>
+        <h1 className="hire-lead">{id ? 'Mari bangun sesuatu bersama.' : 'Let’s build something together.'}</h1>
+        <p className="mt-5 max-w-[46ch] text-[17px] leading-relaxed text-fg2">{id ? 'Untuk proyek atau kolaborasi di bidang rekayasa perangkat lunak, pengembangan web, data, dan AI, kirim pesan lewat formulir atau hubungi langsung.' : 'For projects or collaborations in software engineering, web development, data, and AI, use the form or reach out directly.'}</p>
 
         <ul aria-label={id ? 'Kontak' : 'Contacts'} className="card hire-contacts">
           {SITE.contacts.map((c) => {

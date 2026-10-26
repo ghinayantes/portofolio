@@ -32,11 +32,8 @@ export default function FloatingCta() {
   if (!mounted) return null
   return createPortal(
     <div className="floating-cta" data-show={show} inert={!show}>
-      <p>
-        <b><i className="dot" aria-hidden="true" />{id ? 'Terbuka untuk magang' : 'Open to internships'}</b>
-        <span>{id ? 'Rekayasa perangkat lunak, Web, AI' : 'Software engineering, Web, AI'}</span>
-      </p>
-      <Link to="/hire" className="btn-primary">{id ? 'Yuk ngobrol' : "Let's talk"}<span aria-hidden="true" className="btn-arrow">→</span></Link>
+      <p>{id ? 'Punya ide?' : 'Have an idea?'}</p>
+      <Link to="/hire" aria-label={id ? 'Yuk ngobrol' : "Let's talk"} className="btn-primary floating-cta__arrow"><span aria-hidden="true">↗</span></Link>
     </div>,
     document.body,
   )

@@ -60,7 +60,7 @@ export default function Home() {
           <div className="home-cta-glow" aria-hidden="true" />
           <div className="home-cta-content relative z-10">
             <h2 className="mx-auto max-w-[16ch] font-display text-[clamp(2.5rem,7vw,5rem)] leading-[1.05] tracking-tight">{id ? 'Ayo kerja bareng' : "Let's work together"}</h2>
-            <p className="mx-auto mt-5 max-w-md text-fg2">{id ? 'Punya proyek, magang, atau pertanyaan?' : 'Have a project, internship, or question?'}</p>
+            <p className="mx-auto mt-5 max-w-md text-fg2">{id ? 'Punya ide proyek atau pertanyaan?' : 'Have a project idea or a question?'}</p>
             <div className="mt-9 flex flex-col items-center gap-3">
               <Link to="/hire" className="btn-primary">{id ? 'Kirim pesan' : 'Send a message'}<span aria-hidden="true" className="btn-arrow">→</span></Link>
               <div className="flex flex-wrap justify-center gap-3">
