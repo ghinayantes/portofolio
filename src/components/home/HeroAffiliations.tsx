@@ -32,14 +32,15 @@ function measure(img: HTMLImageElement): Fit | null {
  * Hero: the logos of the places I have worked or volunteered at (one per logo file, work first), in place of plain counts.
  * Logos stay greyed out until hovered; the hovered name shows beside the label.
  * Each logo is trimmed to its visible part and sized to a shared area (lib/logo-fit), so new logos line up without hand tuning.
- * When they don't fit on one line the row loops slowly (paused on hover); with reduced motion it wraps instead.
+ * The row loops slowly (paused on hover), repeated as often as needed to fill the track; with reduced motion it wraps instead.
  */
 export function HeroAffiliations() {
   const { lang } = useSettings()
   const id = lang === 'id'
   const track = useRef<HTMLDivElement>(null)
   const list = useRef<HTMLUListElement>(null)
-  const [loop, setLoop] = useState(false)
+  // Copies of the row in each half of the looping reel; 0 means not looping.
+  const [reps, setReps] = useState(0)
   const [hover, setHover] = useState<string | null>(null)
   const [fits, setFits] = useState<Record<string, Fit>>({})
 
@@ -60,8 +61,8 @@ export function HeroAffiliations() {
     const box = track.current
     const row = list.current
     if (!box || !row || !matchMedia('(prefers-reduced-motion: no-preference)').matches) return
-    // Measured on the first copy only, so adding the looping copy never feeds back into the check.
-    const ro = new ResizeObserver(() => setLoop(row.scrollWidth > box.clientWidth + 1))
+    // Measured on the first copy only, so adding the looping copies never feeds back into the check.
+    const ro = new ResizeObserver(() => setReps(Math.max(1, Math.ceil(box.clientWidth / Math.max(1, row.scrollWidth)))))
     ro.observe(box)
     ro.observe(row)
     return () => ro.disconnect()
@@ -80,8 +81,8 @@ export function HeroAffiliations() {
     imgs.forEach((img) => { if (img.complete && img.naturalWidth) done(img); else img.addEventListener('load', () => done(img), { once: true }) })
   }, [])
 
-  const row = (copy: boolean) => (
-    <ul ref={copy ? undefined : list} className="hero-orgs__row" aria-hidden={copy || undefined}>
+  const row = (copy: boolean, key?: number) => (
+    <ul key={key} ref={copy ? undefined : list} className="hero-orgs__row" aria-hidden={copy || undefined}>
       {items.map((a) => {
         const fit = fits[a.logo]
         // Trimmed: the box is the visible part's size and the image is enlarged and shifted so only that part shows.
@@ -109,10 +110,11 @@ export function HeroAffiliations() {
         {id ? 'Terlibat di' : 'Involved with'}
         <span className="hero-orgs__name" aria-hidden="true" data-show={hover !== null || undefined}>{hover ?? ''}</span>
       </p>
-      <div ref={track} className={`hero-orgs__track${loop ? ' is-loop' : ''}`}>
-        <div className="hero-orgs__reel">
+      <div ref={track} className={`hero-orgs__track${reps ? ' is-loop' : ''}`}>
+        {/* The reel scrolls by half its width, so both halves hold the same number of rows; duration scales to keep the speed constant. */}
+        <div className="hero-orgs__reel" style={reps ? { animationDuration: `${32 * reps}s` } : undefined}>
           {row(false)}
-          {loop && row(true)}
+          {Array.from({ length: reps ? 2 * reps - 1 : 0 }, (_, i) => row(true, i))}
         </div>
       </div>
     </div>
