@@ -3,19 +3,17 @@ import type { NextConfig } from 'next'
 const isDev = process.env.NODE_ENV === 'development'
 
 /**
- * Content Security Policy. Scripts, styles, images, and fonts load from this site only; the two external hosts are
- * Vercel Analytics/Speed Insights and the Formspree fallback used by the contact form. Inline scripts stay allowed
- * because Next.js hydration, the theme bootstrap, and JSON-LD are inline; React needs eval in development only.
- * This site can frame its sitemap previews and the requested public LinkedIn post; other sites still cannot embed it.
+ * Content Security Policy for app assets, analytics, the contact form, and the requested media embeds.
+ * Inline scripts stay allowed for Next.js hydration, the theme bootstrap, and JSON-LD; React needs eval in development only.
  */
 const csp = [
   "default-src 'self'",
-  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ''} https://va.vercel-scripts.com`,
+  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ''} https://va.vercel-scripts.com https://strava-embeds.com`,
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob:",
   "font-src 'self' data:",
   `connect-src 'self' https://formspree.io https://va.vercel-scripts.com https://vitals.vercel-insights.com${isDev ? ' ws: wss:' : ''}`,
-  "frame-src 'self' https://www.linkedin.com",
+  "frame-src 'self' https://www.linkedin.com https://open.spotify.com https://strava-embeds.com",
   "frame-ancestors 'self'",
   "object-src 'none'",
   "base-uri 'self'",

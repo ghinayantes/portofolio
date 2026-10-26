@@ -1,6 +1,6 @@
 'use client'
 
-import { Suspense, useCallback, useEffect, useMemo, useRef, useState, type ReactElement, type ReactNode } from 'react'
+import { Suspense, useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type ReactElement, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 import { FaArrowUpRightFromSquare, FaChevronDown, FaLinkedinIn } from 'react-icons/fa6'
 import CareerTimeline from '../components/CareerTimeline'
@@ -25,6 +25,17 @@ import SitemapGraph from '../components/SitemapGraph'
 
 const Grid2 = ({ children }: { children: ReactNode }) => <div className="grid gap-6 md:grid-cols-2">{children}</div>
 const Grid3 = ({ children }: { children: ReactNode }) => <div className="grid gap-5 md:grid-cols-3">{children}</div>
+/** Runs shown on About, newest first; copied from Strava by hand (id = strava.com/activities/<id>, date = YYYY-MM-DD, minutes = moving time). */
+const STRAVA_ACTIVITIES = [
+  { id: '20732358398', title: 'Latman 9', date: '2026-10-26', km: 3.1, minutes: 24 },
+  { id: '20431078114', title: 'Latman 6', date: '2026-10-03', km: 5.0, minutes: 49 },
+  { id: '20234155721', title: 'Latman 3', date: '2026-09-19', km: 5.0, minutes: 43 },
+  { id: '20124037688', title: 'Latman 2', date: '2026-09-11', km: 6.0, minutes: 50 },
+  { id: '20013601017', title: 'Latman 1', date: '2026-09-03', km: 4.0, minutes: 36 },
+  { id: '19411540850', title: 'ip sampe lulus', date: '2026-07-22', km: 4.0, minutes: 50 },
+] as const
+/** Playlist id from its open.spotify.com/playlist/<id> link; the playlist must be public or the embed shows "Page not found". */
+const SPOTIFY_PLAYLIST = '4hW2esfyNKbnqJbbfZwiHm'
 
 const Cards = ({ list, feature }: { list: C.Project[]; feature?: boolean }) => (
   <div className={`grid ${feature ? 'project-cards-grid project-cards-grid--interactive gap-x-4 gap-y-8 md:grid-cols-2' : 'gap-6 md:grid-cols-2'}`}>
@@ -373,26 +384,80 @@ const Work = () => {
   )
 }
 
+const runMinutes = (m: number) => (m >= 60 ? `${Math.floor(m / 60)}h ${m % 60}m` : `${m}m`)
+
+function AboutInterests({ id }: { id: boolean }) {
+  const locale = id ? 'id-ID' : 'en-GB'
+  const km = (n: number) => n.toLocaleString(locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 })
+  const total = STRAVA_ACTIVITIES.reduce((sum, run) => sum + run.km, 0)
+  const longest = Math.max(...STRAVA_ACTIVITIES.map((run) => run.km))
+  return (
+    <section className="about-interests" aria-labelledby="about-interests-title">
+      <h2 id="about-interests-title" className="home-eyebrow">{id ? 'Di luar layar' : 'Off the clock'}</h2>
+      <Reveal index={2}>
+        <section className="about-interest" aria-labelledby="about-run-title">
+          <div className="about-interest__head">
+            <h3 id="about-run-title" className="about-interest__title">{id ? 'Lari' : 'Running'}</h3>
+            <p className="about-interest__note">Strava · {id ? `total ${km(total)} km` : `${km(total)} km total`}</p>
+          </div>
+          <ul className="about-runs">
+            {STRAVA_ACTIVITIES.map((run) => (
+              <li key={run.id}>
+                <a href={`https://www.strava.com/activities/${run.id}`} target="_blank" rel="noopener noreferrer" className="about-run" style={{ '--run': (run.km / longest).toFixed(3) } as CSSProperties}>
+                  <span className="about-run__title">{run.title}</span>
+                  <span className="about-run__meta">
+                    <time dateTime={run.date}>{new Date(`${run.date}T00:00:00Z`).toLocaleDateString(locale, { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' })}</time>
+                    <span>{km(run.km)} km</span>
+                    <span>{runMinutes(run.minutes)}</span>
+                  </span>
+                  <span className="about-run__arrow" aria-hidden="true">↗</span>
+                  <span className="sr-only">{id ? '(buka di Strava)' : '(opens on Strava)'}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+        <section className="about-interest" aria-labelledby="about-music-title">
+          <div className="about-interest__head">
+            <h3 id="about-music-title" className="about-interest__title">{id ? 'Musik' : 'Music'}</h3>
+            <p className="about-interest__note">Spotify · {id ? 'teman kerja saya' : 'what I work to'}</p>
+          </div>
+          <iframe
+            title={id ? 'Playlist Spotify' : 'Spotify playlist'}
+            src={`https://open.spotify.com/embed/playlist/${SPOTIFY_PLAYLIST}?utm_source=generator`}
+            loading="lazy"
+            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+            className="about-spotify__frame"
+          />
+        </section>
+      </Reveal>
+    </section>
+  )
+}
+
 function About() {
   const { lang } = useSettings()
   const id = lang === 'id'
   const now = currentRoles(lang)
   return (
-    <div className={`about-bento${now.length > 0 ? '' : ' about-bento--solo'}`}>
-      <Reveal className="about-bento__id">
-        <AboutIdentity />
-      </Reveal>
-      <Reveal index={1} className="about-bento__bio">
-        <div className="card about-tile about-bio">
-          <p className="about-bio__lead">{id ? 'Saya adalah mahasiswa Informatika di Institut Teknologi Bandung yang memiliki ketertarikan pada rekayasa perangkat lunak, kecerdasan buatan, dan proses mengubah ide menjadi produk yang bermanfaat.' : "I'm an Informatics student at Institut Teknologi Bandung, interested in software engineering, artificial intelligence, and the process of turning ideas into useful products."}</p>
-          <p>{id ? 'Saya senang menganalisis permasalahan, memahami cara kerja suatu sistem secara mendalam, dan mengeksplorasi berbagai pendekatan untuk menemukan solusi yang efektif. Ketertarikan saya pada matematika turut membentuk cara saya berpikir dalam menghadapi permasalahan yang kompleks, sementara studi Informatika memberi saya kesempatan untuk menerapkan pola pikir tersebut melalui pemrograman, algoritma, dan pengembangan perangkat lunak.' : 'I enjoy approaching problems analytically, understanding how things work beneath the surface, and exploring different ways to build effective solutions. My interest in mathematics has shaped how I think through complex problems, while studying informatics allows me to put that way of thinking into practice through programming, algorithms, and software development.'}</p>
-          <p>{id ? 'Di luar perkuliahan, saya menghargai kesempatan untuk berkolaborasi, berkontribusi dalam tim, dan terlibat dalam berbagai kegiatan yang mendorong saya untuk belajar lebih jauh. Pengalaman tersebut mengajarkan saya bahwa membangun sesuatu yang bermakna tidak hanya membutuhkan kemampuan teknis, tetapi juga komunikasi yang baik, kemampuan beradaptasi, dan kemauan untuk terus belajar.' : 'Beyond academics, I value opportunities to collaborate with others, contribute to teams, and take part in projects that challenge me to learn beyond the classroom. These experiences have taught me that building something meaningful takes more than technical ability. It also requires communication, adaptability, and a willingness to keep learning.'}</p>
-          <p>{id ? 'Saat ini, saya berfokus pada penguatan fondasi rekayasa perangkat lunak sembari mengeksplorasi bagaimana kecerdasan buatan dapat diterapkan untuk menyelesaikan permasalahan nyata. Portfolio ini menjadi ruang untuk mendokumentasikan pengalaman, proyek, dan perjalanan saya dalam terus berkembang sebagai seorang pengembang perangkat lunak.' : "I'm currently focused on strengthening my foundations in software engineering while exploring how AI can be applied to solve real-world problems. This portfolio is a collection of my experiences, projects, and progress as I continue to grow as a developer."}</p>
-        </div>
-      </Reveal>
+    <div className="about-bento">
+      <div className="about-bento__intro">
+        <Reveal className="about-bento__id">
+          <AboutIdentity />
+        </Reveal>
+        <Reveal index={1} className="about-bento__bio">
+          <div className="about-bio">
+            <p className="home-eyebrow">{id ? 'Tentang saya' : 'About me'}</p>
+            <p className="about-bio__lead">{id ? 'Saya adalah mahasiswa Informatika di Institut Teknologi Bandung yang memiliki ketertarikan pada rekayasa perangkat lunak, kecerdasan buatan, dan proses mengubah ide menjadi produk yang bermanfaat.' : "I'm an Informatics student at Institut Teknologi Bandung, interested in software engineering, artificial intelligence, and the process of turning ideas into useful products."}</p>
+            <p>{id ? 'Saya senang menganalisis permasalahan, memahami cara kerja suatu sistem secara mendalam, dan mengeksplorasi berbagai pendekatan untuk menemukan solusi yang efektif. Ketertarikan saya pada matematika turut membentuk cara saya berpikir dalam menghadapi permasalahan yang kompleks, sementara studi Informatika memberi saya kesempatan untuk menerapkan pola pikir tersebut melalui pemrograman, algoritma, dan pengembangan perangkat lunak.' : 'I enjoy approaching problems analytically, understanding how things work beneath the surface, and exploring different ways to build effective solutions. My interest in mathematics has shaped how I think through complex problems, while studying informatics allows me to put that way of thinking into practice through programming, algorithms, and software development.'}</p>
+            <p>{id ? 'Di luar perkuliahan, saya menghargai kesempatan untuk berkolaborasi, berkontribusi dalam tim, dan terlibat dalam berbagai kegiatan yang mendorong saya untuk belajar lebih jauh. Pengalaman tersebut mengajarkan saya bahwa membangun sesuatu yang bermakna tidak hanya membutuhkan kemampuan teknis, tetapi juga komunikasi yang baik, kemampuan beradaptasi, dan kemauan untuk terus belajar.' : 'Beyond academics, I value opportunities to collaborate with others, contribute to teams, and take part in projects that challenge me to learn beyond the classroom. These experiences have taught me that building something meaningful takes more than technical ability. It also requires communication, adaptability, and a willingness to keep learning.'}</p>
+            <p>{id ? 'Saat ini, saya berfokus pada penguatan fondasi rekayasa perangkat lunak sembari mengeksplorasi bagaimana kecerdasan buatan dapat diterapkan untuk menyelesaikan permasalahan nyata. Portfolio ini menjadi ruang untuk mendokumentasikan pengalaman, proyek, dan perjalanan saya dalam terus berkembang sebagai seorang pengembang perangkat lunak.' : "I'm currently focused on strengthening my foundations in software engineering while exploring how AI can be applied to solve real-world problems. This portfolio is a collection of my experiences, projects, and progress as I continue to grow as a developer."}</p>
+          </div>
+        </Reveal>
+      </div>
       <Reveal className="about-bento__motto">
-        <figure className="card about-tile about-motto">
-          <figcaption className="about-motto__label">{id ? 'Moto hidup' : 'Life motto'}</figcaption>
+        <figure className="about-motto">
+          <figcaption className="home-eyebrow">{id ? 'Moto hidup' : 'Life motto'}</figcaption>
           <blockquote className="about-motto__quote">{C.motto}</blockquote>
         </figure>
       </Reveal>
@@ -401,6 +466,7 @@ function About() {
           <AboutNow roles={now} />
         </Reveal>
       )}
+      <AboutInterests id={id} />
     </div>
   )
 }
