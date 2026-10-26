@@ -249,7 +249,7 @@ export function OrgLogo({ name, logo, mono, className, decorative = false }: { n
   return (
     <span className={`org-logo${className ? ` ${className}` : ''}`} data-long={text.length > 4 ? 'true' : undefined} aria-hidden={decorative || undefined}>
       {logo
-        ? <Image src={logo} alt={decorative ? '' : `${name} logo`} width={128} height={128} sizes="4rem" loading="lazy" className="org-logo__img" />
+        ? <Image src={logo} alt={decorative ? '' : `${name} logo`} width={128} height={128} sizes="4rem" loading="lazy" unoptimized className="org-logo__img" />
         : <span aria-hidden="true" className="org-logo__mono">{text}</span>}
     </span>
   )
