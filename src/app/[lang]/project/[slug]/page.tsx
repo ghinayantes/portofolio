@@ -99,7 +99,7 @@ export default async function Page({ params }: Props) {
       <div className="mx-auto mt-10 max-w-3xl">
         {project.image && (
           imageSize
-            ? <Image src={project.image} alt={`${localized(project.title, lang)} project preview`} width={imageSize[0]} height={imageSize[1]} sizes="(max-width: 768px) 100vw, 768px" loading="lazy" className="w-full rounded-2xl border border-line object-cover" />
+            ? <Image src={project.image} alt={`${localized(project.title, lang)} project preview`} width={imageSize[0]} height={imageSize[1]} sizes="(max-width: 768px) 100vw, 768px" quality={100} loading="lazy" className="w-full rounded-2xl border border-line object-cover" />
             // eslint-disable-next-line @next/next/no-img-element
             : <img src={project.image} alt={`${localized(project.title, lang)} project preview`} className="w-full rounded-2xl border border-line object-cover" />
         )}

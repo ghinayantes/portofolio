@@ -34,6 +34,7 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = { reactStrictMode: true,
     poweredByHeader: false,
+    images: { qualities: [75, 100] },
     allowedDevOrigins: ['192.168.*.*', '10.*.*.*', '172.*.*.*', '*.local'],
     async headers() {
       return [{ source: '/:path*', headers: securityHeaders }]

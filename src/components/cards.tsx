@@ -60,7 +60,7 @@ export function ProjectCard({ p, i, featured, interactive = false, tilt = true, 
     <article className={`card ${interactive ? 'project-card' : ''} flex flex-col ${featured ? 'md:flex-row' : ''}`}>
       <div className={`thumb t${i % 3} ${featured ? 'min-h-48 md:min-h-[280px] md:flex-[1.2]' : 'aspect-[16/10]'}`}>
         {p.image ? (
-          <Image src={p.image} alt={`${localized(p.title, lang)} project preview`} fill sizes={featured ? '(max-width: 767px) 100vw, 28vw' : '(max-width: 767px) 100vw, 50vw'} loading={i === 0 ? 'eager' : 'lazy'} fetchPriority={i === 0 ? 'high' : undefined} className="absolute inset-0 h-full w-full object-cover" />
+          <Image src={p.image} alt={`${localized(p.title, lang)} project preview`} fill sizes={featured ? '(max-width: 767px) 100vw, 42vw' : '(max-width: 767px) 100vw, 50vw'} quality={100} loading={i === 0 ? 'eager' : 'lazy'} fetchPriority={i === 0 ? 'high' : undefined} className="absolute inset-0 h-full w-full object-cover" />
         ) : (
           <>
             <div className="win"><span /><span /><span /></div>
