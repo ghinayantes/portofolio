@@ -461,6 +461,12 @@ footer { backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
 .home-reveal[data-home-entered='true'] { animation: home-reveal-in 620ms cubic-bezier(0.2, 0.7, 0.2, 1); animation-delay: var(--home-enter-delay, 0ms); }
 @keyframes home-reveal-in { from { transform: translate3d(0, 8px, 0); } to { transform: none; } }
 @media (prefers-reduced-motion: reduce) { .home-reveal[data-home-entered='true'] { animation: none; } }
+.welcome-intro { position: fixed; inset: 0; z-index: 1000; display: grid; place-items: center; background: var(--bg); color: var(--text); pointer-events: none; animation: welcome-exit 420ms ease 950ms forwards; }
+.welcome-intro span { font-family: var(--font-display); font-size: clamp(2.75rem, 10vw, 7rem); font-weight: 400; line-height: 1; letter-spacing: 0.2em; text-indent: 0.2em; animation: welcome-title 900ms cubic-bezier(0.16, 1, 0.3, 1) both; }
+@keyframes welcome-title { from { opacity: 0; filter: blur(12px); transform: translate3d(0, 10px, 0) scale(1.04); letter-spacing: 0.48em; clip-path: inset(0 50%); } 65% { opacity: 1; filter: blur(1px); clip-path: inset(0); } to { opacity: 1; filter: blur(0); transform: none; letter-spacing: 0.2em; clip-path: inset(0); } }
+@keyframes welcome-exit { to { opacity: 0; visibility: hidden; } }
+html[data-welcome-seen='true'] .welcome-intro { display: none; }
+html[data-welcome-motion='reduced'] .welcome-intro, html[data-welcome-motion='reduced'] .welcome-intro span { animation: none; }
 /* Oversized outlined words sliding with --s. */
 .home-band { margin: clamp(4rem, 9vw, 7rem) calc(50% - 50vw) 0; overflow: clip; }
 .home-band p { width: max-content; font-family: var(--font-display); font-size: clamp(3.5rem, 11vw, 9.5rem); font-weight: 800; line-height: 1; letter-spacing: -0.04em; white-space: nowrap; color: transparent; -webkit-text-stroke: 1px color-mix(in srgb, var(--brand) 45%, transparent); transform: translate3d(calc(var(--s, 0.5) * -8%), 0, 0); will-change: transform; }

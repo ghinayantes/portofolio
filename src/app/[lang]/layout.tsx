@@ -14,13 +14,14 @@ import Constellations from '../../components/Constellations'
 import PageRings from '../../components/PageRings'
 import Header from '../../components/Header'
 import Footer from '../../components/Footer'
+import WelcomeIntro from '../../components/WelcomeIntro'
 import SmoothScroll from '../../components/SmoothScroll'
 import { SITE } from '../../data/site'
 import { LANGS, isLang } from '../../lib/i18n'
 import { SEO_DESCRIPTION, SEO_KEYWORDS, SEO_TITLE, SITE_URL } from '../../lib/seo'
 
 export const dynamicParams = false
-const THEME_INIT = "try{var t=localStorage.getItem('theme');var d=t==='dark'?'dark':'light';document.documentElement.dataset.theme=d;var i=document.querySelector('link[rel~=icon]');if(i)i.href=d==='light'?'/favicon-light.svg':'/favicon.svg'}catch(e){}"
+const THEME_INIT = "try{var t=localStorage.getItem('theme');var d=t==='dark'?'dark':'light';document.documentElement.dataset.theme=d;var i=document.querySelector('link[rel~=icon]');if(i)i.href=d==='light'?'/favicon-light.svg':'/favicon.svg'}catch(e){};document.documentElement.dataset.welcomeMotion=window.matchMedia('(prefers-reduced-motion: reduce)').matches?'reduced':'full';try{var w=sessionStorage.getItem('portfolio-welcome-seen-v2')==='true';document.documentElement.dataset.welcomeSeen=w?'true':'false';if(!w)sessionStorage.setItem('portfolio-welcome-seen-v2','true')}catch(e){document.documentElement.dataset.welcomeSeen='false'}"
 export const generateStaticParams = () => LANGS.map((lang) => ({ lang }))
 
 export const metadata: Metadata = {
@@ -87,6 +88,7 @@ export default async function RootLayout({ children, params }: { children: React
       <body>
           <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:bg-brand focus:px-5 focus:py-2.5 focus:font-semibold focus:text-ink">{lang === 'id' ? 'Lewati ke konten utama' : 'Skip to main content'}</a>
           <PageRings />
+          <WelcomeIntro />
           <SettingsProvider lang={lang}>
             <SmoothScroll>
               <Constellations />

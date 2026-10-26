@@ -97,7 +97,9 @@ export default function Constellations() {
     const ctx = canvas.getContext('2d')!
     const root = document.documentElement
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches
-    let W = 0, V = 0, raf = 0, t0 = 0
+    const touch = matchMedia('(pointer: coarse)').matches
+    let W = 0, V = 0, raf = 0, t0 = 0, scrollEnd = 0
+    let isScrolling = false
     let drift = 0
     let returnActive = false
     let returnFrom = 0
@@ -217,11 +219,23 @@ export default function Constellations() {
     }
     let lastPaint = 0
     const loop = (ts: number) => {
+      if (isScrolling) { raf = 0; return }
       raf = requestAnimationFrame(loop)
       if (!t0) t0 = ts
       if (ts - lastPaint < 33) return
       lastPaint = ts
       draw(ts, Math.min(1, (ts - t0) / 1600)) // fade in on load
+    }
+    const pauseDuringTouchScroll = () => {
+      isScrolling = true
+      if (raf) cancelAnimationFrame(raf)
+      raf = 0
+      window.clearTimeout(scrollEnd)
+      scrollEnd = window.setTimeout(() => {
+        isScrolling = false
+        lastPaint = 0
+        raf = requestAnimationFrame(loop)
+      }, 140)
     }
 
     size()
@@ -242,9 +256,14 @@ export default function Constellations() {
       draw(performance.now(), 1)
     })
     mo.observe(root, { attributes: true, attributeFilter: ['data-theme'] })
-    if (!reduce) raf = requestAnimationFrame(loop)
+    if (!reduce) {
+      if (touch) addEventListener('scroll', pauseDuringTouchScroll, { passive: true })
+      raf = requestAnimationFrame(loop)
+    }
     return () => {
       cancelAnimationFrame(raf)
+      window.clearTimeout(scrollEnd)
+      if (touch && !reduce) removeEventListener('scroll', pauseDuringTouchScroll)
       removeEventListener('resize', size)
       mo.disconnect()
     }

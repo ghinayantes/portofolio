@@ -4,13 +4,13 @@ import { useEffect, useRef, type ReactNode } from 'react'
 import { usePathname } from 'next/navigation'
 import Lenis from 'lenis'
 
-/** Lenis smooth scrolling. Disabled for reduced-motion users. Add data-lenis-prevent to inner scroll areas (e.g. the mobile menu). */
+/** Lenis smooth scrolling for pointer devices. Touch devices keep native scrolling; add data-lenis-prevent to inner scroll areas. */
 export default function SmoothScroll({ children }: { children: ReactNode }) {
   const lenis = useRef<Lenis | null>(null)
   const pathname = usePathname()
 
   useEffect(() => {
-    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    if (matchMedia('(prefers-reduced-motion: reduce), (pointer: coarse)').matches) return
     const l = new Lenis({ lerp: 0.09, wheelMultiplier: 0.95 })
     lenis.current = l
     let raf = 0
