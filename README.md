@@ -21,7 +21,7 @@ Node.js 20.9 or newer is required; the Vercel project runs Node 24.
 
 | Route | What it is |
 |---|---|
-| `/[lang]` | Home: hero, Explore, then scroll-driven sections (approach, history, highlights, experience, now, featured project, stack, gallery) |
+| `/[lang]` | Home: hero (with affiliation logos), Explore, then scroll-driven sections (approach, history, highlights, experience, now, featured project, stack, contact CTA, gallery) |
 | `/[lang]/[slug]` | Every content page from `src/data/nav.ts`: about, portfolio, skills, certificate, news, work, project, organization, award, hire, design, writing, education, timeline, sitemap |
 | `/[lang]/project/[slug]` | One page per project |
 | `/api/hire` | Contact form backend (POST only) |
@@ -40,6 +40,7 @@ Almost everything shown on the site is data, not markup.
 | Home history timelines (tabs, chapters, photos) | `histories` in `src/data/site.ts` |
 | Home gallery photos | `gallery` in `src/data/site.ts` |
 | Projects, work, organizations, awards, certificates, education, skills, motto | `src/data/content.ts` |
+| Hero affiliation logos | `logo` on entries in `work` and `organizations` in `src/data/content.ts` |
 | Menu groups, page titles and descriptions | `src/data/nav.ts` |
 | Add a page | an entry in `src/data/nav.ts` plus a component in `PAGES` (`src/views/index.tsx`) |
 | Languages | `src/lib/i18n.ts` |
@@ -52,6 +53,7 @@ Notes:
 - A history chapter without a `photo` shows a labelled placeholder until one is added.
 - A project marked `wip: true` appears in the home "Now" section and leaves it when the flag is removed.
 - With more than one entry in `histories`, tabs appear above the history strip.
+- The hero shows each distinct work and organization `logo` once (work first). Logos are trimmed and sized automatically (`src/lib/logo-fit.ts`), so a new logo needs no manual sizing.
 
 ## Contact form
 
@@ -111,11 +113,13 @@ All optional. Set them in the Vercel project settings; for local use put them in
    │     ├─ [slug]/page.tsx        # content pages
    │     └─ project/[slug]/page.tsx
    ├─ views/                       # page bodies: Home, Hire, index (PAGES + PageBody)
-   ├─ components/                  # Header, Footer, Explore, HomeSections, HeroPhoto, cards,
-   │                               # AboutCard, FeaturedShowcase, backgrounds, projects/
+   ├─ components/                  # Header, Footer, Explore, HeroPhoto, HeroRings, cards, AboutCard,
+   │  │                            # FeaturedShowcase, FloatingCta, timelines, backgrounds
+   │  ├─ home/                     # one file per home section, shared scroll helpers (shared.tsx)
+   │  └─ projects/                 # projects page toolbar
    ├─ context/Settings.tsx         # language (from the URL) and theme (data-theme attribute)
    ├─ hooks/                       # useTypewriter, useProjectFilters
-   ├─ lib/                         # i18n, seo, email-check, hire-validation, project helpers (+ tests)
+   ├─ lib/                         # i18n, seo, email-check, hire-validation, logo-fit, project helpers (+ tests)
    └─ data/                        # nav.ts, site.ts, content.ts
 ```
 
@@ -125,7 +129,8 @@ All optional. Set them in the Vercel project settings; for local use put them in
 
 - Dark is a galaxy theme and light is a daytime sky; the choice is stored in `localStorage` and applied before paint.
 - Cards share one flat style (`.card`), driven by the `--card-*` and `--panel` tokens.
-- Home sections animate with the scroll position (`src/components/HomeSections.tsx`). Pinned sections only run on wide screens.
+- Home sections animate with the scroll position (`src/components/home/`). Pinned sections only run on wide screens.
+- The hero logo row loops slowly and pauses on hover; with reduced motion it wraps instead.
 - All motion is disabled for visitors who set "reduce motion" in their system.
 
 ## Deploy
