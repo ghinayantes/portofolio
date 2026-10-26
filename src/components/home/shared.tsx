@@ -23,19 +23,41 @@ export function useMedia(query: string): boolean {
   return on
 }
 
-/** Runs `frame` on scroll and resize, throttled to one call per animation frame. */
+const scrollFrames = new Set<() => void>()
+let scrollRaf = 0
+
+const flushScrollFrames = () => {
+  scrollRaf = 0
+  scrollFrames.forEach((frame) => frame())
+}
+
+const requestScrollFrame = () => {
+  if (!scrollRaf) scrollRaf = requestAnimationFrame(flushScrollFrames)
+}
+
+/** Shares one scroll/resize listener and animation frame across Home motion effects. */
 export function useScrollFrame(frame: () => void, enabled = true) {
   const saved = useRef(frame)
   useEffect(() => { saved.current = frame })
   useEffect(() => {
     if (!enabled) return
-    let raf = 0
-    const tick = () => { raf = 0; saved.current() }
-    const request = () => { if (!raf) raf = requestAnimationFrame(tick) }
-    request()
-    addEventListener('scroll', request, { passive: true })
-    addEventListener('resize', request)
-    return () => { removeEventListener('scroll', request); removeEventListener('resize', request); if (raf) cancelAnimationFrame(raf) }
+    const run = () => saved.current()
+    const first = scrollFrames.size === 0
+    scrollFrames.add(run)
+    if (first) {
+      addEventListener('scroll', requestScrollFrame, { passive: true })
+      addEventListener('resize', requestScrollFrame)
+    }
+    requestScrollFrame()
+    return () => {
+      scrollFrames.delete(run)
+      if (scrollFrames.size === 0) {
+        removeEventListener('scroll', requestScrollFrame)
+        removeEventListener('resize', requestScrollFrame)
+        if (scrollRaf) cancelAnimationFrame(scrollRaf)
+        scrollRaf = 0
+      }
+    }
   }, [enabled])
 }
 
