@@ -5,15 +5,15 @@ import { motto } from '../../data/content'
 import { localized } from '../../data/nav'
 import { SITE } from '../../data/site'
 import { useSettings } from '../../context/Settings'
-import { FaCode, FaLayerGroup, FaMagnifyingGlass } from 'react-icons/fa6'
+import { IoCodeSlashOutline, IoLayersOutline, IoSearchOutline } from 'react-icons/io5'
 import type { IconType } from 'react-icons'
 import { TALL_QUERY, clamp01, pinProgress, useMedia, useScrollFrame } from './shared'
 
 /** The three parts of the statement as steps (same wording as SITE.statement), shown under it on the home page. */
 const APPROACH: { icon: IconType; title: { en: string; id: string }; text: { en: string; id: string } }[] = [
-  { icon: FaMagnifyingGlass, title: { en: 'Analyze', id: 'Analisis' }, text: { en: 'Approaching problems analytically.', id: 'Menganalisis permasalahan.' } },
-  { icon: FaLayerGroup, title: { en: 'Understand', id: 'Pahami' }, text: { en: 'Understanding how things work beneath the surface.', id: 'Memahami cara kerja suatu sistem secara mendalam.' } },
-  { icon: FaCode, title: { en: 'Build', id: 'Bangun' }, text: { en: 'Exploring different ways to build effective solutions.', id: 'Mengeksplorasi berbagai pendekatan untuk menemukan solusi yang efektif.' } },
+  { icon: IoSearchOutline, title: { en: 'Analyze', id: 'Analisis' }, text: { en: 'Approaching problems analytically.', id: 'Menganalisis permasalahan.' } },
+  { icon: IoLayersOutline, title: { en: 'Understand', id: 'Pahami' }, text: { en: 'Understanding how things work beneath the surface.', id: 'Memahami cara kerja suatu sistem secara mendalam.' } },
+  { icon: IoCodeSlashOutline, title: { en: 'Build', id: 'Bangun' }, text: { en: 'Exploring different ways to build effective solutions.', id: 'Mengeksplorasi berbagai pendekatan untuk menemukan solusi yang efektif.' } },
 ]
 
 /**
@@ -59,11 +59,11 @@ export function HomeStatement() {
         <p ref={text} className="home-say__text">
           {words.map((w, i) => <span key={i}>{w}{i < words.length - 1 ? ' ' : ''}</span>)}
         </p>
+        <cite className="home-say__author">— Edsger W. Dijkstra</cite>
         <ol ref={steps} className="home-say__steps">
-          {APPROACH.map(({ icon: Icon, title, text: line }, i) => (
+          {APPROACH.map(({ icon: Icon, title, text: line }) => (
             <li key={title.en}>
               <span className="home-say__icon"><Icon aria-hidden="true" /></span>
-              <span className="home-say__n">{String(i + 1).padStart(2, '0')}</span>
               <b>{title[lang]}</b>
               <span className="home-say__line">{line[lang]}</span>
             </li>

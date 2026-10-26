@@ -1131,24 +1131,27 @@ article.card > .thumb { border-radius: 8px; }
 .home-say__stage { align-items: center; text-align: center; }
 .home-say__pill { display: inline-flex; align-items: center; gap: 0.55rem; padding: 0.3rem 0.9rem 0.3rem 0.35rem; border-radius: 999px; border: 1px solid var(--card-line); background: rgb(255 255 255 / 0.04); font-size: 13px; font-weight: 500; }
 .home-say__pill span { padding: 0.1rem 0.5rem; border-radius: 999px; background: rgb(255 255 255 / 0.08); font-family: var(--font-mono); font-size: 11px; color: var(--text2); }
-.home-say__text { margin: 1.75rem auto 0; max-width: 24ch; font-family: var(--font-sans); font-size: clamp(1.85rem, 4vw, 3.6rem); font-weight: 600; line-height: 1.08; letter-spacing: -0.045em; transform: none; text-wrap: balance; }
+.home-say__text { margin: 1.75rem auto 0; max-width: 34ch; font-family: var(--font-display); font-size: clamp(1.65rem, 3.4vw, 3rem); font-weight: 400; line-height: 1.28; letter-spacing: 0; transform: none; text-wrap: pretty; }
+.home-say__author { display: block; margin-top: 0.8rem; color: var(--text2); font-family: var(--font-mono); font-size: 11px; font-style: normal; letter-spacing: 0.12em; text-transform: uppercase; }
 .home-say__steps { display: grid; gap: 0.9rem; width: min(100%, 64rem); margin: clamp(2rem, 5vh, 3.25rem) auto 0; list-style: none; text-align: left; }
 @media (min-width: 768px) { .home-say__steps { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-.home-say__steps li { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 0.35rem 0.9rem; padding: 1.1rem 1.2rem; border-radius: 1.1rem; border: 1px solid var(--card-line); background: rgb(255 255 255 / 0.035); will-change: transform, opacity; transition: border-color 0.3s ease, background-color 0.3s ease; }
+.home-say__steps li { display: grid; grid-template-columns: 3rem minmax(0, 1fr); align-items: center; gap: 0.35rem 1rem; padding: 1.1rem 1.2rem; border-radius: 1.1rem; border: 1px solid var(--card-line); background: rgb(255 255 255 / 0.035); will-change: transform, opacity; transition: border-color 0.3s ease, background-color 0.3s ease; }
 .home-say__steps li:hover { border-color: rgb(255 255 255 / 0.24); background: rgb(255 255 255 / 0.06); }
-.home-say__icon { grid-row: span 2; display: grid; place-items: center; width: 2.75rem; height: 2.75rem; border-radius: 0.8rem; background: #f8fafc; color: #020618; }
-.home-say__icon svg { width: 1.05rem; height: 1.05rem; }
-.home-say__n { display: none; }
-.home-say__steps b { font-size: 16px; font-weight: 600; letter-spacing: -0.01em; }
-.home-say__line { grid-column: 2; font-size: 14px; line-height: 1.45; color: var(--text2); }
+.home-say__icon { grid-column: 1; grid-row: 1 / span 2; display: grid; place-items: center; width: 2.75rem; height: 2.75rem; border: 1px solid var(--card-line); border-radius: 50%; background: rgb(255 255 255 / 0.035); color: var(--text); }
+.home-say__icon svg { width: 1.25rem; height: 1.25rem; }
+.home-say__steps b { grid-column: 2; grid-row: 1; font-family: var(--font-display); font-size: 1.35rem; font-weight: 400; letter-spacing: 0; line-height: 1.05; }
+.home-say__line { grid-column: 2; grid-row: 2; font-size: 13px; line-height: 1.55; color: var(--text2); }
 .home-say__motto { display: inline-flex; align-items: center; gap: 0.9rem; margin-top: clamp(1.75rem, 4vh, 2.5rem); padding: 0.55rem 1.4rem 0.55rem 0.55rem; border-radius: 999px; background: #f8fafc; color: #020618; font-family: var(--font-display); font-size: clamp(1.1rem, 1.8vw, 1.35rem); font-style: italic; }
 .home-say__motto span { padding: 0.35rem 0.8rem; border-radius: 999px; background: #020618; color: #f8fafc; font-family: var(--font-mono); font-size: 10.5px; font-style: normal; letter-spacing: 0.16em; text-transform: uppercase; }
 /* Phones: compact steps (title + icon) so the pinned block fits on short screens. */
 @media (max-width: 767px) {
   .home-say__steps { gap: 0.5rem; }
-  .home-say__steps li { padding: 0.6rem 0.8rem; }
-  .home-say__icon { grid-row: auto; width: 2.1rem; height: 2.1rem; border-radius: 0.6rem; }
+  .home-say__steps li { grid-template-columns: 2rem minmax(0, 1fr); gap: 0.5rem; padding: 0.6rem 0.8rem; }
+  .home-say__icon { grid-column: 1; grid-row: 1; width: 1.8rem; height: 1.8rem; }
+  .home-say__icon svg { width: 1rem; height: 1rem; }
+  .home-say__steps b { grid-column: 2; grid-row: 1; font-size: 1.2rem; }
   .home-say__line { display: none; }
+  .home-say__motto { max-width: 100%; flex-wrap: wrap; justify-content: center; gap: 0.55rem; padding: 0.7rem 0.9rem; border-radius: 1rem; }
 }
 
 /* ── Home Experience, pinned (home/HomeExperience.tsx): larger type, frameless panel, oversized outline number ── */

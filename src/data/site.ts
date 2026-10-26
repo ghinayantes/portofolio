@@ -30,10 +30,10 @@ export const SITE = {
        { src: '/photo2.jpg', alt: pair('Ghina Emelia Yantes at the association inauguration', 'Ghina Emelia Yantes saat pelantikan himpunan') },
      ] as { src: string; alt: Pair; pos?: string }[],
   cv: '/cv.pdf',
-  /** One sentence from the About bio, shown word by word on the home page. */
+  /** Dijkstra quote, shown word by word in the Home Approach section. */
   statement: pair(
-    'I enjoy approaching problems analytically, understanding how things work beneath the surface, and exploring different ways to build effective solutions.',
-    'Saya senang menganalisis permasalahan, memahami cara kerja suatu sistem secara mendalam, dan mengeksplorasi berbagai pendekatan untuk menemukan solusi yang efektif.',
+    'Simplicity is a great virtue but it requires hard work to achieve it and education to appreciate it. And to make matters worse: complexity sells better.',
+    'Kesederhanaan adalah keutamaan, tetapi perlu kerja keras untuk mencapainya dan wawasan untuk menghargainya. Lebih buruk lagi: kerumitan lebih mudah dijual.',
   ),
   /** Home gallery (campus life and activities). Put the image in /public and add one line here; the grid grows on its own. */
   gallery: [
@@ -84,8 +84,8 @@ export const SITE = {
   greeting: pair('Hello, my name is', 'Halo, namaku'),
   role: pair('Informatics student at ITB', 'Mahasiswa Informatika ITB'),
   roles: {
-    en: ['Informatics Student', 'Web Developer', 'UI/UX Designer', 'Problem Solver'],
-    id: ['Mahasiswa Informatika', 'Web Developer', 'UI/UX Designer', 'Pemecah Masalah'],
+    en: ['Informatics Student', 'Web Developer', 'AI & Data Science Enthusiast', 'Problem Solver'],
+    id: ['Mahasiswa Informatika', 'Web Developer', 'AI & Data Science Enthusiast', 'Pemecah Masalah'],
   },
   lead: pair(
     "I'm an Informatics student at Institut Teknologi Bandung, interested in software engineering and AI. I approach problems analytically, enjoy understanding how things work, and am driven to turn ideas into well-crafted software.",
