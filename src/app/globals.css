@@ -463,8 +463,8 @@ footer { backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
 @media (prefers-reduced-motion: reduce) { .home-reveal[data-home-entered='true'] { animation: none; } }
 /* Oversized outlined words sliding with --s. */
 .home-band { margin: clamp(4rem, 9vw, 7rem) calc(50% - 50vw) 0; overflow: clip; }
-.home-band p { width: max-content; font-family: var(--font-display); font-size: clamp(3.5rem, 11vw, 9.5rem); font-weight: 800; line-height: 1; letter-spacing: -0.04em; white-space: nowrap; color: transparent; -webkit-text-stroke: 1px color-mix(in srgb, var(--brand) 45%, transparent); transform: translate3d(calc(var(--s, 0.5) * -20%), 0, 0); will-change: transform; }
-.home-band--back p { transform: translate3d(calc((1 - var(--s, 0.5)) * -20%), 0, 0); }
+.home-band p { width: max-content; font-family: var(--font-display); font-size: clamp(3.5rem, 11vw, 9.5rem); font-weight: 800; line-height: 1; letter-spacing: -0.04em; white-space: nowrap; color: transparent; -webkit-text-stroke: 1px color-mix(in srgb, var(--brand) 45%, transparent); transform: translate3d(calc(var(--s, 0.5) * -8%), 0, 0); will-change: transform; }
+.home-band--back p { transform: translate3d(calc((1 - var(--s, 0.5)) * -8%), 0, 0); }
 
 /* Statement: pinned sentence, words light up with the scroll. */
 .home-say__text { transform-origin: 0 50%; will-change: transform; margin-top: 1.5rem; max-width: 62rem; font-family: var(--font-display); font-size: clamp(1.7rem, 4.4vw, 3.75rem); font-weight: 700; line-height: 1.16; letter-spacing: -0.03em; }
