@@ -19,11 +19,13 @@ export function PageShell({ item, gi, children, compact, stats }: { item: NavIte
     return (
       <div>
         <p className="mono-label mb-6 !text-[11px]"><Link to="/" className="hover:text-fg">{lang === 'id' ? 'Beranda' : 'Home'}</Link> / {t(NAV[gi].title)} / {t(item.title)}</p>
-        <div className="project-page-head">
-          <h1 className="project-page-title shine pb-1">{t(item.title)}</h1>
-          <p className="project-page-desc">{t(item.desc)}</p>
-          {stats ? <div className="project-stats">{stats}</div> : null}
-        </div>
+        {item.key === 'hire' ? null : (
+          <div className="project-page-head">
+            <h1 className="project-page-title shine pb-1">{t(item.title)}</h1>
+            <p className="project-page-desc">{t(item.desc)}</p>
+            {stats ? <div className="project-stats">{stats}</div> : null}
+          </div>
+        )}
         <div>{children}</div>
       </div>
     )

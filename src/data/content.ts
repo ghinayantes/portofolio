@@ -173,7 +173,6 @@ export const about: [Pair, Localized][] = [
   [pair('Major', 'Program studi'), pair('Informatics Engineering', 'Teknik Informatika')],
   [pair('Location', 'Lokasi'), pair('Bandung, Indonesia', 'Bandung, Indonesia')],
   [pair('Email', 'Email'), 'ghnaemeliayantes@gmail.com'],
-  [pair('Status', 'Status'), pair('Open to internships', 'Terbuka untuk magang')],
 ]
 
 export const skills: SkillGroup[] = [

@@ -486,16 +486,6 @@ export function CollectionStats({ total, single, plural }: { total: number; sing
   return <>{total} {word}</>
 }
 
-/** Availability badge for the Hire header, reusing the About status pattern. */
-export function HireStats() {
-  const { lang } = useSettings()
-  const statusEntry = C.about.find(([k]) => k.en === 'Status')
-  if (!statusEntry) return null
-  return (
-    <span className="inline-flex items-center gap-1.5 rounded-full border border-brand/25 bg-brand/10 px-3 py-1 text-xs font-semibold"><i className="dot" />{localized(statusEntry[1], lang)}</span>
-  )
-}
-
 /** Per-page stats line for the compact header. `project` renders its own line; pages without a meaningful metric return null. */
 export function PageStats({ k }: { k: string }) {
   switch (k) {
@@ -511,7 +501,6 @@ export function PageStats({ k }: { k: string }) {
     case 'timeline': return <CollectionStats total={C.work.length + C.projects.length + C.awards.length + C.education.length} single={pair('timeline entry', 'entri linimasa')} plural={pair('timeline entries', 'entri linimasa')} />
     case 'design': return <CollectionStats total={C.design.length} single={pair('work', 'karya')} plural={pair('works', 'karya')} />
     case 'writing': return <CollectionStats total={C.writing.length} single={pair('piece', 'tulisan')} plural={pair('pieces', 'tulisan')} />
-    case 'hire': return <HireStats />
     default: return null
   }
 }
