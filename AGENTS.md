@@ -10,6 +10,7 @@
 - do not commits anything without any request.
 - don't push any of change if it's not in request, make sure first.
 - make sure if you want to git push to the origin, use (type): (AI) (commit messages) for git best practices
+- do not co-authored any git push or commit.
 
 <!-- BEGIN:nextjs-agent-rules -->
 
