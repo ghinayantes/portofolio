@@ -5,7 +5,6 @@ const contacts = [
        { key: 'linkedin', label: pair('LinkedIn'), href: 'https://www.linkedin.com/in/ghinayantes' },
        { key: 'github', label: pair('GitHub'), href: 'https://github.com/ghinayantes' },
        { key: 'instagram', label: pair('Instagram'), href: 'https://www.instagram.com/ghinayantes' },
-       { key: 'whatsapp', label: pair('WhatsApp'), href: 'https://wa.me/6282173733818' },
      ]
 
 export type Hello = { text: Pair; cta?: Pair; to?: string; action?: 'dial' }

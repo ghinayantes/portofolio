@@ -2,13 +2,13 @@
 
 import { useEffect, useRef, useState, type CSSProperties } from 'react'
 import Image from 'next/image'
-import { FaEnvelope, FaGithub, FaInstagram, FaLinkedinIn, FaWhatsapp } from 'react-icons/fa6'
+import { FaEnvelope, FaGithub, FaInstagram, FaLinkedinIn } from 'react-icons/fa6'
 import type { IconType } from 'react-icons'
 import { SITE } from '../data/site'
 import { useSettings } from '../context/Settings'
 import { LocLink as Link } from './LocLink'
 
-const ICONS: Record<string, IconType> = { email: FaEnvelope, linkedin: FaLinkedinIn, github: FaGithub, instagram: FaInstagram, whatsapp: FaWhatsapp }
+const ICONS: Record<string, IconType> = { email: FaEnvelope, linkedin: FaLinkedinIn, github: FaGithub, instagram: FaInstagram }
 const DISMISS_KEY = 'hero-hello-dismissed'
 
 /* ---- icon: the unit circle under a linear map M = Rot(theta) * diag(s1, s2) (SVD-style) ----
