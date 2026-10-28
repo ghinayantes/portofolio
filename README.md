@@ -143,3 +143,7 @@ The site runs on the Vercel project `portofolio`. Pushing to `main` deploys it a
 - Fill in `image` and `tech` for projects that lack them (for example Food Waste Stop).
 - Register the site in Google Search Console and submit `sitemap.xml`.
 - Sender confirmation emails, a durable rate limit, and bot protection are not set up; the first needs a custom domain.
+
+## License
+
+The source code is released under the [MIT License](LICENSE). Personal content (photos, images, the CV, logos, written text, and contact details) is not covered and remains all rights reserved.
