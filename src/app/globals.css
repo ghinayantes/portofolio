@@ -592,11 +592,13 @@ html[data-welcome-motion='reduced'] .welcome-intro, html[data-welcome-motion='re
 }
 
 /* Portrait: no frame; runs to the left screen edge (--edge = the page gutter, as in .constellations) and fades out toward the bio. */
-.about-id { --edge: 1.25rem; position: relative; aspect-ratio: 4 / 5; margin-inline: calc(-1 * var(--edge)); -webkit-mask-image: linear-gradient(180deg, #000 70%, transparent); mask-image: linear-gradient(180deg, #000 70%, transparent); }
-.about-id__img { object-fit: cover; object-position: 50% 30%; }
+/* The fade lives on the image; an opaque --bg backing (fading out later) keeps the fixed .page-rings from showing through the faded part. */
+.about-id { --edge: 1.25rem; --fade: linear-gradient(180deg, #000 70%, transparent); --backing: linear-gradient(180deg, #000 85%, transparent); position: relative; aspect-ratio: 4 / 5; margin-inline: calc(-1 * var(--edge)); }
+.about-id::before { content: ''; position: absolute; inset: 0; background: var(--bg); -webkit-mask-image: var(--backing); mask-image: var(--backing); pointer-events: none; }
+.about-id__img { object-fit: cover; object-position: 50% 30%; -webkit-mask-image: var(--fade); mask-image: var(--fade); }
 @media (min-width: 640px) { .about-id { --edge: 2rem; } }
 @media (min-width: 768px) {
-  .about-id { flex: 1; aspect-ratio: auto; min-height: 32rem; margin-inline: calc(-1 * var(--edge)) 0; -webkit-mask-image: linear-gradient(90deg, #000 55%, transparent); mask-image: linear-gradient(90deg, #000 55%, transparent); }
+  .about-id { flex: 1; aspect-ratio: auto; min-height: 32rem; margin-inline: calc(-1 * var(--edge)) 0; --fade: linear-gradient(90deg, #000 55%, transparent); --backing: linear-gradient(90deg, #000 80%, transparent); }
 }
 @media (min-width: 1024px) { .about-id { --edge: calc(max(0px, (100vw - 90rem) / 2) + 5rem); } }
 
