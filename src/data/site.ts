@@ -87,8 +87,8 @@ export const SITE = {
     id: ['Mahasiswa Informatika', 'Web Developer', 'AI & Data Science Enthusiast', 'Pemecah Masalah'],
   },
   lead: pair(
-    "I'm an Informatics student at Institut Teknologi Bandung, interested in software engineering and AI. I approach problems analytically, enjoy understanding how things work, and am driven to turn ideas into well-crafted software.",
-    'Saya adalah mahasiswa Informatika di Institut Teknologi Bandung yang tertarik pada bidang rekayasa perangkat lunak dan kecerdasan buatan. Saya terbiasa mendekati permasalahan secara analitis, senang memahami cara kerja berbagai sistem, dan termotivasi untuk mengubah ide menjadi perangkat lunak yang dirancang dengan baik.',
+    "I'm currently focused on software engineering while exploring data science and AI. Curiosity, a love for mathematics, and a lifelong interest in games led me to study Informatics at ITB. I'm also a Paragon Scholarship Program Excellence grantee, Batch 2025.",
+    'Saat ini saya berfokus pada rekayasa perangkat lunak, sambil terus mendalami data science dan AI. Rasa ingin tahu, kecintaan pada matematika, dan hobi bermain game membawa saya ke Informatika ITB. Saya juga merupakan penerima Paragon Scholarship Program Excellence Batch 2025.',
   ),
   contacts,
   hello,
