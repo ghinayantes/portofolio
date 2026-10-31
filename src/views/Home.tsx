@@ -33,7 +33,7 @@ export default function Home() {
               <span aria-hidden>{id ? 'Aku seorang ' : 'I am a '}<span>{typed}</span><i className="caret" /></span>
               <span className="sr-only">{t(SITE.role)}</span>
             </p>
-            <p className="mb-10 mt-6 max-w-md text-base font-medium leading-relaxed text-fg/80 sm:text-lg">{t(SITE.lead)}</p>
+            <p className="mb-10 mt-6 max-w-md text-justify text-base font-medium leading-relaxed text-fg/80 sm:text-lg">{t(SITE.lead)}</p>
             <div className="flex flex-wrap gap-3">
               <Link to="/project" className="btn-primary">{id ? 'Lihat proyek' : 'View projects'}<span aria-hidden="true" className="btn-arrow">→</span></Link>
               <Link to="/hire" className="btn-ghost">{id ? 'Yuk ngobrol' : "Let's talk"}</Link>
