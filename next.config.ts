@@ -8,11 +8,11 @@ const isDev = process.env.NODE_ENV === 'development'
  */
 const csp = [
   "default-src 'self'",
-  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ''} https://va.vercel-scripts.com https://strava-embeds.com`,
+  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ''} https://va.vercel-scripts.com https://strava-embeds.com https://open.spotify.com https://embed-cdn.spotifycdn.com`,
   "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data: blob:",
+  "img-src 'self' data: blob: https://*.spotifycdn.com",
   "font-src 'self' data:",
-  `connect-src 'self' https://formspree.io https://va.vercel-scripts.com https://vitals.vercel-insights.com${isDev ? ' ws: wss:' : ''}`,
+  `connect-src 'self' https://formspree.io https://va.vercel-scripts.com https://vitals.vercel-insights.com https://open.spotify.com${isDev ? ' ws: wss:' : ''}`,
   "frame-src 'self' https://www.linkedin.com https://open.spotify.com https://strava-embeds.com",
   "frame-ancestors 'self'",
   "object-src 'none'",

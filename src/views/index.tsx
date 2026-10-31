@@ -22,6 +22,8 @@ import { AboutIdentity, AboutNow, currentRoles } from '../components/AboutCard'
 import { Section } from '../components/ui'
 import Hire from './Hire'
 import SitemapGraph from '../components/SitemapGraph'
+import VinylPlayer from '../components/VinylPlayer'
+import { SPOTIFY_PLAYLIST, TRACKS } from '../data/playlist'
 
 const Grid2 = ({ children }: { children: ReactNode }) => <div className="grid gap-6 md:grid-cols-2">{children}</div>
 const Grid3 = ({ children }: { children: ReactNode }) => <div className="grid gap-5 md:grid-cols-3">{children}</div>
@@ -34,8 +36,6 @@ const STRAVA_ACTIVITIES = [
   { id: '20013601017', title: 'Latman 1', date: '2026-09-03', km: 4.0, minutes: 36 },
   { id: '19411540850', title: 'ip sampe lulus', date: '2026-07-22', km: 4.0, minutes: 50 },
 ] as const
-/** Playlist id from its open.spotify.com/playlist/<id> link; the playlist must be public or the embed shows "Page not found". */
-const SPOTIFY_PLAYLIST = '4hW2esfyNKbnqJbbfZwiHm'
 
 const Cards = ({ list, feature }: { list: C.Project[]; feature?: boolean }) => (
   <div className={`grid ${feature ? 'project-cards-grid project-cards-grid--interactive gap-x-4 gap-y-8 md:grid-cols-2' : 'gap-6 md:grid-cols-2'}`}>
@@ -422,13 +422,7 @@ function AboutInterests({ id }: { id: boolean }) {
             <h3 id="about-music-title" className="about-interest__title">{id ? 'Musik' : 'Music'}</h3>
             <p className="about-interest__note">Spotify · {id ? 'teman kerja saya' : 'what I work to'}</p>
           </div>
-          <iframe
-            title={id ? 'Playlist Spotify' : 'Spotify playlist'}
-            src={`https://open.spotify.com/embed/playlist/${SPOTIFY_PLAYLIST}?utm_source=generator`}
-            loading="lazy"
-            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-            className="about-spotify__frame"
-          />
+          <VinylPlayer playlistId={SPOTIFY_PLAYLIST} tracks={TRACKS} />
         </section>
       </Reveal>
     </section>
