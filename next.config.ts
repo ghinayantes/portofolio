@@ -8,7 +8,9 @@ const isDev = process.env.NODE_ENV === 'development'
  */
 const csp = [
   "default-src 'self'",
-  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ''} https://va.vercel-scripts.com https://strava-embeds.com https://open.spotify.com https://embed-cdn.spotifycdn.com`,
+  // 'unsafe-eval' is also needed in production: Spotify's iFrame API bundle (embed-cdn.spotifycdn.com) runs its modules through eval(),
+  // and it must be allowed site-wide because client-side navigation keeps the CSP of the first page loaded.
+  `script-src 'self' 'unsafe-inline' 'unsafe-eval' https://va.vercel-scripts.com https://strava-embeds.com https://open.spotify.com https://embed-cdn.spotifycdn.com`,
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob: https://*.spotifycdn.com",
   "font-src 'self' data:",
